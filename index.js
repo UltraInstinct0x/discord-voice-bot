@@ -26,7 +26,9 @@ const client = new Client({
 client.on(Events.ClientReady, () => console.log('Ready!'));
 
 client.on(Events.MessageCreate, async message => {
+  // Check if the message is the join command
   if (message.content.toLowerCase() === '!join') {
+    // Check if user is in a voice channel
     if (message.member.voice.channel) {
       const connection = joinVoiceChannel({
         channelId: message.member.voice.channel.id,
@@ -37,7 +39,7 @@ client.on(Events.MessageCreate, async message => {
       const receiver = connection.receiver;
 
       connection.on(VoiceConnectionStatus.Ready, () => {
-        console.log('The connection is ready to receive audio!');
+        message.reply(`Joined voice channel: ${channel.name}!`);
         listenAndRespond(connection, receiver, message);
       });
     } else {
