@@ -29,9 +29,10 @@ client.on(Events.MessageCreate, async message => {
   // Check if the message is the join command
   if (message.content.toLowerCase() === '!join') {
     // Check if user is in a voice channel
-    if (message.member.voice.channel) {
+    channel = message.member.voice.channel;
+    if (channel) {
       const connection = joinVoiceChannel({
-        channelId: message.member.voice.channel.id,
+        channelId: channel.id,
         guildId: message.guild.id,
         adapterCreator: message.guild.voiceAdapterCreator,
       });
@@ -82,7 +83,7 @@ async function listenAndRespond(connection, receiver, message) {
     const audioStream = receiver.subscribe(message.author.id, {
       end: {
         behavior: EndBehaviorType.AfterSilence,
-        duration: 2000,
+        duration: 1000,
       },
     });
   
@@ -101,6 +102,7 @@ async function listenAndRespond(connection, receiver, message) {
       await transcriber.close();
       console.log("Final text:", transcription)
       const chatGPTResponse = await getChatGPTResponse(transcription);
+      console.log("ChatGPT response:",chatGPTResponse);
       const audioPath = await convertTextToSpeech(chatGPTResponse);
       const audioResource = createAudioResource(audioPath, {
           inputType: StreamType.Arbitrary,
