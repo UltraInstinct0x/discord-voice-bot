@@ -8,7 +8,8 @@ const { Events, Client } = require('discord.js');
 const prism = require('prism-media');
 const { generateDependencyReport } = require('@discordjs/voice');
 
-console.log(generateDependencyReport());
+// uncomment the line below to debug if you have all the necessary dependencies
+// console.log(generateDependencyReport());
 
 // Initialize ElevenLabs Client
 const voice = new ElevenLabs({
