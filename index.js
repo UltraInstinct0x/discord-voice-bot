@@ -13,7 +13,7 @@ const prism = require('prism-media');
 
 // Initialize ElevenLabs Client
 const voice = new ElevenLabs({
-    apiKey: process.env.ELEVENLABS_API_KEY,       // API key from Elevenlabs
+    apiKey: process.env.ELEVENLABS_API_KEY
 });
 
 // Initialize OpenAI Client
