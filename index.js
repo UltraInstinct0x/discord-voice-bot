@@ -2,13 +2,13 @@ require('dotenv').config();
 const { OpenAI } = require('openai');
 const { AssemblyAI } = require('assemblyai');
 const ElevenLabs = require('elevenlabs-node');
-const { joinVoiceChannel, createAudioResource, StreamType, AudioPlayerStatus, VoiceConnectionStatus, createAudioPlayer, EndBehaviorType, VoiceReceiver } = require('@discordjs/voice');
+const { joinVoiceChannel, createAudioResource, StreamType, AudioPlayerStatus, VoiceConnectionStatus, createAudioPlayer, EndBehaviorType } = require('@discordjs/voice');
 const {GatewayIntentBits } = require('discord-api-types/v10');
 const { Events, Client } = require('discord.js');
 const prism = require('prism-media');
-const { generateDependencyReport } = require('@discordjs/voice');
 
 // uncomment the line below to debug if you have all the necessary dependencies
+// const { generateDependencyReport } = require('@discordjs/voice');
 // console.log(generateDependencyReport());
 
 // Initialize ElevenLabs Client
@@ -52,7 +52,6 @@ client.on(Events.MessageCreate, async message => {
   
 async function listenAndRespond(connection, receiver, message) {
 
-    var transcription =""
     // Set up the real-time transcriber
     const transcriber = assemblyAI.realtime.transcriber({
       sampleRate: 48000
@@ -70,7 +69,8 @@ async function listenAndRespond(connection, receiver, message) {
       console.log('Real-time session closed:', code, reason);
     });
   
-    transcriber.on('transcript', async (transcript) => {
+    var transcription =""
+    transcriber.on('transcript', (transcript) => {
       if (transcript.message_type === 'FinalTranscript') {
         console.log('Final:', transcript.text);
         transcription += transcript.text + " "; // Append to the full message
@@ -91,7 +91,7 @@ async function listenAndRespond(connection, receiver, message) {
     // Convert the Discord Opus stream to a format suitable for AssemblyAI
     const opusDecoder = new prism.opus.Decoder({ rate: 48000, channels: 1});
   
-    // Stream the audio to the real-time transcriber
+    // Pipe the decoded audio chunks to AssemblyAI for transcription
     audioStream.pipe(opusDecoder).on('data', (chunk) => {
       transcriber.sendAudio(chunk);
     });
@@ -115,13 +115,13 @@ async function listenAndRespond(connection, receiver, message) {
       player.on(AudioPlayerStatus.Idle, () => {
         console.log('Finished playing audio response.');
         player.stop();
-          // listen for the next user query
+          // Listen for the next user query
         listenAndRespond(connection, receiver, message);
       });
     });
   }
 
-client.on(Events.ERROR, console.warn);
+client.on(Events.Error, console.warn);
 
 void client.login(process.env.DISCORD_TOKEN);
 
