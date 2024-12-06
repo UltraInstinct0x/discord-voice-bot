@@ -27,5 +27,8 @@ RUN mkdir -p temp
 # Copy the rest of the application
 COPY . .
 
+# Expose the port
+EXPOSE ${PORT}
+
 # Start the bot
 CMD ["npm", "start"]
