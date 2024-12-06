@@ -1,4 +1,4 @@
-FROM --platform=linux/arm64 node:18-bullseye-slim
+FROM --platform=linux/amd64 node:18-bullseye-slim
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
