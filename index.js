@@ -1,146 +1,224 @@
 require('dotenv').config();
 const { OpenAI } = require('openai');
-const { AssemblyAI } = require('assemblyai');
 const ElevenLabs = require('elevenlabs-node');
 const { joinVoiceChannel, createAudioResource, StreamType, AudioPlayerStatus, VoiceConnectionStatus, createAudioPlayer, EndBehaviorType } = require('@discordjs/voice');
-const {GatewayIntentBits } = require('discord-api-types/v10');
+const { GatewayIntentBits } = require('discord-api-types/v10');
 const { Events, Client } = require('discord.js');
 const prism = require('prism-media');
+const path = require('path');
+const fs = require('fs');
 
-// uncomment the line below to debug if you have all the necessary dependencies
-// const { generateDependencyReport } = require('@discordjs/voice');
-// console.log(generateDependencyReport());
-
-// Initialize ElevenLabs Client
+// Initialize clients
 const voice = new ElevenLabs({
     apiKey: process.env.ELEVENLABS_API_KEY
 });
 
-// Initialize OpenAI Client
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-const assemblyAI = new AssemblyAI({ apiKey: process.env.ASSEMBLYAI_API_KEY });
 
 const client = new Client({
-	intents: [GatewayIntentBits.GuildVoiceStates, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent,GatewayIntentBits.Guilds],
+    intents: [GatewayIntentBits.GuildVoiceStates, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.Guilds],
 });
 
 client.on(Events.ClientReady, () => console.log('Ready!'));
 
 client.on(Events.MessageCreate, async message => {
-  // Check if the message is the join command
-  if (message.content.toLowerCase() === '!join') {
-    // Check if user is in a voice channel
-    channel = message.member.voice.channel;
-    if (channel) {
-      const connection = joinVoiceChannel({
-        channelId: channel.id,
-        guildId: message.guild.id,
-        adapterCreator: message.guild.voiceAdapterCreator,
-      });
+    if (message.content.toLowerCase() === '!join') {
+        const channel = message.member?.voice.channel;
+        if (channel) {
+            const connection = joinVoiceChannel({
+                channelId: channel.id,
+                guildId: message.guild.id,
+                adapterCreator: message.guild.voiceAdapterCreator,
+            });
 
-      const receiver = connection.receiver;
-
-      connection.on(VoiceConnectionStatus.Ready, () => {
-        message.reply(`Joined voice channel: ${channel.name}!`);
-        listenAndRespond(connection, receiver, message);
-      });
-    } else {
-      message.reply('You need to join a voice channel first!');
+            connection.on(VoiceConnectionStatus.Ready, () => {
+                message.reply(`Joined voice channel: ${channel.name}!`);
+                listenAndRespond(connection, connection.receiver, message);
+            });
+        } else {
+            message.reply('You need to join a voice channel first!');
+        }
     }
-  }
 });
-  
+
 async function listenAndRespond(connection, receiver, message) {
-
-    // Set up the real-time transcriber
-    const transcriber = assemblyAI.realtime.transcriber({
-      sampleRate: 48000
-    });
-  
-    transcriber.on('open', ({ sessionId }) => {
-      console.log(`Real-time session opened with ID: ${sessionId}`);
-    });
-  
-    transcriber.on('error', (error) => {
-      console.error('Real-time transcription error:', error);
-    });
-  
-    transcriber.on('close', (code, reason) => {
-      console.log('Real-time session closed:', code, reason);
-    });
-  
-    var transcription =""
-    transcriber.on('transcript', (transcript) => {
-      if (transcript.message_type === 'FinalTranscript') {
-        console.log('Final:', transcript.text);
-        transcription += transcript.text + " "; // Append to the full message
-      }
-    });
-  
-    // Connect to the real-time transcription service
-    await transcriber.connect();
-  
-    // Subscribe to the audio stream from the user
+    let isProcessing = false;
+    let audioBuffer = Buffer.alloc(0);
+    let silenceStart = null;
+    const SILENCE_THRESHOLD = 500; // 500ms of silence to trigger processing
+    
     const audioStream = receiver.subscribe(message.author.id, {
-      end: {
-        behavior: EndBehaviorType.AfterSilence,
-        duration: 1000,
-      },
-    });
-  
-    // Convert the Discord Opus stream to a format suitable for AssemblyAI
-    const opusDecoder = new prism.opus.Decoder({ rate: 48000, channels: 1});
-  
-    // Pipe the decoded audio chunks to AssemblyAI for transcription
-    audioStream.pipe(opusDecoder).on('data', (chunk) => {
-      transcriber.sendAudio(chunk);
+        end: {
+            behavior: EndBehaviorType.AfterSilence,
+            duration: 1000
+        },
     });
 
-  
-    // Handle disconnection
+    const opusDecoder = new prism.opus.Decoder({
+        rate: 48000,
+        channels: 1,
+        frameSize: 960
+    });
+
+    let lastChunkTime = Date.now();
+
+    audioStream.pipe(opusDecoder).on('data', async (chunk) => {
+        // Reset silence detection on new audio
+        lastChunkTime = Date.now();
+        if (silenceStart) silenceStart = null;
+        
+        // Append new audio data
+        audioBuffer = Buffer.concat([audioBuffer, chunk]);
+
+        // Check if we've accumulated enough audio (about 1 second worth)
+        if (audioBuffer.length > 48000 * 2 && !isProcessing) { // 1 second of 48kHz 16-bit audio
+            isProcessing = true;
+            
+            const currentBuffer = audioBuffer;
+            audioBuffer = Buffer.alloc(0); // Reset buffer
+
+            try {
+                await processAudioBuffer(currentBuffer, connection);
+            } catch (error) {
+                console.error('Error processing audio:', error);
+            }
+
+            isProcessing = false;
+        }
+    });
+
+    // Handle silence detection
+    const silenceCheckInterval = setInterval(() => {
+        const now = Date.now();
+        if (now - lastChunkTime > SILENCE_THRESHOLD && !silenceStart) {
+            silenceStart = now;
+        }
+
+        // If we've been silent for a while and have data, process it
+        if (silenceStart && now - silenceStart > SILENCE_THRESHOLD && audioBuffer.length > 0 && !isProcessing) {
+            isProcessing = true;
+            
+            const currentBuffer = audioBuffer;
+            audioBuffer = Buffer.alloc(0);
+
+            processAudioBuffer(currentBuffer, connection)
+                .catch(console.error)
+                .finally(() => {
+                    isProcessing = false;
+                });
+        }
+    }, 100);
+
     audioStream.on('end', async () => {
-      // Close the transcriber
-      await transcriber.close();
-      console.log("Final text:", transcription)
-      const chatGPTResponse = await getChatGPTResponse(transcription);
-      console.log("ChatGPT response:",chatGPTResponse);
-      const audioPath = await convertTextToSpeech(chatGPTResponse);
-      const audioResource = createAudioResource(audioPath, {
-          inputType: StreamType.Arbitrary,
-      });
-      const player = createAudioPlayer();
-      player.play(audioResource);
-      connection.subscribe(player);
-  
-      player.on(AudioPlayerStatus.Idle, () => {
-        console.log('Finished playing audio response.');
-        player.stop();
-          // Listen for the next user query
+        clearInterval(silenceCheckInterval);
+        
+        // Process any remaining audio
+        if (audioBuffer.length > 0 && !isProcessing) {
+            try {
+                await processAudioBuffer(audioBuffer, connection);
+            } catch (error) {
+                console.error('Error processing final audio:', error);
+            }
+        }
+        
+        // Restart listening
         listenAndRespond(connection, receiver, message);
-      });
     });
-  }
+}
 
-client.on(Events.Error, console.warn);
+async function processAudioBuffer(buffer, connection) {
+    if (buffer.length < 4800) { // Minimum size check (100ms of audio)
+        return;
+    }
 
-void client.login(process.env.DISCORD_TOKEN);
+    const tempDir = path.join(__dirname, 'temp');
+    if (!fs.existsSync(tempDir)) {
+        fs.mkdirSync(tempDir);
+    }
 
-// Function to get response from ChatGPT
-async function getChatGPTResponse(text) {
+    const wavFile = path.join(tempDir, `recording_${Date.now()}.wav`);
+    
     try {
-        const response = await openai.completions.create({
-            model: "gpt-3.5-turbo-instruct-0914",
-            prompt: text,
-            max_tokens: 100,
+        // Create WAV file
+        const header = Buffer.alloc(44);
+        
+        // WAV header
+        header.write('RIFF', 0);
+        header.writeUInt32LE(36 + buffer.length, 4);
+        header.write('WAVE', 8);
+        header.write('fmt ', 12);
+        header.writeUInt32LE(16, 16);
+        header.writeUInt16LE(1, 20);
+        header.writeUInt16LE(1, 22);
+        header.writeUInt32LE(48000, 24);
+        header.writeUInt32LE(48000 * 2, 28);
+        header.writeUInt16LE(2, 32);
+        header.writeUInt16LE(16, 34);
+        header.write('data', 36);
+        header.writeUInt32LE(buffer.length, 40);
+
+        await fs.promises.writeFile(wavFile, Buffer.concat([header, buffer]));
+
+        // Transcribe
+        const transcription = await openai.audio.transcriptions.create({
+            file: fs.createReadStream(wavFile),
+            model: "whisper-1",
+            language: "en"
         });
-        return response.choices[0].text.trim();
+
+        if (transcription.text.trim()) {
+            console.log('Transcribed text:', transcription.text);
+
+            // Get ChatGPT response
+            const response = await openai.chat.completions.create({
+                messages: [{ role: "user", content: transcription.text }],
+                model: "gpt-3.5-turbo",
+                max_tokens: 150
+            });
+
+            const responseText = response.choices[0].message.content.trim();
+            console.log('ChatGPT response:', responseText);
+
+            if (responseText) {
+                const audioPath = await convertTextToSpeech(responseText);
+                if (audioPath) {
+                    const player = createAudioPlayer();
+                    const resource = createAudioResource(audioPath, {
+                        inputType: StreamType.Arbitrary,
+                    });
+
+                    player.play(resource);
+                    connection.subscribe(player);
+
+                    await new Promise((resolve) => {
+                        player.on(AudioPlayerStatus.Idle, () => {
+                            console.log('Finished playing audio response.');
+                            player.stop();
+                            resolve();
+                        });
+                    });
+
+                    // Clean up files after playing
+                    try {
+                        fs.unlinkSync(audioPath);
+                    } catch (err) {
+                        console.error('Error cleaning up audio file:', err);
+                    }
+                }
+            }
+        }
     } catch (error) {
-        console.error('Error with ChatGPT:', error);
-        return 'I am having trouble processing this right now.';
+        console.error('Error in processing:', error);
+    } finally {
+        // Clean up WAV file
+        try {
+            fs.unlinkSync(wavFile);
+        } catch (err) {
+            console.error('Error cleaning up wav file:', err);
+        }
     }
 }
 
-// Function to convert text to speech using ElevenLabs
 async function convertTextToSpeech(text) {
     const fileName = `${Date.now()}.mp3`;
     try {
@@ -151,3 +229,5 @@ async function convertTextToSpeech(text) {
         return null;
     }
 }
+
+client.login(process.env.DISCORD_TOKEN);

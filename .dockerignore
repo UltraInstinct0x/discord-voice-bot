@@ -1,0 +1,10 @@
+# .dockerignore
+node_modules
+npm-debug.log
+.env
+temp/*
+*.opus
+*.wav
+*.mp3
+.git
+.gitignore
