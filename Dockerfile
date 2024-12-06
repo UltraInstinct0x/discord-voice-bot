@@ -1,14 +1,12 @@
-# Dockerfile
-FROM node:18-bullseye
+FROM --platform=linux/arm64 node:18-bullseye-slim
 
-# Install system dependencies including Python and build tools
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     python3 \
     make \
     g++ \
     ffmpeg \
     git \
-    # Dependencies for sodium-native
     autoconf \
     automake \
     libtool \
@@ -16,19 +14,17 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /usr/src/app
 
-# Copy package files first to leverage Docker cache
+# Copy package files
 COPY package*.json ./
 
 # Install dependencies
 RUN npm install --build-from-source
 
-# Copy the rest of the application
-COPY . .
-
 # Create temp directory for audio files
 RUN mkdir -p temp
 
+# Copy the rest of the application
+COPY . .
+
 # Start the bot
-CMD [ "npm", "start" ]
-
-
+CMD ["npm", "start"]

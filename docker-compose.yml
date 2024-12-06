@@ -1,5 +1,6 @@
 # docker-compose.yml
-version: '3.8'
+version: "3.8"
+
 services:
   bot:
     build: .
@@ -10,4 +11,9 @@ services:
       - DISCORD_TOKEN=${DISCORD_TOKEN}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - ELEVENLABS_API_KEY=${ELEVENLABS_API_KEY}
+      - HUGGING_FACE_TOKEN=${HUGGING_FACE_TOKEN}
+      - CLIENT_ID=${CLIENT_ID}
+    platform: linux/arm64 # For M2 Mac
     restart: unless-stopped
+    mem_limit: 2g
+    memswap_limit: 2g
