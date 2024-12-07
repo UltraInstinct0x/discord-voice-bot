@@ -13,7 +13,7 @@ services:
       - ELEVENLABS_API_KEY=${ELEVENLABS_API_KEY}
       - HUGGING_FACE_TOKEN=${HUGGING_FACE_TOKEN}
       - CLIENT_ID=${CLIENT_ID}
-    platform: linux/amd64 # arm64 # For M2 Mac
+    platform: linux/arm64 # arm64 # For M2 Mac
     restart: unless-stopped
     mem_limit: 2g
     memswap_limit: 2g
