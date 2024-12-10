@@ -24,7 +24,7 @@ const CONFIG = {
   TIERS: {
     FREE: {
       maxTokens: 100,
-      ttsProvider: "huggingface",
+      ttsProvider: "huggingface_facebook",
       streaming: false,
       allowedModels: ["GPT35"],
     },
@@ -37,8 +37,24 @@ const CONFIG = {
   },
   TTS_PROVIDERS: {
     ELEVENLABS: "elevenlabs",
-    HUGGINGFACE: "huggingface",
+    HUGGINGFACE_FACEBOOK: "huggingface_facebook",
+    HUGGINGFACE_INDIC: "huggingface_indic",
+    HUGGINGFACE_COQUI: "huggingface_coqui",
+    HUGGINGFACE_FASTSPEECH: "huggingface_fastspeech",
   },
+  TTS_MODELS: {
+    huggingface_facebook: "facebook/mms-tts-eng",
+    huggingface_indic: "ai4bharat/indic-tts-coqui-indo_eng-asr_tts",
+    huggingface_coqui: "coqui/XTTS-v2",
+    huggingface_fastspeech: "facebook/fastspeech2-en-ljspeech",
+  },
+  TTS_FALLBACK_ORDER: [
+    "elevenlabs",
+    "huggingface_facebook",
+    "huggingface_fastspeech",
+    "huggingface_coqui",
+    "huggingface_indic",
+  ],
   AUDIO_SETTINGS: {
     silenceThreshold: 500,
     minAudioSize: 4800,

@@ -3,6 +3,7 @@ const aiService = require("../services/aiService");
 const ttsService = require("../services/ttsService");
 const voiceHandler = require("./voiceHandler");
 const logger = require("../utils/logger");
+const CONFIG = require("../config/config");
 
 class MessageHandler {
   constructor() {
@@ -14,7 +15,7 @@ class MessageHandler {
       this.settings.set(userId, {
         tier: "FREE",
         model: "GPT35",
-        ttsProvider: "huggingface",
+        ttsProvider: CONFIG.TTS_PROVIDERS.HUGGINGFACE_FACEBOOK,
         streaming: false,
       });
     }
@@ -96,14 +97,16 @@ class MessageHandler {
       }
 
       const settings = this.getUserSettings(message.author.id);
+      const modelConfig = CONFIG.MODELS[settings.model];
       const connection = await voiceHandler.joinVoiceChannel(channel, message);
       
       await message.reply(
-        `Joined ${channel.name}!\n\nCurrent settings:\n` +
+        `Joined ${channel.name}!\n\n` +
+        `Current settings:\n` +
         `Tier: ${settings.tier}\n` +
+        `Model: ${settings.model} (Provider: ${modelConfig.provider})\n` +
         `TTS Provider: ${settings.ttsProvider}\n` +
-        `Streaming: ${settings.streaming}\n` +
-        `Model: ${settings.model}`
+        `Streaming: ${settings.streaming}`
       );
 
     } catch (error) {
@@ -113,6 +116,103 @@ class MessageHandler {
       });
       await message.reply("Failed to join the voice channel.");
     }
+  }
+
+  async handleInteraction(interaction) {
+    try {
+      const settings = this.getUserSettings(interaction.user.id);
+
+      switch (interaction.commandName) {
+        case 'agentic':
+          await this.handleMachineCommand(interaction);
+          break;
+
+        case 'model':
+          const newModel = interaction.options.getString('model');
+          const tier = settings.tier;
+          if (!CONFIG.TIERS[tier].allowedModels.includes(newModel)) {
+            await interaction.reply(`Your tier (${tier}) does not have access to this model. Available models: ${CONFIG.TIERS[tier].allowedModels.join(', ')}`);
+            return;
+          }
+          settings.model = newModel;
+          this.settings.set(interaction.user.id, settings);
+          await interaction.reply(`Model set to ${newModel}`);
+          break;
+
+        case 'settier':
+          const newTier = interaction.options.getString('tier');
+          settings.tier = newTier;
+          settings.streaming = CONFIG.TIERS[newTier].streaming;
+          settings.ttsProvider = CONFIG.TIERS[newTier].ttsProvider;
+          if (!CONFIG.TIERS[newTier].allowedModels.includes(settings.model)) {
+            settings.model = CONFIG.TIERS[newTier].allowedModels[0];
+          }
+          this.settings.set(interaction.user.id, settings);
+          await interaction.reply(`Tier set to ${newTier}. Your settings have been updated accordingly.`);
+          break;
+
+        case 'setprovider':
+          const newProvider = interaction.options.getString('provider');
+          settings.ttsProvider = newProvider;
+          this.settings.set(interaction.user.id, settings);
+          await interaction.reply(`TTS provider set to ${newProvider}`);
+          break;
+
+        case 'settings':
+          const modelConfig = CONFIG.MODELS[settings.model];
+          await interaction.reply(
+            `Your current settings:\n` +
+            `Tier: ${settings.tier}\n` +
+            `Model: ${settings.model} (Provider: ${modelConfig.provider})\n` +
+            `TTS Provider: ${settings.ttsProvider}\n` +
+            `Streaming: ${settings.streaming}`
+          );
+          break;
+
+        case 'test':
+          const feature = interaction.options.getString('feature');
+          switch (feature) {
+            case 'voice':
+              if (!interaction.member?.voice.channel) {
+                await interaction.reply('Please join a voice channel first!');
+                return;
+              }
+              await interaction.reply('Testing voice recognition...');
+              // Add voice recognition test logic here
+              break;
+            case 'text':
+              const response = await aiService.handleResponse('This is a test message.', settings);
+              await interaction.reply(`Test response: ${response}`);
+              break;
+            case 'tts':
+              if (!interaction.member?.voice.channel) {
+                await interaction.reply('Please join a voice channel first!');
+                return;
+              }
+              const audioPath = await ttsService.generateTTS('This is a test TTS message.', settings.ttsProvider);
+              const connection = getVoiceConnection(interaction.guild.id);
+              if (connection) {
+                await voiceHandler.playResponse(audioPath, connection);
+                await interaction.reply('Playing test TTS message...');
+              } else {
+                await interaction.reply('Bot is not in a voice channel. Use /agentic to make it join first.');
+              }
+              break;
+          }
+          break;
+      }
+    } catch (error) {
+      logger.error('Error handling interaction', {
+        error: error.message,
+        userId: interaction.user.id,
+        command: interaction.commandName
+      });
+      await interaction.reply('Sorry, I encountered an error while processing your request.');
+    }
+  }
+
+  cleanup() {
+    voiceHandler.cleanup();
   }
 }
 

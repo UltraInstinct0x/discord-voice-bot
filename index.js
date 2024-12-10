@@ -69,7 +69,7 @@ const CONFIG = {
   TIERS: {
     FREE: {
       maxTokens: 100,
-      ttsProvider: "huggingface",
+      ttsProvider: "huggingface_facebook",
       streaming: false,
       allowedModels: ["GPT35"],
     },
@@ -82,8 +82,24 @@ const CONFIG = {
   },
   TTS_PROVIDERS: {
     ELEVENLABS: "elevenlabs",
-    HUGGINGFACE: "huggingface",
+    HUGGINGFACE_FACEBOOK: "huggingface_facebook",
+    HUGGINGFACE_INDIC: "huggingface_indic",
+    HUGGINGFACE_COQUI: "huggingface_coqui",
+    HUGGINGFACE_FASTSPEECH: "huggingface_fastspeech",
   },
+  TTS_MODELS: {
+    huggingface_facebook: "facebook/mms-tts-eng",
+    huggingface_indic: "ai4bharat/indic-tts-coqui-indo_eng-asr_tts",
+    huggingface_coqui: "coqui/XTTS-v2",
+    huggingface_fastspeech: "facebook/fastspeech2-en-ljspeech",
+  },
+  TTS_FALLBACK_ORDER: [
+    "elevenlabs",
+    "huggingface_facebook",
+    "huggingface_fastspeech",
+    "huggingface_coqui",
+    "huggingface_indic",
+  ],
   AUDIO_SETTINGS: {
     silenceThreshold: 500,
     minAudioSize: 4800,
@@ -198,7 +214,10 @@ const commands = [
         .setRequired(true)
         .addChoices(
           { name: "ElevenLabs", value: "elevenlabs" },
-          { name: "HuggingFace", value: "huggingface" },
+          { name: "Facebook MMS", value: "huggingface_facebook" },
+          { name: "Facebook FastSpeech2", value: "huggingface_fastspeech" },
+          { name: "Coqui XTTS-v2", value: "huggingface_coqui" },
+          { name: "Indic TTS", value: "huggingface_indic" },
         ),
     ),
   new SlashCommandBuilder()
@@ -676,43 +695,97 @@ async function transcribeAudio(wavFile) {
 }
 
 async function generateTTS(text, provider) {
-  try {
-    switch (provider) {
-      case CONFIG.TTS_PROVIDERS.ELEVENLABS:
-        return await elevenLabsTTS(text);
-      case CONFIG.TTS_PROVIDERS.HUGGINGFACE:
-        const result = await huggingFaceTTS(text);
-        if (!result) {
-          console.log("HuggingFace failed, falling back to ElevenLabs");
-          return await elevenLabsTTS(text);
-        }
-        return result;
-      default:
-        return await elevenLabsTTS(text);
+  console.log(`Starting TTS generation with provider: ${provider}`);
+  
+  // Get fallback order starting from the requested provider
+  const fallbackOrder = [...CONFIG.TTS_FALLBACK_ORDER];
+  if (provider !== fallbackOrder[0]) {
+    const index = fallbackOrder.indexOf(provider);
+    if (index !== -1) {
+      fallbackOrder.splice(index, 1);
+      fallbackOrder.unshift(provider);
     }
-  } catch (error) {
-    console.error("TTS generation error:", error);
-    // Final fallback
-    return await elevenLabsTTS(text);
   }
+
+  console.log(`Fallback order: ${fallbackOrder.join(' -> ')}`);
+  let lastError = null;
+
+  for (const currentProvider of fallbackOrder) {
+    try {
+      console.log(`Attempting TTS with provider: ${currentProvider}`);
+      
+      if (currentProvider === CONFIG.TTS_PROVIDERS.ELEVENLABS) {
+        const result = await elevenLabsTTS(text);
+        if (result) {
+          console.log(`Successfully generated TTS with ElevenLabs`);
+          return result;
+        }
+      } else {
+        const model = CONFIG.TTS_MODELS[currentProvider];
+        if (!model) {
+          console.warn(`No model configured for provider: ${currentProvider}, skipping`);
+          continue;
+        }
+
+        const result = await huggingFaceTTS(text, model);
+        if (result) {
+          console.log(`Successfully generated TTS with ${currentProvider} (${model})`);
+          return result;
+        }
+      }
+      
+      console.warn(`Provider ${currentProvider} failed to generate TTS, trying next`);
+    } catch (error) {
+      lastError = error;
+      console.error(`Error with provider ${currentProvider}:`, error.message);
+      const nextProvider = fallbackOrder[fallbackOrder.indexOf(currentProvider) + 1];
+      if (nextProvider) {
+        console.log(`Falling back to ${nextProvider}`);
+      }
+    }
+  }
+
+  console.error(`All TTS providers failed. Last error:`, lastError?.message);
+  throw new Error(`Failed to generate TTS with any provider. Last error: ${lastError?.message}`);
 }
 
 async function elevenLabsTTS(text) {
+  const startTime = Date.now();
+  console.log('[ElevenLabs] Starting TTS generation');
+  
   const fileName = `${Date.now()}.mp3`;
   try {
     const response = await voice.textToSpeech({ fileName, textInput: text });
-    return response.status === "ok" ? fileName : null;
+    const duration = Date.now() - startTime;
+    
+    if (response.status === "ok") {
+      console.log(`[ElevenLabs] Successfully generated TTS in ${duration}ms`);
+      return fileName;
+    } else {
+      console.error('[ElevenLabs] Failed to generate TTS:', response);
+      return null;
+    }
   } catch (error) {
-    console.error("ElevenLabs error:", error);
+    const duration = Date.now() - startTime;
+    console.error(`[ElevenLabs] Error after ${duration}ms:`, error);
     return null;
   }
 }
 
-async function huggingFaceTTS(text, maxRetries = 3) {
-  for (let i = 0; i < maxRetries; i++) {
+async function huggingFaceTTS(text, model, maxRetries = 2) {
+  const startTime = Date.now();
+  console.log(`[HuggingFace] Starting TTS generation with model: ${model}`);
+  
+  const audioPath = path.join(__dirname, 'temp', `${Date.now()}.wav`);
+  let lastError = null;
+
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    const attemptStartTime = Date.now();
     try {
+      console.log(`[HuggingFace] Attempt ${attempt + 1}/${maxRetries}`);
+      
       const response = await fetch(
-        "https://api-inference.huggingface.co/models/facebook/fastspeech2-en-ljspeech",
+        `https://api-inference.huggingface.co/models/${model}`,
         {
           headers: {
             Authorization: `Bearer ${process.env.HUGGING_FACE_TOKEN}`,
@@ -720,33 +793,34 @@ async function huggingFaceTTS(text, maxRetries = 3) {
           },
           method: "POST",
           body: JSON.stringify({ inputs: text }),
-        },
+        }
       );
 
       if (!response.ok) {
-        if (response.status === 503) {
-          console.log(
-            `Attempt ${i + 1}/${maxRetries}: Service unavailable, retrying...`,
-          );
-          await new Promise((resolve) => setTimeout(resolve, 2000)); // Wait 2 seconds before retry
-          continue;
-        }
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`HTTP error! status: ${response.status}, statusText: ${response.statusText}`);
       }
 
-      const audioBuffer = await response.buffer();
-      const fileName = path.join(__dirname, "temp", `${Date.now()}.wav`);
-      await fs.promises.writeFile(fileName, audioBuffer);
-      return fileName;
+      const buffer = await response.buffer();
+      fs.writeFileSync(audioPath, buffer);
+      
+      const duration = Date.now() - startTime;
+      console.log(`[HuggingFace] Successfully generated TTS in ${duration}ms`);
+      return audioPath;
     } catch (error) {
-      if (i === maxRetries - 1) {
-        console.error("HuggingFace error after retries:", error);
-        // Fallback to ElevenLabs if all retries fail
-        console.log("Falling back to ElevenLabs TTS...");
-        return await elevenLabsTTS(text);
+      lastError = error;
+      const attemptDuration = Date.now() - attemptStartTime;
+      console.warn(`[HuggingFace] Attempt ${attempt + 1} failed after ${attemptDuration}ms:`, error.message);
+
+      if (attempt < maxRetries - 1) {
+        const backoffMs = 1000 * (attempt + 1);
+        console.log(`[HuggingFace] Retrying after ${backoffMs}ms`);
+        await new Promise(resolve => setTimeout(resolve, backoffMs));
       }
     }
   }
+
+  const totalDuration = Date.now() - startTime;
+  console.error(`[HuggingFace] All attempts failed after ${totalDuration}ms`);
   return null;
 }
 

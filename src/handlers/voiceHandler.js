@@ -11,10 +11,12 @@ const {
 const prism = require("prism-media");
 const fs = require("fs");
 const path = require("path");
+const wav = require("wav");
 const CONFIG = require("../config/config");
 const aiService = require("../services/aiService");
 const ttsService = require("../services/ttsService");
 const logger = require("../utils/logger");
+const messageHandler = require("./messageHandler");
 
 class VoiceHandler {
   constructor() {

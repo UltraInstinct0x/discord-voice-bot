@@ -1,8 +1,9 @@
 require("dotenv").config();
-const { Client, Events, GatewayIntentBits } = require("discord.js");
 const express = require("express");
+const { Client, Events, GatewayIntentBits } = require("discord.js");
 const messageHandler = require("./handlers/messageHandler");
 const logger = require("./utils/logger");
+const { registerCommands } = require("./utils/commandRegistrar");
 
 // Create temp directory if it doesn't exist
 const fs = require("fs");
@@ -37,24 +38,39 @@ const client = new Client({
     GatewayIntentBits.GuildVoiceStates,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildMembers,
   ],
 });
 
 // Event handlers
 client.on(Events.ClientReady, () => {
   logger.info("Discord bot is ready!");
+  registerCommands();
 });
 
 client.on(Events.MessageCreate, async (message) => {
-  if (message.content.toLowerCase() === "!machine") {
-    await messageHandler.handleMachineCommand(message);
-  } else {
-    await messageHandler.handleMessage(message, client);
-  }
+  await messageHandler.handleMessage(message, client);
+});
+
+client.on(Events.InteractionCreate, async (interaction) => {
+  if (!interaction.isCommand()) return;
+  await messageHandler.handleInteraction(interaction);
 });
 
 client.on("error", (error) => {
   logger.error("Discord client error", { error: error.message });
+  messageHandler.cleanup();
+});
+
+process.on("uncaughtException", (error) => {
+  logger.error("Uncaught Exception", { error: error.message, stack: error.stack });
+  messageHandler.cleanup();
+});
+
+process.on("SIGINT", () => {
+  logger.info("Received SIGINT. Cleaning up...");
+  messageHandler.cleanup();
+  process.exit(0);
 });
 
 // Start the bot

@@ -21,8 +21,8 @@ COPY package*.json ./
 # Install dependencies
 RUN npm install --build-from-source
 
-# Create temp directory for audio files
-RUN mkdir -p temp
+# Create necessary directories
+RUN mkdir -p temp logs
 
 # Copy the rest of the application
 COPY . .

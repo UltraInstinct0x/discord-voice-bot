@@ -1,0 +1,13 @@
+{"level":"info","message":"Web server listening on port 3000","timestamp":"2024-12-10T20:59:01.950Z"}
+{"level":"info","message":"Discord bot is ready!","timestamp":"2024-12-10T20:59:02.835Z"}
+{"level":"info","message":"Web server listening on port 3000","timestamp":"2024-12-10T20:59:25.986Z"}
+{"level":"info","message":"Discord bot is ready!","timestamp":"2024-12-10T20:59:26.799Z"}
+{"channelId":"1203423437754990602","guildId":"1203065884990644245","level":"info","message":"Voice connection ready","timestamp":"2024-12-10T20:59:54.274Z"}
+{"error":"wav is not defined","level":"error","message":"Error processing audio","timestamp":"2024-12-10T21:00:05.759Z"}
+{"channelId":"1203423437754990602","guildId":"1203065884990644245","level":"info","message":"Voice connection ready","timestamp":"2024-12-10T21:01:22.704Z"}
+{"level":"info","message":"Web server listening on port 3000","timestamp":"2024-12-10T21:03:11.790Z"}
+{"level":"info","message":"Discord bot is ready!","timestamp":"2024-12-10T21:03:12.603Z"}
+{"channelId":"1203423437754990602","guildId":"1203065884990644245","level":"info","message":"Voice connection ready","timestamp":"2024-12-10T21:03:37.400Z"}
+{"level":"info","message":"Starting audio transcription","timestamp":"2024-12-10T21:03:40.360Z"}
+{"error":"fs is not defined","level":"error","message":"Error transcribing audio","timestamp":"2024-12-10T21:03:40.362Z"}
+{"error":"fs is not defined","level":"error","message":"Error processing audio buffer","timestamp":"2024-12-10T21:03:40.363Z"}
