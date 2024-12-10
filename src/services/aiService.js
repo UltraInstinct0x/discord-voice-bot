@@ -1,77 +1,112 @@
 const { OpenAI } = require("openai");
 const Groq = require("groq-sdk");
 const Anthropic = require("@anthropic-ai/sdk");
-const CONFIG = require("../config/config");
+const fs = require("fs");
+const { CONFIG } = require("../config/config");
 const logger = require("../utils/logger");
 
-class AIService {
-  constructor() {
-    this.openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-    this.groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-    this.anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-  }
+// Initialize AI clients
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
+class AIService {
   async handleResponse(prompt, settings) {
-    logger.info('Generating AI response', { prompt: prompt.substring(0, 100), model: settings.model });
-    
+    const modelConfig = CONFIG.MODELS[settings.model || "GPT35"];
+
     try {
       let response;
-      const modelConfig = CONFIG.MODELS[settings.model];
-
       switch (modelConfig.provider) {
-        case 'openai':
-          response = await this.openai.chat.completions.create({
+        case "openai":
+          if (settings.streaming) {
+            const stream = await openai.chat.completions.create({
+              model: modelConfig.name,
+              messages: [{ role: "user", content: prompt }],
+              max_tokens: Math.min(settings.maxTokens, modelConfig.maxTokens),
+              stream: true,
+            });
+            let fullResponse = '';
+            for await (const chunk of stream) {
+              const content = chunk.choices[0]?.delta?.content || '';
+              fullResponse += content;
+            }
+            return fullResponse;
+          } else {
+            response = await openai.chat.completions.create({
+              model: modelConfig.name,
+              messages: [{ role: "user", content: prompt }],
+              max_tokens: Math.min(settings.maxTokens, modelConfig.maxTokens),
+              stream: false,
+            });
+            return response.choices[0].message.content;
+          }
+
+        case "anthropic":
+          if (settings.streaming) {
+            const stream = await anthropic.messages.stream({
+              model: modelConfig.name,
+              messages: [{ role: "user", content: prompt }],
+              max_tokens: Math.min(settings.maxTokens || 1024, modelConfig.maxTokens || 4096),
+            });
+            let fullResponse = '';
+            for await (const chunk of stream) {
+              if (chunk.type === 'content_block_delta') {
+                fullResponse += chunk.delta.text;
+              }
+            }
+            return fullResponse;
+          } else {
+            response = await anthropic.messages.create({
+              model: modelConfig.name,
+              messages: [{ role: "user", content: prompt }],
+              max_tokens: Math.min(settings.maxTokens || 1024, modelConfig.maxTokens || 4096),
+            });
+            return response.content[0].text;
+          }
+
+        case "groq":
+          response = await groq.chat.completions.create({
             model: modelConfig.name,
             messages: [{ role: "user", content: prompt }],
-            max_tokens: settings.maxTokens || modelConfig.maxTokens,
-            temperature: 0.7,
+            max_tokens: Math.min(settings.maxTokens || 1024, modelConfig.maxTokens || 4096),
           });
           return response.choices[0].message.content;
-
-        case 'groq':
-          response = await this.groq.chat.completions.create({
-            model: modelConfig.name,
-            messages: [{ role: "user", content: prompt }],
-            max_tokens: settings.maxTokens || modelConfig.maxTokens,
-            temperature: 0.7,
-          });
-          return response.choices[0].message.content;
-
-        case 'anthropic':
-          response = await this.anthropic.messages.create({
-            model: modelConfig.name,
-            max_tokens: settings.maxTokens || modelConfig.maxTokens,
-            messages: [{ role: "user", content: prompt }],
-          });
-          return response.content[0].text;
 
         default:
           throw new Error(`Unsupported AI provider: ${modelConfig.provider}`);
       }
     } catch (error) {
-      logger.error('Error generating AI response', { 
-        error: error.message, 
-        prompt: prompt.substring(0, 100), 
-        model: settings.model 
-      });
+      logger.error("Error in AI response", { error: error.message });
       throw error;
     }
   }
 
   async transcribeAudio(wavFile) {
-    logger.info('Starting audio transcription');
     try {
-      const transcription = await this.openai.audio.transcriptions.create({
-        file: fs.createReadStream(wavFile),
+      const audioStream = fs.createReadStream(wavFile);
+      const response = await openai.audio.transcriptions.create({
+        file: audioStream,
         model: "whisper-1",
+        language: "en",
       });
-      logger.info('Audio transcription completed', { 
-        text: transcription.text.substring(0, 100) 
-      });
-      return transcription.text;
+      return response.text;
     } catch (error) {
-      logger.error('Error transcribing audio', { error: error.message });
+      logger.error("Error transcribing audio", { error: error.message });
       throw error;
+    }
+  }
+
+  async generateInitialResponse(prompt) {
+    try {
+      const response = await openai.chat.completions.create({
+        model: "gpt-3.5-turbo",
+        messages: [{ role: "user", content: prompt }],
+        max_tokens: 50,
+      });
+      return response.choices[0].message.content;
+    } catch (error) {
+      logger.error("Error generating initial response", { error: error.message });
+      return "I'm processing your request...";
     }
   }
 }

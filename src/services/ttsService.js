@@ -2,162 +2,80 @@ const ElevenLabs = require("elevenlabs-node");
 const fetch = require("node-fetch");
 const fs = require("fs");
 const path = require("path");
-const CONFIG = require("../config/config");
+const os = require("os");
 const logger = require("../utils/logger");
+const { CONFIG, RESPONSE_CONFIG } = require("../config/config");
 
 class TTSService {
   constructor() {
-    this.elevenlabs = new ElevenLabs({
+    this.voice = new ElevenLabs({
       apiKey: process.env.ELEVENLABS_API_KEY,
     });
-    this.currentAttempt = 0;
-    this.totalAttempts = 0;
   }
 
   async generateTTS(text, provider) {
-    this.currentAttempt = 0;
-    this.totalAttempts = 0;
-
-    logger.info('Starting TTS generation', { 
-      text: text.substring(0, 100), 
-      requestedProvider: provider,
-      availableProviders: Object.values(CONFIG.TTS_PROVIDERS)
-    });
-
-    // Get the fallback order starting from the requested provider
-    const fallbackOrder = this.getFallbackOrder(provider);
-    let lastError = null;
-
-    logger.info('TTS fallback order', {
-      fallbackOrder,
-      totalProviders: fallbackOrder.length
-    });
-
-    for (const currentProvider of fallbackOrder) {
-      this.currentAttempt++;
-      try {
-        logger.info(`[Attempt ${this.currentAttempt}] Trying provider: ${currentProvider}`, {
-          provider: currentProvider,
-          model: CONFIG.TTS_MODELS[currentProvider] || 'ElevenLabs',
-          attemptNumber: this.currentAttempt,
-          totalProvidersTried: this.currentAttempt,
-          remainingProviders: fallbackOrder.slice(fallbackOrder.indexOf(currentProvider) + 1)
-        });
-        
-        if (currentProvider === CONFIG.TTS_PROVIDERS.ELEVENLABS) {
+    try {
+      switch (provider) {
+        case CONFIG.TTS_PROVIDERS.ELEVENLABS:
           return await this.elevenLabsTTS(text);
-        } else {
-          return await this.huggingFaceTTS(text, currentProvider);
-        }
-      } catch (error) {
-        lastError = error;
-        this.totalAttempts++;
-        
-        const nextProvider = fallbackOrder[fallbackOrder.indexOf(currentProvider) + 1];
-        logger.warn(`[Attempt ${this.currentAttempt}] Provider ${currentProvider} failed`, {
-          error: error.message,
-          currentProvider,
-          nextProvider: nextProvider || 'none',
-          totalAttempts: this.totalAttempts,
-          remainingProviders: fallbackOrder.slice(fallbackOrder.indexOf(currentProvider) + 1)
-        });
-
-        // If this was the last provider, log a summary
-        if (!nextProvider) {
-          logger.error('All TTS providers failed - Summary', {
-            totalAttempts: this.totalAttempts,
-            triedProviders: fallbackOrder,
-            finalError: error.message
-          });
-        }
+        case CONFIG.TTS_PROVIDERS.HUGGINGFACE_FACEBOOK:
+        case CONFIG.TTS_PROVIDERS.HUGGINGFACE_FASTSPEECH:
+        case CONFIG.TTS_PROVIDERS.HUGGINGFACE_COQUI:
+        case CONFIG.TTS_PROVIDERS.HUGGINGFACE_INDIC:
+          const model = CONFIG.TTS_MODELS[provider];
+          const retryMessage = RESPONSE_CONFIG.RETRY_MESSAGES[
+            Math.floor(Math.random() * RESPONSE_CONFIG.RETRY_MESSAGES.length)
+          ];
+          try {
+            return await this.huggingFaceTTS(text, model, 2);
+          } catch (error) {
+            // If HuggingFace fails after retries, try with a retry message
+            logger.info("Attempting with retry message after HuggingFace failure");
+            return await this.huggingFaceTTS(retryMessage, model, 1);
+          }
+        default:
+          throw new Error(`Unsupported TTS provider: ${provider}`);
+      }
+    } catch (error) {
+      logger.error(`TTS failed for provider ${provider}:`, { error: error.message });
+      // If all attempts fail, try one last time with a simple message
+      const fallbackMessage = "Processing your request...";
+      try {
+        // Try with facebook/mms-tts-eng as last resort
+        return await this.huggingFaceTTS(fallbackMessage, CONFIG.TTS_MODELS.huggingface_facebook, 1);
+      } catch (finalError) {
+        logger.error("Final fallback TTS attempt failed:", { error: finalError.message });
+        throw error;
       }
     }
-
-    throw new Error(`All TTS providers failed after ${this.totalAttempts} attempts. Last error: ${lastError?.message}`);
-  }
-
-  getFallbackOrder(requestedProvider) {
-    const fallbackOrder = [...CONFIG.TTS_FALLBACK_ORDER];
-    
-    // If the requested provider is not the first in fallback order,
-    // move it to the front
-    if (requestedProvider !== fallbackOrder[0]) {
-      const index = fallbackOrder.indexOf(requestedProvider);
-      if (index !== -1) {
-        fallbackOrder.splice(index, 1);
-        fallbackOrder.unshift(requestedProvider);
-      }
-    }
-
-    logger.info('Generated fallback order', {
-      requestedProvider,
-      fallbackOrder
-    });
-
-    return fallbackOrder;
   }
 
   async elevenLabsTTS(text) {
-    const startTime = Date.now();
-    logger.info('[ElevenLabs] Starting TTS generation');
-    
-    const audioPath = path.join(__dirname, '../../temp', `${Date.now()}.mp3`);
     try {
-      await this.elevenlabs.textToSpeech({
-        voiceId: process.env.ELEVENLABS_VOICE_ID,
-        textInput: text,
-        outputPath: audioPath,
+      const tmpFile = path.join(os.tmpdir(), `${Date.now()}_elevenlabs.mp3`);
+      const audio = await this.voice.textToSpeech({
+        voiceId: "21m00Tcm4TlvDq8ikWAM",
+        text,
       });
-      
-      const duration = Date.now() - startTime;
-      logger.info('[ElevenLabs] Successfully generated TTS', { 
-        audioPath,
-        durationMs: duration
-      });
-      
-      return audioPath;
+
+      await fs.promises.writeFile(tmpFile, audio);
+      return tmpFile;
     } catch (error) {
-      const duration = Date.now() - startTime;
-      logger.error('[ElevenLabs] Failed to generate TTS', {
-        error: error.message,
-        stack: error.stack,
-        durationMs: duration
-      });
+      logger.error("ElevenLabs TTS failed:", { error: error.message });
       throw error;
     }
   }
 
-  async huggingFaceTTS(text, provider, maxRetries = 2) {
-    const startTime = Date.now();
-    const audioPath = path.join(__dirname, '../../temp', `${Date.now()}.wav`);
-    const model = CONFIG.TTS_MODELS[provider];
-    
-    if (!model) {
-      throw new Error(`No model configured for provider: ${provider}`);
-    }
-
-    logger.info(`[${provider}] Starting TTS generation`, {
-      model,
-      maxRetries,
-      attempt: 1
-    });
-
-    let lastError = null;
-    for (let attempt = 0; attempt < maxRetries; attempt++) {
-      const attemptStartTime = Date.now();
-      this.totalAttempts++;
-      
+  async huggingFaceTTS(text, model, maxRetries = 2) {
+    let retries = 0;
+    while (retries <= maxRetries) {
       try {
-        logger.info(`[${provider}] Attempt ${attempt + 1}/${maxRetries}`, { 
-          model,
-          totalAttempts: this.totalAttempts
-        });
-        
+        const tmpFile = path.join(os.tmpdir(), `${Date.now()}_huggingface.wav`);
         const response = await fetch(
           `https://api-inference.huggingface.co/models/${model}`,
           {
             headers: {
-              Authorization: `Bearer ${process.env.HUGGINGFACE_TOKEN}`,
+              Authorization: `Bearer ${process.env.HUGGING_FACE_TOKEN}`,
               "Content-Type": "application/json",
             },
             method: "POST",
@@ -166,50 +84,21 @@ class TTSService {
         );
 
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}, statusText: ${response.statusText}`);
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
 
         const buffer = await response.buffer();
-        fs.writeFileSync(audioPath, buffer);
-        
-        const duration = Date.now() - startTime;
-        logger.info(`[${provider}] Successfully generated TTS`, {
-          model,
-          audioPath,
-          attempt: attempt + 1,
-          totalAttempts: this.totalAttempts,
-          durationMs: duration
-        });
-        
-        return audioPath;
+        await fs.promises.writeFile(tmpFile, buffer);
+        return tmpFile;
       } catch (error) {
-        lastError = error;
-        const attemptDuration = Date.now() - attemptStartTime;
-        
-        logger.warn(`[${provider}] Attempt ${attempt + 1}/${maxRetries} failed`, {
-          error: error.message,
-          model,
-          attemptDuration,
-          willRetry: attempt < maxRetries - 1,
-          totalAttempts: this.totalAttempts
-        });
-
-        if (attempt < maxRetries - 1) {
-          const backoffMs = 1000 * (attempt + 1);
-          logger.info(`[${provider}] Retrying after ${backoffMs}ms`);
-          await new Promise(resolve => setTimeout(resolve, backoffMs));
+        retries++;
+        if (retries > maxRetries) {
+          logger.error("HuggingFace TTS failed after retries:", { error: error.message, model });
+          throw error;
         }
+        await new Promise(resolve => setTimeout(resolve, 1000 * retries));
       }
     }
-
-    const totalDuration = Date.now() - startTime;
-    logger.error(`[${provider}] All attempts failed`, {
-      error: lastError?.message,
-      totalAttempts: this.totalAttempts,
-      durationMs: totalDuration
-    });
-    
-    throw lastError || new Error(`Failed to generate TTS with provider: ${provider}`);
   }
 }
 

@@ -1,3 +1,8 @@
 {"error":"wav is not defined","level":"error","message":"Error processing audio","timestamp":"2024-12-10T21:00:05.759Z"}
 {"error":"fs is not defined","level":"error","message":"Error transcribing audio","timestamp":"2024-12-10T21:03:40.362Z"}
 {"error":"fs is not defined","level":"error","message":"Error processing audio buffer","timestamp":"2024-12-10T21:03:40.363Z"}
+{"error":"Cannot read properties of undefined (reading 'id')","level":"error","message":"Error handling command","timestamp":"2024-12-10T21:54:54.751Z"}
+{"error":"fs is not defined","level":"error","message":"Error transcribing audio","timestamp":"2024-12-10T21:57:46.694Z"}
+{"error":"fs is not defined","level":"error","message":"Error processing audio buffer","timestamp":"2024-12-10T21:57:46.695Z"}
+{"error":"fs is not defined","level":"error","message":"Error transcribing audio","timestamp":"2024-12-10T21:58:23.422Z"}
+{"error":"fs is not defined","level":"error","message":"Error processing audio buffer","timestamp":"2024-12-10T21:58:23.423Z"}

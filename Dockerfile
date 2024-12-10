@@ -27,6 +27,9 @@ RUN mkdir -p temp logs
 # Copy the rest of the application
 COPY . .
 
+# Create temp and logs directories in the correct location
+RUN mkdir -p src/temp
+
 # Expose the port
 EXPOSE ${PORT}
 

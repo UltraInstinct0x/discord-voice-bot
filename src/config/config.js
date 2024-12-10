@@ -62,17 +62,26 @@ const CONFIG = {
     channels: 1,
     frameSize: 960,
   },
-  RESPONSE_CONFIG: {
-    LONG_RESPONSE_THRESHOLD: 200,  // characters
-    SILENCE_DURATION: 2000,        // ms
-    THINKING_RESPONSES: [
-      "Let me think about that for a moment...",
-      "Processing your request...",
-      "Analyzing your message...",
-      "Working on it...",
-      "Give me a second...",
-    ],
-  }
 };
 
-module.exports = CONFIG;
+const RESPONSE_CONFIG = {
+  LONG_RESPONSE_THRESHOLD: 500,  // characters - increased for longer messages
+  SILENCE_DURATION: 2000,        // ms
+  THINKING_RESPONSES: [
+    "Let me think about that for a moment...",
+    "Processing your request...",
+    "Analyzing that complex question...",
+    "Give me a moment to consider that...",
+  ],
+  RETRY_MESSAGES: [
+    "Just a moment, wrapping things up...",
+    "Almost there, finalizing the response...",
+    "One moment please, putting the finishing touches...",
+    "Bear with me, just a bit longer...",
+  ]
+};
+
+module.exports = {
+  CONFIG,
+  RESPONSE_CONFIG,
+};

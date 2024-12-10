@@ -11,3 +11,22 @@
 {"level":"info","message":"Starting audio transcription","timestamp":"2024-12-10T21:03:40.360Z"}
 {"error":"fs is not defined","level":"error","message":"Error transcribing audio","timestamp":"2024-12-10T21:03:40.362Z"}
 {"error":"fs is not defined","level":"error","message":"Error processing audio buffer","timestamp":"2024-12-10T21:03:40.363Z"}
+{"level":"info","message":"Registering slash commands...","timestamp":"2024-12-10T21:54:23.056Z"}
+{"level":"info","message":"Web server listening on port 3000","timestamp":"2024-12-10T21:54:23.061Z"}
+{"level":"info","message":"Slash commands registered successfully","timestamp":"2024-12-10T21:54:23.541Z"}
+{"error":"Cannot read properties of undefined (reading 'id')","level":"error","message":"Error handling command","timestamp":"2024-12-10T21:54:54.751Z"}
+{"level":"info","message":"Registering slash commands...","timestamp":"2024-12-10T21:57:33.049Z"}
+{"level":"info","message":"Web server listening on port 3000","timestamp":"2024-12-10T21:57:33.056Z"}
+{"level":"info","message":"Slash commands registered successfully","timestamp":"2024-12-10T21:57:33.620Z"}
+{"channelId":"1203423437754990602","guildId":"1203065884990644245","level":"info","message":"Voice connection ready","timestamp":"2024-12-10T21:57:41.495Z"}
+{"level":"info","message":"Starting audio transcription","timestamp":"2024-12-10T21:57:46.693Z"}
+{"error":"fs is not defined","level":"error","message":"Error transcribing audio","timestamp":"2024-12-10T21:57:46.694Z"}
+{"error":"fs is not defined","level":"error","message":"Error processing audio buffer","timestamp":"2024-12-10T21:57:46.695Z"}
+{"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T21:57:47.984Z"}
+{"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T21:58:05.397Z"}
+{"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T21:58:21.811Z"}
+{"level":"info","message":"Starting audio transcription","timestamp":"2024-12-10T21:58:23.417Z"}
+{"error":"fs is not defined","level":"error","message":"Error transcribing audio","timestamp":"2024-12-10T21:58:23.422Z"}
+{"error":"fs is not defined","level":"error","message":"Error processing audio buffer","timestamp":"2024-12-10T21:58:23.423Z"}
+{"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T21:58:24.311Z"}
+{"channelId":"1203423437754990602","guildId":"1203065884990644245","level":"info","message":"Voice connection ready","timestamp":"2024-12-10T22:04:33.248Z"}

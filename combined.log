@@ -1,0 +1,140 @@
+{"level":"info","message":"Registering slash commands...","timestamp":"2024-12-10T22:06:10.349Z"}
+{"level":"info","message":"Web server listening on port 3000","timestamp":"2024-12-10T22:06:10.354Z"}
+{"level":"info","message":"Slash commands registered successfully","timestamp":"2024-12-10T22:06:10.873Z"}
+{"channelId":"1203423437754990602","guildId":"1203065884990644245","level":"info","message":"Voice connection ready","timestamp":"2024-12-10T22:06:26.188Z"}
+{"error":"wav is not defined","level":"error","message":"Error processing audio buffer","timestamp":"2024-12-10T22:06:28.813Z"}
+{"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T22:06:30.615Z"}
+{"level":"info","message":"Registering slash commands...","timestamp":"2024-12-10T22:08:17.625Z"}
+{"level":"info","message":"Web server listening on port 3000","timestamp":"2024-12-10T22:08:17.630Z"}
+{"level":"info","message":"Slash commands registered successfully","timestamp":"2024-12-10T22:08:17.998Z"}
+{"channelId":"1203423437754990602","guildId":"1203065884990644245","level":"info","message":"Voice connection ready","timestamp":"2024-12-10T22:08:37.314Z"}
+{"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T22:08:46.026Z"}
+{"error":"wav is not defined","level":"error","message":"Error processing audio buffer","timestamp":"2024-12-10T22:08:48.994Z"}
+{"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T22:08:50.155Z"}
+{"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T22:08:53.335Z"}
+{"level":"info","message":"Registering slash commands...","timestamp":"2024-12-10T22:10:06.564Z"}
+{"level":"info","message":"Web server listening on port 3000","timestamp":"2024-12-10T22:10:06.569Z"}
+{"level":"info","message":"Slash commands registered successfully","timestamp":"2024-12-10T22:10:07.019Z"}
+{"channelId":"1203423437754990602","guildId":"1203065884990644245","level":"info","message":"Voice connection ready","timestamp":"2024-12-10T22:10:19.227Z"}
+{"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T22:10:22.193Z"}
+{"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T22:10:26.173Z"}
+{"error":"HTTP error! status: 503","level":"error","message":"HuggingFace TTS attempt 1 failed","model":"facebook/mms-tts-eng","timestamp":"2024-12-10T22:10:29.372Z"}
+{"error":"HTTP error! status: 503","level":"error","message":"HuggingFace TTS attempt 2 failed","model":"facebook/mms-tts-eng","timestamp":"2024-12-10T22:10:31.893Z"}
+{"error":"HTTP error! status: 503","level":"error","message":"HuggingFace TTS attempt 3 failed","model":"facebook/mms-tts-eng","timestamp":"2024-12-10T22:10:37.378Z"}
+{"error":"HTTP error! status: 503","level":"error","message":"Error generating TTS","timestamp":"2024-12-10T22:10:37.379Z"}
+{"error":"HTTP error! status: 503","level":"error","message":"Error processing audio buffer","timestamp":"2024-12-10T22:10:37.380Z"}
+{"isVoiceChannel":true,"level":"info","message":"Processing message","prompt":"<@1314391102308220969> thank god you are here my friend.","timestamp":"2024-12-10T22:12:02.149Z","userId":"422749762060550154"}
+{"isVoiceChannel":true,"level":"info","message":"Processing message","prompt":"can you tell me how exactly whale's can communicate witch each other and how captain ahab's story is","timestamp":"2024-12-10T22:13:02.073Z","userId":"422749762060550154"}
+{"error":"HTTP error! status: 503","level":"error","message":"HuggingFace TTS attempt 1 failed","model":"facebook/fastspeech2-en-ljspeech","timestamp":"2024-12-10T22:13:04.429Z"}
+{"error":"HTTP error! status: 503","level":"error","message":"HuggingFace TTS attempt 2 failed","model":"facebook/fastspeech2-en-ljspeech","timestamp":"2024-12-10T22:13:06.893Z"}
+{"error":"HTTP error! status: 503","level":"error","message":"HuggingFace TTS attempt 3 failed","model":"facebook/fastspeech2-en-ljspeech","timestamp":"2024-12-10T22:13:11.406Z"}
+{"error":"HTTP error! status: 503","level":"error","message":"Error generating TTS","timestamp":"2024-12-10T22:13:11.407Z"}
+{"error":"HTTP error! status: 503","level":"error","message":"Error handling message","timestamp":"2024-12-10T22:13:11.408Z","userId":"422749762060550154"}
+{"level":"info","message":"Registering slash commands...","timestamp":"2024-12-10T22:17:27.240Z"}
+{"level":"info","message":"Web server listening on port 3000","timestamp":"2024-12-10T22:17:27.245Z"}
+{"level":"info","message":"Slash commands registered successfully","timestamp":"2024-12-10T22:17:27.731Z"}
+{"channelId":"1203423437754990602","guildId":"1203065884990644245","level":"info","message":"Voice connection ready","timestamp":"2024-12-10T22:17:39.429Z"}
+{"isVoiceChannel":true,"level":"info","message":"Processing message","prompt":"<@1314391102308220969> hello there","timestamp":"2024-12-10T22:17:50.822Z","userId":"422749762060550154"}
+{"isVoiceChannel":true,"level":"info","message":"Processing message","prompt":"<@1314391102308220969> tell me a joke about php","timestamp":"2024-12-10T22:18:03.691Z","userId":"422749762060550154"}
+{"isVoiceChannel":true,"level":"info","message":"Processing message","prompt":"lollz","timestamp":"2024-12-10T22:18:16.852Z","userId":"422749762060550154"}
+{"isVoiceChannel":true,"level":"info","message":"Processing message","prompt":"why did lambo go bankrupt?","timestamp":"2024-12-10T22:18:45.966Z","userId":"422749762060550154"}
+{"isVoiceChannel":true,"level":"info","message":"Processing message","prompt":"cuz php is dead...","timestamp":"2024-12-10T22:19:15.599Z","userId":"422749762060550154"}
+{"isVoiceChannel":true,"level":"info","message":"Processing message","prompt":"Whales can communicate with each other through various vocalizations such as clicks, whistles, and s","timestamp":"2024-12-10T22:20:14.209Z","userId":"422749762060550154"}
+{"isVoiceChannel":true,"level":"info","message":"Processing message","prompt":"ok","timestamp":"2024-12-10T22:21:07.751Z","userId":"422749762060550154"}
+{"error":"HTTP error! status: 500","level":"error","message":"HuggingFace TTS failed after retries:","model":"coqui/XTTS-v2","timestamp":"2024-12-10T22:21:13.711Z"}
+{"error":"HTTP error! status: 500","level":"error","message":"TTS failed for provider huggingface_coqui:","timestamp":"2024-12-10T22:21:13.712Z"}
+{"level":"info","message":"Registering slash commands...","timestamp":"2024-12-10T22:23:29.220Z"}
+{"level":"info","message":"Web server listening on port 3000","timestamp":"2024-12-10T22:23:29.225Z"}
+{"level":"info","message":"Slash commands registered successfully","timestamp":"2024-12-10T22:23:29.643Z"}
+{"channelId":"1203423437754990602","guildId":"1203065884990644245","level":"info","message":"Voice connection ready","timestamp":"2024-12-10T22:23:43.588Z"}
+{"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T22:23:49.341Z"}
+{"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T22:23:54.157Z"}
+{"error":"Cannot read properties of undefined (reading 'LONG_RESPONSE_THRESHOLD')","level":"error","message":"Error processing audio buffer","timestamp":"2024-12-10T22:23:56.707Z"}
+{"isVoiceChannel":true,"level":"info","message":"Processing message","prompt":"can you tell me how they make quantum computers?","timestamp":"2024-12-10T22:24:30.241Z","userId":"422749762060550154"}
+{"error":"HTTP error! status: 503","level":"error","message":"HuggingFace TTS failed after retries:","model":"facebook/mms-tts-eng","timestamp":"2024-12-10T22:24:36.824Z"}
+{"error":"HTTP error! status: 503","level":"error","message":"TTS failed for provider huggingface_facebook:","timestamp":"2024-12-10T22:24:36.827Z"}
+{"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T22:25:08.998Z"}
+{"error":"Cannot read properties of undefined (reading 'LONG_RESPONSE_THRESHOLD')","level":"error","message":"Error processing audio buffer","timestamp":"2024-12-10T22:25:16.765Z"}
+{"level":"info","message":"Registering slash commands...","timestamp":"2024-12-10T22:27:44.778Z"}
+{"level":"info","message":"Web server listening on port 3000","timestamp":"2024-12-10T22:27:44.783Z"}
+{"level":"info","message":"Slash commands registered successfully","timestamp":"2024-12-10T22:27:45.405Z"}
+{"channelId":"1203423437754990602","guildId":"1203065884990644245","level":"info","message":"Voice connection ready","timestamp":"2024-12-10T22:27:55.661Z"}
+{"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T22:28:02.926Z"}
+{"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T22:28:11.508Z"}
+{"isVoiceChannel":true,"level":"info","message":"Processing message","prompt":"analyze this cv for me <@1314391102308220969>\n\nAttachments:\n[File attached: gokhanguney-cv.pdf]","timestamp":"2024-12-10T22:28:39.835Z","userId":"422749762060550154"}
+{"level":"info","message":"Registering slash commands...","timestamp":"2024-12-10T22:43:35.610Z"}
+{"level":"info","message":"Web server listening on port 3000","timestamp":"2024-12-10T22:43:35.614Z"}
+{"level":"info","message":"Slash commands registered successfully","timestamp":"2024-12-10T22:43:36.065Z"}
+{"level":"info","message":"Registering slash commands...","timestamp":"2024-12-10T22:43:52.659Z"}
+{"level":"info","message":"Web server listening on port 3000","timestamp":"2024-12-10T22:43:52.663Z"}
+{"level":"info","message":"Slash commands registered successfully","timestamp":"2024-12-10T22:43:53.058Z"}
+{"error":"voiceHandler.joinVoiceChannel is not a function","level":"error","message":"Error handling machine command","timestamp":"2024-12-10T22:45:37.627Z"}
+{"level":"info","message":"Registering slash commands...","timestamp":"2024-12-10T22:46:49.602Z"}
+{"level":"info","message":"Web server listening on port 3000","timestamp":"2024-12-10T22:46:49.606Z"}
+{"level":"info","message":"Slash commands registered successfully","timestamp":"2024-12-10T22:46:50.017Z"}
+{"channelId":"1203423437754990602","guildId":"1203065884990644245","level":"info","message":"Voice connection ready","timestamp":"2024-12-10T22:46:58.294Z"}
+{"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T22:47:24.338Z"}
+{"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T22:47:28.207Z"}
+{"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T22:47:31.975Z"}
+{"isVoiceChannel":true,"level":"info","message":"Processing message","prompt":"One day, a fierce dragon descended upon the village, causing chaos and destruction wherever it went. The villagers were terrified and did not know what to do.\n\nLily, hearing the cries of her fellow villagers, knew she had to do something to save them. She bravely stepped forward and","timestamp":"2024-12-10T22:48:06.963Z","userId":"422749762060550154"}
+{"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T22:48:20.632Z"}
+{"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T22:48:35.208Z"}
+{"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T22:49:06.750Z"}
+{"level":"info","message":"Registering slash commands...","timestamp":"2024-12-10T22:49:59.980Z"}
+{"level":"info","message":"Web server listening on port 3000","timestamp":"2024-12-10T22:49:59.985Z"}
+{"level":"info","message":"Slash commands registered successfully","timestamp":"2024-12-10T22:50:00.610Z"}
+{"channelId":"1203423437754990602","guildId":"1203065884990644245","level":"info","message":"Voice connection ready","timestamp":"2024-12-10T22:50:15.184Z"}
+{"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T22:50:41.094Z"}
+{"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T22:50:55.710Z"}
+{"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T22:51:02.970Z"}
+{"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T22:51:07.010Z"}
+{"error":"HTTP error! status: 503","level":"error","message":"HuggingFace TTS failed after retries:","model":"facebook/mms-tts-eng","timestamp":"2024-12-10T22:51:13.109Z"}
+{"error":"HTTP error! status: 503","level":"error","message":"TTS failed for provider huggingface_facebook:","timestamp":"2024-12-10T22:51:13.110Z"}
+{"error":"HTTP error! status: 503","level":"error","message":"HuggingFace TTS failed after retries:","model":"facebook/fastspeech2-en-ljspeech","timestamp":"2024-12-10T22:51:17.634Z"}
+{"error":"HTTP error! status: 503","level":"error","message":"TTS failed for provider huggingface_fastspeech:","timestamp":"2024-12-10T22:51:17.635Z"}
+{"error":"HTTP error! status: 500","level":"error","message":"HuggingFace TTS failed after retries:","model":"coqui/XTTS-v2","timestamp":"2024-12-10T22:51:22.180Z"}
+{"error":"HTTP error! status: 500","level":"error","message":"TTS failed for provider huggingface_coqui:","timestamp":"2024-12-10T22:51:22.183Z"}
+{"error":"HTTP error! status: 404","level":"error","message":"HuggingFace TTS failed after retries:","model":"ai4bharat/indic-tts-coqui-indo_eng-asr_tts","timestamp":"2024-12-10T22:51:26.622Z"}
+{"error":"HTTP error! status: 404","level":"error","message":"TTS failed for provider huggingface_indic:","timestamp":"2024-12-10T22:51:26.624Z"}
+{"error":"HTTP error! status: 404","level":"error","message":"TTS generation failed:","timestamp":"2024-12-10T22:51:26.624Z"}
+{"error":"HTTP error! status: 404","level":"error","message":"Error processing audio buffer","timestamp":"2024-12-10T22:51:26.624Z"}
+{"isVoiceChannel":true,"level":"info","message":"Processing message","prompt":"i said give me tiktok ideas","timestamp":"2024-12-10T22:51:41.451Z","userId":"422749762060550154"}
+{"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T22:52:04.070Z"}
+{"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T22:52:11.828Z"}
+{"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T22:52:22.248Z"}
+{"level":"info","message":"Registering slash commands...","timestamp":"2024-12-10T22:57:51.166Z"}
+{"level":"info","message":"Web server listening on port 3000","timestamp":"2024-12-10T22:57:51.174Z"}
+{"level":"info","message":"Slash commands registered successfully","timestamp":"2024-12-10T22:57:51.657Z"}
+{"channelId":"1203423437754990602","guildId":"1203065884990644245","level":"info","message":"Voice connection ready","timestamp":"2024-12-10T22:58:00.625Z"}
+{"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T22:58:04.027Z"}
+{"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T22:58:06.885Z"}
+{"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T22:58:21.485Z"}
+{"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T22:58:31.324Z"}
+{"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T22:58:50.123Z"}
+{"isVoiceChannel":true,"level":"info","message":"Processing message","prompt":"Comedy skits with your friends or family members\nA dance challenge with a unique twist\nLip-syncing to popular songs or movie quotes\nDIY or life hack tutorials\nTrying out a new recipe or cooking challenge\nRecreating viral TikTok trends or challenges\nA funny pet or animal video\nA day in the life vlog showing your daily routine\nA makeup or fashion transformation video\nEducation orIlona is a feminine given name of Hungarian origin, meaning \"beauty\" or \"light.\" It is also used in several other countries, including Poland and Czech Republic. Ilona is a popular name in Eastern Europe and is often associated with qualities such as grace, elegance, and intelligence. Famous Ilonas include Hungarian swimmer Ilona Novák and Finnish singer Ilona.\n\nIn addition to being a name, Ilona is also the title of a novel by Hungarian author Zsigmond Mó","timestamp":"2024-12-10T22:59:46.971Z","userId":"422749762060550154"}
+{"isVoiceChannel":true,"level":"info","message":"Processing message","prompt":"wonderful news, trump won!","timestamp":"2024-12-10T23:01:17.338Z","userId":"422749762060550154"}
+{"level":"info","message":"Registering slash commands...","timestamp":"2024-12-10T23:07:56.670Z"}
+{"level":"info","message":"Web server listening on port 3000","timestamp":"2024-12-10T23:07:56.676Z"}
+{"level":"info","message":"Slash commands registered successfully","timestamp":"2024-12-10T23:07:57.168Z"}
+{"channelId":"1203423437754990602","guildId":"1203065884990644245","level":"info","message":"Voice connection ready","timestamp":"2024-12-10T23:08:05.762Z"}
+{"isVoiceChannel":true,"level":"info","message":"Processing message","prompt":"hello world!","timestamp":"2024-12-10T23:08:12.529Z","userId":"422749762060550154"}
+{"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T23:08:54.384Z"}
+{"error":"HTTP error! status: 503","level":"error","message":"HuggingFace TTS failed after retries:","model":"facebook/mms-tts-eng","timestamp":"2024-12-10T23:09:01.081Z"}
+{"level":"info","message":"Attempting with retry message after HuggingFace failure","timestamp":"2024-12-10T23:09:01.081Z"}
+{"error":"HTTP error! status: 503","level":"error","message":"HuggingFace TTS failed after retries:","model":"facebook/mms-tts-eng","timestamp":"2024-12-10T23:09:03.028Z"}
+{"error":"HTTP error! status: 503","level":"error","message":"TTS failed for provider huggingface_facebook:","timestamp":"2024-12-10T23:09:03.030Z"}
+{"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T23:09:35.259Z"}
+{"error":"400 Invalid file format. Supported formats: ['flac', 'm4a', 'mp3', 'mp4', 'mpeg', 'mpga', 'oga', 'ogg', 'wav', 'webm']","level":"error","message":"Error transcribing audio","timestamp":"2024-12-10T23:09:37.424Z"}
+{"error":"400 Invalid file format. Supported formats: ['flac', 'm4a', 'mp3', 'mp4', 'mpeg', 'mpga', 'oga', 'ogg', 'wav', 'webm']","level":"error","message":"Error processing audio buffer","timestamp":"2024-12-10T23:09:37.425Z"}
+{"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T23:09:37.779Z"}
+{"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T23:09:54.602Z"}
+{"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T23:10:15.808Z"}
+{"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T23:10:33.381Z"}
+{"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T23:10:37.899Z"}
+{"error":"400 Invalid file format. Supported formats: ['flac', 'm4a', 'mp3', 'mp4', 'mpeg', 'mpga', 'oga', 'ogg', 'wav', 'webm']","level":"error","message":"Error transcribing audio","timestamp":"2024-12-10T23:10:46.963Z"}
+{"error":"400 Invalid file format. Supported formats: ['flac', 'm4a', 'mp3', 'mp4', 'mpeg', 'mpga', 'oga', 'ogg', 'wav', 'webm']","level":"error","message":"Error processing audio buffer","timestamp":"2024-12-10T23:10:46.964Z"}
+{"error":"400 Invalid file format. Supported formats: ['flac', 'm4a', 'mp3', 'mp4', 'mpeg', 'mpga', 'oga', 'ogg', 'wav', 'webm']","level":"error","message":"Error transcribing audio","timestamp":"2024-12-10T23:10:47.882Z"}
+{"error":"400 Invalid file format. Supported formats: ['flac', 'm4a', 'mp3', 'mp4', 'mpeg', 'mpga', 'oga', 'ogg', 'wav', 'webm']","level":"error","message":"Error processing audio buffer","timestamp":"2024-12-10T23:10:47.883Z"}
+{"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T23:10:48.764Z"}
+{"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T23:10:55.537Z"}
+{"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T23:11:12.096Z"}

@@ -1,6 +1,6 @@
 const { REST, Routes, SlashCommandBuilder } = require("discord.js");
 const logger = require("./logger");
-const CONFIG = require("../config/config");
+const { CONFIG } = require("../config/config");
 
 // Define slash commands
 const commands = [
@@ -83,7 +83,4 @@ async function registerCommands() {
   }
 }
 
-module.exports = {
-  registerCommands,
-  commands,
-};
+module.exports = { registerCommands };

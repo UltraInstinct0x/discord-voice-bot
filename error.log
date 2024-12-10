@@ -1,0 +1,38 @@
+{"error":"wav is not defined","level":"error","message":"Error processing audio buffer","timestamp":"2024-12-10T22:06:28.813Z"}
+{"error":"wav is not defined","level":"error","message":"Error processing audio buffer","timestamp":"2024-12-10T22:08:48.994Z"}
+{"error":"HTTP error! status: 503","level":"error","message":"HuggingFace TTS attempt 1 failed","model":"facebook/mms-tts-eng","timestamp":"2024-12-10T22:10:29.372Z"}
+{"error":"HTTP error! status: 503","level":"error","message":"HuggingFace TTS attempt 2 failed","model":"facebook/mms-tts-eng","timestamp":"2024-12-10T22:10:31.893Z"}
+{"error":"HTTP error! status: 503","level":"error","message":"HuggingFace TTS attempt 3 failed","model":"facebook/mms-tts-eng","timestamp":"2024-12-10T22:10:37.378Z"}
+{"error":"HTTP error! status: 503","level":"error","message":"Error generating TTS","timestamp":"2024-12-10T22:10:37.379Z"}
+{"error":"HTTP error! status: 503","level":"error","message":"Error processing audio buffer","timestamp":"2024-12-10T22:10:37.380Z"}
+{"error":"HTTP error! status: 503","level":"error","message":"HuggingFace TTS attempt 1 failed","model":"facebook/fastspeech2-en-ljspeech","timestamp":"2024-12-10T22:13:04.429Z"}
+{"error":"HTTP error! status: 503","level":"error","message":"HuggingFace TTS attempt 2 failed","model":"facebook/fastspeech2-en-ljspeech","timestamp":"2024-12-10T22:13:06.893Z"}
+{"error":"HTTP error! status: 503","level":"error","message":"HuggingFace TTS attempt 3 failed","model":"facebook/fastspeech2-en-ljspeech","timestamp":"2024-12-10T22:13:11.406Z"}
+{"error":"HTTP error! status: 503","level":"error","message":"Error generating TTS","timestamp":"2024-12-10T22:13:11.407Z"}
+{"error":"HTTP error! status: 503","level":"error","message":"Error handling message","timestamp":"2024-12-10T22:13:11.408Z","userId":"422749762060550154"}
+{"error":"HTTP error! status: 500","level":"error","message":"HuggingFace TTS failed after retries:","model":"coqui/XTTS-v2","timestamp":"2024-12-10T22:21:13.711Z"}
+{"error":"HTTP error! status: 500","level":"error","message":"TTS failed for provider huggingface_coqui:","timestamp":"2024-12-10T22:21:13.712Z"}
+{"error":"Cannot read properties of undefined (reading 'LONG_RESPONSE_THRESHOLD')","level":"error","message":"Error processing audio buffer","timestamp":"2024-12-10T22:23:56.707Z"}
+{"error":"HTTP error! status: 503","level":"error","message":"HuggingFace TTS failed after retries:","model":"facebook/mms-tts-eng","timestamp":"2024-12-10T22:24:36.824Z"}
+{"error":"HTTP error! status: 503","level":"error","message":"TTS failed for provider huggingface_facebook:","timestamp":"2024-12-10T22:24:36.827Z"}
+{"error":"Cannot read properties of undefined (reading 'LONG_RESPONSE_THRESHOLD')","level":"error","message":"Error processing audio buffer","timestamp":"2024-12-10T22:25:16.765Z"}
+{"error":"voiceHandler.joinVoiceChannel is not a function","level":"error","message":"Error handling machine command","timestamp":"2024-12-10T22:45:37.627Z"}
+{"error":"HTTP error! status: 503","level":"error","message":"HuggingFace TTS failed after retries:","model":"facebook/mms-tts-eng","timestamp":"2024-12-10T22:51:13.109Z"}
+{"error":"HTTP error! status: 503","level":"error","message":"TTS failed for provider huggingface_facebook:","timestamp":"2024-12-10T22:51:13.110Z"}
+{"error":"HTTP error! status: 503","level":"error","message":"HuggingFace TTS failed after retries:","model":"facebook/fastspeech2-en-ljspeech","timestamp":"2024-12-10T22:51:17.634Z"}
+{"error":"HTTP error! status: 503","level":"error","message":"TTS failed for provider huggingface_fastspeech:","timestamp":"2024-12-10T22:51:17.635Z"}
+{"error":"HTTP error! status: 500","level":"error","message":"HuggingFace TTS failed after retries:","model":"coqui/XTTS-v2","timestamp":"2024-12-10T22:51:22.180Z"}
+{"error":"HTTP error! status: 500","level":"error","message":"TTS failed for provider huggingface_coqui:","timestamp":"2024-12-10T22:51:22.183Z"}
+{"error":"HTTP error! status: 404","level":"error","message":"HuggingFace TTS failed after retries:","model":"ai4bharat/indic-tts-coqui-indo_eng-asr_tts","timestamp":"2024-12-10T22:51:26.622Z"}
+{"error":"HTTP error! status: 404","level":"error","message":"TTS failed for provider huggingface_indic:","timestamp":"2024-12-10T22:51:26.624Z"}
+{"error":"HTTP error! status: 404","level":"error","message":"TTS generation failed:","timestamp":"2024-12-10T22:51:26.624Z"}
+{"error":"HTTP error! status: 404","level":"error","message":"Error processing audio buffer","timestamp":"2024-12-10T22:51:26.624Z"}
+{"error":"HTTP error! status: 503","level":"error","message":"HuggingFace TTS failed after retries:","model":"facebook/mms-tts-eng","timestamp":"2024-12-10T23:09:01.081Z"}
+{"error":"HTTP error! status: 503","level":"error","message":"HuggingFace TTS failed after retries:","model":"facebook/mms-tts-eng","timestamp":"2024-12-10T23:09:03.028Z"}
+{"error":"HTTP error! status: 503","level":"error","message":"TTS failed for provider huggingface_facebook:","timestamp":"2024-12-10T23:09:03.030Z"}
+{"error":"400 Invalid file format. Supported formats: ['flac', 'm4a', 'mp3', 'mp4', 'mpeg', 'mpga', 'oga', 'ogg', 'wav', 'webm']","level":"error","message":"Error transcribing audio","timestamp":"2024-12-10T23:09:37.424Z"}
+{"error":"400 Invalid file format. Supported formats: ['flac', 'm4a', 'mp3', 'mp4', 'mpeg', 'mpga', 'oga', 'ogg', 'wav', 'webm']","level":"error","message":"Error processing audio buffer","timestamp":"2024-12-10T23:09:37.425Z"}
+{"error":"400 Invalid file format. Supported formats: ['flac', 'm4a', 'mp3', 'mp4', 'mpeg', 'mpga', 'oga', 'ogg', 'wav', 'webm']","level":"error","message":"Error transcribing audio","timestamp":"2024-12-10T23:10:46.963Z"}
+{"error":"400 Invalid file format. Supported formats: ['flac', 'm4a', 'mp3', 'mp4', 'mpeg', 'mpga', 'oga', 'ogg', 'wav', 'webm']","level":"error","message":"Error processing audio buffer","timestamp":"2024-12-10T23:10:46.964Z"}
+{"error":"400 Invalid file format. Supported formats: ['flac', 'm4a', 'mp3', 'mp4', 'mpeg', 'mpga', 'oga', 'ogg', 'wav', 'webm']","level":"error","message":"Error transcribing audio","timestamp":"2024-12-10T23:10:47.882Z"}
+{"error":"400 Invalid file format. Supported formats: ['flac', 'm4a', 'mp3', 'mp4', 'mpeg', 'mpga', 'oga', 'ogg', 'wav', 'webm']","level":"error","message":"Error processing audio buffer","timestamp":"2024-12-10T23:10:47.883Z"}
