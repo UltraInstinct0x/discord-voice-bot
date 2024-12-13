@@ -141,22 +141,69 @@ class VoiceHandler {
 
   async processAudioBuffer(buffer, connection, message) {
     try {
+      const settings = await settingsService.getServerSettings(message.guild.id);
+      if (!settings) {
+        throw new Error('Server settings not found');
+      }
+
+      // Get the voice channel's text channel
+      const voiceChannel = message.member.voice.channel;
+      let textChannel;
+
+      // First try to find a text channel in the same category
+      if (voiceChannel.parent) {
+        textChannel = voiceChannel.guild.channels.cache.find(
+          channel => channel.type === 'GUILD_TEXT' && 
+          channel.parent?.id === voiceChannel.parent.id
+        );
+      }
+
+      // If no text channel found in category, use the first text channel with "voice" or "bot" in its name
+      if (!textChannel) {
+        textChannel = voiceChannel.guild.channels.cache.find(
+          channel => channel.type === 'GUILD_TEXT' && 
+          (channel.name.toLowerCase().includes('voice') || 
+           channel.name.toLowerCase().includes('bot'))
+        );
+      }
+
+      // If still no channel found, use the default text channel or the first available one
+      if (!textChannel) {
+        textChannel = voiceChannel.guild.systemChannel || 
+                     voiceChannel.guild.channels.cache.find(
+                       channel => channel.type === 'GUILD_TEXT'
+                     );
+      }
+
+      // If we still can't find a text channel, use the original message channel
+      textChannel = textChannel || message.channel;
+
       const wavFile = path.join(os.tmpdir(), `${Date.now()}.wav`);
+      logger.info("Creating WAV file", {
+        filepath: wavFile,
+        bufferSize: buffer.length,
+        userId: message.author.id,
+        guildId: message.guild.id
+      });
+
       await this.createWavFile(buffer, wavFile);
       
-      logger.logVoiceEvent('transcribe_start', message.author.id, message.guild.id);
+      if (!fs.existsSync(wavFile)) {
+        throw new Error(`WAV file not created: ${wavFile}`);
+      }
+
+      logger.logVoiceEvent('transcribe_start', message.author.id, message.guild.id, {
+        event: 'transcribe_start'
+      });
+
       const transcription = await aiService.transcribeAudio(wavFile);
       
       if (!transcription) {
-        logger.logVoiceEvent('transcribe_empty', message.author.id, message.guild.id);
-        return;
+        throw new Error('Failed to transcribe audio');
       }
 
-      logger.logVoiceEvent('transcribe_success', message.author.id, message.guild.id, {
-        length: transcription.length
-      });
-
-      await message.channel.send({
+      // Show transcription in voice channel's text chat
+      await textChannel.send({
         embeds: [{
           color: 0x4CAF50,
           description: transcription,
@@ -170,40 +217,59 @@ class VoiceHandler {
         }]
       });
 
-      const settings = settingsService.getUserSettings(message.author.id);
-      
-      if (transcription.length > RESPONSE_CONFIG.LONG_RESPONSE_THRESHOLD) {
-        const thinkingResponse = RESPONSE_CONFIG.THINKING_RESPONSES[Math.floor(Math.random() * RESPONSE_CONFIG.THINKING_RESPONSES.length)];
-        const audioPath = await ttsService.generateTTS(thinkingResponse, settings.ttsProvider);
-        await this.playResponse(audioPath, connection);
-      }
+      logger.logVoiceEvent('transcribe_success', message.author.id, message.guild.id, {
+        event: 'transcribe_success',
+        length: transcription.length
+      });
 
+      // Get AI response
       const aiResponse = await aiService.handleResponse(transcription, settings);
       
-      if (aiResponse.length > RESPONSE_CONFIG.LONG_RESPONSE_THRESHOLD && connection) {
-        const summary = await aiService.handleResponse(`Summarize this in 2-3 sentences while keeping the main points: ${aiResponse}`, settings);
-        const ttsResponse = `Here's a summary: ${summary}\nCheck the chat for the complete response.`;
-        
-        await message.channel.send(`🤖 Response:\n${aiResponse}`);
-        
-        const audioPath = await ttsService.generateTTS(ttsResponse, settings.ttsProvider);
-        await this.playResponse(audioPath, connection);
-      } else {
-        await message.channel.send(`🤖 Response:\n${aiResponse}`);
-        const audioPath = await ttsService.generateTTS(aiResponse, settings.ttsProvider);
-        await this.playResponse(audioPath, connection);
+      if (!aiResponse) {
+        throw new Error('Failed to get AI response');
       }
 
-      fs.unlink(wavFile, (err) => {
-        if (err) logger.error('Error deleting wav file:', { error: err.message });
+      // Send response in voice channel's text chat with mention
+      await textChannel.send({
+        content: `<@${message.author.id}>`,
+        embeds: [{
+          color: 0x0099ff,
+          description: aiResponse,
+          footer: {
+            text: "🤖 AI Response"
+          }
+        }]
       });
+
+      // Generate and play TTS response
+      const audioPath = await ttsService.generateTTS(aiResponse, settings.ttsProvider, {
+        isVoiceInput: true
+      });
+      await this.playResponse(audioPath, connection);
+
+      // Clean up the temporary WAV file
+      try {
+        await fs.promises.unlink(wavFile);
+      } catch (unlinkError) {
+        logger.error('Error deleting wav file:', { error: unlinkError.message });
+      }
     } catch (error) {
       logger.error("Error processing audio buffer", { 
         error: error.message,
         userId: message.author.id,
         guildId: message.guild.id
       });
-      await message.channel.send("Sorry, I had trouble processing that audio.");
+
+      await message.channel.send({
+        content: `<@${message.author.id}>`,
+        embeds: [{
+          color: 0xFF6B6B,
+          description: "❌ Sorry, I had trouble processing that audio. Please try again.",
+          footer: {
+            text: "Error Processing Audio"
+          }
+        }]
+      });
     }
   }
 
@@ -229,24 +295,25 @@ class VoiceHandler {
         const player = createAudioPlayer();
         const resource = createAudioResource(audioPath, {
           inputType: StreamType.Arbitrary,
+          inlineVolume: true
         });
 
         player.play(resource);
         connection.subscribe(player);
 
-        player.on(AudioPlayerStatus.Idle, () => {
-          fs.unlink(audioPath, (err) => {
-            if (err) logger.error("Error deleting audio file", { error: err.message });
-          });
-          resolve();
+        player.on('stateChange', (oldState, newState) => {
+          if (newState.status === 'idle') {
+            player.stop();
+            resolve();
+          }
         });
 
-        player.on("error", (error) => {
-          logger.error("Error playing audio", { error: error.message });
+        player.on('error', (error) => {
+          logger.error('Error playing audio:', { error: error.message });
           reject(error);
         });
       } catch (error) {
-        logger.error("Error setting up audio playback", { error: error.message });
+        logger.error('Error setting up audio playback:', { error: error.message });
         reject(error);
       }
     });
