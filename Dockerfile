@@ -15,23 +15,24 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /usr/src/app
 
-# Copy package files
-COPY package*.json ./
+# Create necessary directories with correct permissions
+RUN mkdir -p /usr/src/app/temp /usr/src/app/data/settings /usr/src/app/logs \
+    && chown -R node:node /usr/src/app
+
+# Switch to non-root user early
+USER node
+
+# Copy package files with correct ownership
+COPY --chown=node:node package*.json ./
 
 # Install dependencies
 RUN npm install --build-from-source
 
-# Create necessary directories
-RUN mkdir -p temp logs
+# Copy the source code and rest of the application
+COPY --chown=node:node . .
 
-# Copy the rest of the application
-COPY . .
-
-# Create temp and logs directories in the correct location
-RUN mkdir -p src/temp
-
-# Expose the port
-EXPOSE ${PORT}
+# Ensure temp directory has correct permissions
+RUN chmod 777 /usr/src/app/temp
 
 # Start the bot
 CMD ["npm", "start"]

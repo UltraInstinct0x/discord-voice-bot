@@ -8,7 +8,7 @@ const logger = require("../utils/logger");
 const fs = require("fs");
 
 class MessageHandler {
-  async handleMessage(message, settings, clients) {
+  async handleMessage(message, settings, clients, isVoiceInput = false) {
     let initialResponsePath = null;
     let audioPath = null;
     
@@ -21,10 +21,15 @@ class MessageHandler {
       if (!prompt) return;
 
       // Log the message processing
+      const userId = message.author?.id;
+      const guildId = message.guild?.id;
+      const isPremium = false; // TODO: Implement premium check based on your needs
+
       logger.info("Processing message", {
         isVoiceChannel: !!message.member?.voice.channel,
         prompt,
-        userId: message.author.id,
+        userId,
+        isPremium
       });
 
       // Check if user is in the same voice channel as the bot
@@ -32,152 +37,132 @@ class MessageHandler {
       const isInSameVoiceChannel = connection && 
         message.member?.voice.channel?.id === connection.joinConfig.channelId;
 
+      // For voice input, validate transcription first
+      if (isVoiceInput) {
+        if (prompt === RESPONSE_CONFIG.ERROR_MESSAGES.AUDIO_TOO_QUIET) {
+          await message.reply({
+            embeds: [{
+              color: 0xffcc00,
+              title: "⚠️ Audio Too Quiet",
+              description: "I couldn't hear you clearly. Please speak a bit louder."
+            }]
+          });
+          return;
+        }
+        if (prompt === RESPONSE_CONFIG.ERROR_MESSAGES.AUDIO_TOO_SHORT) {
+          await message.reply({
+            embeds: [{
+              color: 0xffcc00,
+              title: "⚠️ Audio Too Short",
+              description: "The audio was too short to process. Please speak for a bit longer."
+            }]
+          });
+          return;
+        }
+        if (prompt === RESPONSE_CONFIG.ERROR_MESSAGES.TRANSCRIPTION_FAILED) {
+          await message.reply({
+            embeds: [{
+              color: 0xff0000,
+              title: "❌ Transcription Failed",
+              description: "I couldn't understand what you said. Please try speaking more clearly."
+            }]
+          });
+          return;
+        }
+      }
+
       // Generate initial or thinking response based on message length
       if (prompt.length > RESPONSE_CONFIG.LONG_RESPONSE_THRESHOLD) {
         const thinkingResponse = RESPONSE_CONFIG.THINKING_RESPONSES[
           Math.floor(Math.random() * RESPONSE_CONFIG.THINKING_RESPONSES.length)
         ];
-        initialResponsePath = await ttsService.generateTTS(thinkingResponse, settings.ttsProvider);
+        if (isInSameVoiceChannel) {
+          initialResponsePath = await ttsService.generateTTS(thinkingResponse, settings.ttsProvider, {
+            isVoiceInput,
+            isPremium
+          });
+          // Play initial response asynchronously
+          voiceHandler.playResponse(initialResponsePath, connection);
+        }
       } else if (isInSameVoiceChannel) {
         const username = message.author.username;
         const initialResponse = generateInitialResponse(prompt, username);
-        initialResponsePath = await ttsService.generateTTS(initialResponse, settings.ttsProvider);
-      }
-
-      // Play initial response if in voice channel
-      if (isInSameVoiceChannel && initialResponsePath) {
-        await voiceHandler.playResponse(initialResponsePath, connection);
-        initialResponsePath = null; // playResponse will clean up the file
-      }
-
-      // Generate AI response
-      const aiResponse = await aiService.handleResponse(prompt, settings);
-
-      // Handle long responses differently
-      if (aiResponse.length > RESPONSE_CONFIG.LONG_RESPONSE_THRESHOLD && isInSameVoiceChannel) {
-        const summary = await aiService.handleResponse(
-          `Summarize this in 2-3 sentences while keeping the main points: ${aiResponse}`,
-          settings
-        );
-        const ttsResponse = `Here's a summary: ${summary}\nCheck the chat for the complete response.`;
-        
-        // Send full response in text channel with embed
-        await message.reply({
-          embeds: [{
-            color: 0x0099ff,
-            description: aiResponse,
-            footer: {
-              text: "🤖 AI-generated response"
-            }
-          }]
+        initialResponsePath = await ttsService.generateTTS(initialResponse, settings.ttsProvider, {
+          isVoiceInput,
+          isPremium
         });
-        
-        // Generate and play TTS for summary
-        audioPath = await ttsService.generateTTS(ttsResponse, settings.ttsProvider);
-        if (audioPath) {
-          await voiceHandler.playResponse(audioPath, connection);
-          audioPath = null; // playResponse will clean up the file
-        }
-      } else {
-        // For shorter responses, handle normally
-        await message.reply({
-          embeds: [{
-            color: 0x0099ff,
-            description: aiResponse,
-            footer: {
-              text: "🤖 AI-generated response"
-            }
-          }]
-        });
-        if (isInSameVoiceChannel) {
-          audioPath = await ttsService.generateTTS(aiResponse, settings.ttsProvider);
-          if (audioPath) {
-            await voiceHandler.playResponse(audioPath, connection);
-            audioPath = null; // playResponse will clean up the file
-          }
-        }
+        // Play initial response asynchronously
+        voiceHandler.playResponse(initialResponsePath, connection);
       }
-    } catch (error) {
-      logger.error("Error handling message", { 
-        error: error.message,
-        userId: message.author.id,
-        guildId: message.guild.id
-      });
+
+      // Get AI response
+      const response = await aiService.handleResponse(prompt, settings, clients);
+
+      // Send text response immediately with embed
       await message.reply({
         embeds: [{
-          color: 0xFF6B6B,
-          description: "Sorry, I encountered an error while processing your request.",
+          color: 0x0099ff,
+          description: response,
           footer: {
-            text: "Please try again in a moment"
+            text: `Model: ${settings.model || "GPT35"}`
           }
         }]
       });
+
+      // Generate and play TTS asynchronously if in voice channel
+      if (isInSameVoiceChannel) {
+        audioPath = await ttsService.generateTTS(response, settings.ttsProvider, {
+          isVoiceInput,
+          isPremium
+        });
+        voiceHandler.playResponse(audioPath, connection);
+      }
+
+    } catch (error) {
+      logger.error("Error handling message", { error: error.message });
+      await message.reply({
+        embeds: [{
+          color: 0xff0000,
+          title: "❌ Error",
+          description: "Sorry, I encountered an error while processing your message."
+        }]
+      });
     } finally {
-      // Clean up any leftover audio files
-      for (const path of [initialResponsePath, audioPath]) {
-        if (path) {
-          try {
-            fs.unlinkSync(path);
-          } catch (error) {
-            logger.warn("Failed to clean up audio file", {
-              error: error.message,
-              path
-            });
-          }
-        }
+      // Cleanup temporary files
+      if (initialResponsePath && fs.existsSync(initialResponsePath)) {
+        fs.unlinkSync(initialResponsePath);
+      }
+      if (audioPath && fs.existsSync(audioPath)) {
+        fs.unlinkSync(audioPath);
       }
     }
   }
 
-  async handleMachineCommand(message, settings, clients) {
+  async handleMachineCommand(message, settings) {
     try {
-      const channel = message.member?.voice.channel;
-      if (!channel) {
-        await message.reply("You need to be in a voice channel to use this command!");
+      // Check if user is in a voice channel
+      if (!message.member?.voice.channel) {
+        await message.reply("You need to be in a voice channel first!");
         return;
       }
 
-      const existingConnection = getVoiceConnection(channel.guild.id);
-      if (existingConnection) {
-        existingConnection.destroy();
-        await message.reply({
-          content: "",
-          embeds: [{
-            color: 0xFF6B6B,
-            description: "👋 **Disconnected!** Have a great day!",
-            footer: {
-              text: "Use !machine or /agentic to call me back anytime!"
-            }
-          }]
-        });
-        return;
-      }
+      // Get or create voice connection
+      const connection = await voiceHandler.joinVoiceChannel(
+        message.member.voice.channel,
+        message
+      );
 
-      const connection = await voiceHandler.joinVoiceChannel(channel, message);
       if (!connection) {
-        await message.reply({
-          content: "",
-          embeds: [{
-            color: 0xFF6B6B,
-            description: "❌ **Failed to join the voice channel.** Please try again.",
-            footer: {
-              text: "Make sure I have the right permissions!"
-            }
-          }]
-        });
+        await message.reply("Failed to join voice channel. Please try again.");
         return;
       }
 
-      logger.info("Voice connection ready", {
-        channelId: channel.id,
-        guildId: channel.guild.id,
-      });
-
+      // Send welcome message
       await message.reply({
-        content: "",
         embeds: [{
-          color: 0x4CAF50,
-          description: "🎙️ **Connected successfully!**\nI'm ready to chat with you in the voice channel.",
+          color: 0x0099ff,
+          title: "Voice Bot Connected! 🎙️",
+          description: "I'm ready to chat with you in voice! Here's how to use me:",
           fields: [
             {
               name: "Voice Commands",
@@ -201,6 +186,102 @@ class MessageHandler {
     } catch (error) {
       logger.error("Error handling machine command", { error: error.message });
       await message.reply("Sorry, I encountered an error while processing your command.");
+    }
+  }
+
+  async handleAgenticCommand(message, settings) {
+    try {
+      // Check if user is in a voice channel
+      if (!message.member?.voice.channel) {
+        await message.reply("You need to be in a voice channel first!");
+        return;
+      }
+
+      // Get or create voice connection
+      const connection = await voiceHandler.joinVoiceChannel(
+        message.member.voice.channel,
+        message
+      );
+
+      if (!connection) {
+        await message.reply("Failed to join voice channel. Please try again.");
+        return;
+      }
+
+      // Send welcome message
+      await message.reply({
+        embeds: [{
+          color: 0x0099ff,
+          title: "Agentic Mode Activated! 🤖",
+          description: "I'm now in agentic mode! I'll proactively engage in conversation and help you with tasks.",
+          fields: [
+            {
+              name: "Voice Interaction",
+              value: "Speak naturally and I'll understand context and follow up!",
+              inline: true
+            },
+            {
+              name: "Task Assistance",
+              value: "Ask me to help with tasks and I'll guide you through them!",
+              inline: true
+            }
+          ],
+          footer: {
+            text: "Use !agentic or /agentic again to disconnect"
+          }
+        }]
+      });
+
+      // Start listening in agentic mode
+      await voiceHandler.listenAndRespond(connection, connection.receiver, message, true);
+    } catch (error) {
+      logger.error("Error handling agentic command", { error: error.message });
+      await message.reply("Sorry, I encountered an error while activating agentic mode.");
+    }
+  }
+
+  async handleCommand(message, command, args, settings) {
+    try {
+      switch (command) {
+        case 'settier':
+          const tier = args[0]?.toUpperCase();
+          if (!tier || !['FREE', 'PREMIUM'].includes(tier)) {
+            await message.reply('Invalid tier. Please use FREE or PREMIUM');
+            return;
+          }
+          settings.tier = tier;
+          await message.reply(`Tier set to ${tier}`);
+          break;
+
+        case 'setmodel':
+          const model = args[0]?.toLowerCase();
+          if (!model || !CONFIG.TIERS[settings.tier].allowedModels.includes(model)) {
+            await message.reply(`Invalid model. Available models for your tier: ${CONFIG.TIERS[settings.tier].allowedModels.join(', ')}`);
+            return;
+          }
+          settings.model = model;
+          await message.reply(`Model set to ${model}`);
+          break;
+
+        case 'settings':
+          const embed = {
+            color: 0x0099ff,
+            title: 'Current Settings',
+            fields: [
+              { name: 'Tier', value: settings.tier || 'FREE', inline: true },
+              { name: 'Model', value: settings.model || 'gpt-3.5-turbo', inline: true },
+              { name: 'TTS Provider', value: settings.ttsProvider || 'tiktok', inline: true }
+            ]
+          };
+          await message.reply({ embeds: [embed] });
+          break;
+
+        default:
+          await message.reply('Unknown command. Available commands: !settier, !setmodel, !settings');
+      }
+    } catch (error) {
+      logger.error('Error handling command', { error: error.message, command });
+      await message.reply('Sorry, I encountered an error while processing your command.');
     }
   }
 
@@ -292,10 +373,12 @@ class MessageHandler {
       }
     } catch (error) {
       logger.error("Error handling interaction", { error: error.message });
-      await interaction.reply({
-        content: "An error occurred while processing your command.",
-        ephemeral: true,
-      });
+      if (!interaction.replied && !interaction.deferred) {
+        await interaction.reply({
+          content: "There was an error while executing this command!",
+          ephemeral: true
+        });
+      }
     }
   }
 }

@@ -2,6 +2,7 @@ const logger = require('../utils/logger');
 const fs = require('fs').promises;
 const path = require('path');
 const ServerSettings = require('../models/ServerSettings');
+const { CONFIG } = require('../config/config');
 
 class SettingsService {
     constructor() {
@@ -64,6 +65,33 @@ class SettingsService {
             this.settings.set(guildId, settings);
         }
         return this.settings.get(guildId);
+    }
+
+    async setTTSProvider(guildId, provider) {
+        try {
+            // Validate provider
+            if (!Object.values(CONFIG.TTS_PROVIDERS).includes(provider)) {
+                throw new Error(`Invalid TTS provider: ${provider}`);
+            }
+
+            const settings = await this.getServerSettings(guildId);
+            settings.setTTSProvider(provider);
+            await this.saveSettings(guildId, settings);
+            
+            logger.info('TTS provider updated', {
+                guildId,
+                provider
+            });
+
+            return settings;
+        } catch (error) {
+            logger.error('Failed to set TTS provider', {
+                error: error.message,
+                provider,
+                guildId
+            });
+            throw error;
+        }
     }
 
     async updateServerSettings(guildId, updates) {

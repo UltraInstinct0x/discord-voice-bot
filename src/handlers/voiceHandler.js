@@ -140,44 +140,18 @@ class VoiceHandler {
   }
 
   async processAudioBuffer(buffer, connection, message) {
+    const settings = await settingsService.getServerSettings(message.guild.id);
+    if (!settings) {
+      logger.error('Server settings not found');
+      return;
+    }
+
+    // Get the voice channel's text channel
+    const voiceChannel = message.member.voice.channel;
+    let textChannel = message.channel;
+
     try {
-      const settings = await settingsService.getServerSettings(message.guild.id);
-      if (!settings) {
-        throw new Error('Server settings not found');
-      }
-
-      // Get the voice channel's text channel
-      const voiceChannel = message.member.voice.channel;
-      let textChannel;
-
-      // First try to find a text channel in the same category
-      if (voiceChannel.parent) {
-        textChannel = voiceChannel.guild.channels.cache.find(
-          channel => channel.type === 'GUILD_TEXT' && 
-          channel.parent?.id === voiceChannel.parent.id
-        );
-      }
-
-      // If no text channel found in category, use the first text channel with "voice" or "bot" in its name
-      if (!textChannel) {
-        textChannel = voiceChannel.guild.channels.cache.find(
-          channel => channel.type === 'GUILD_TEXT' && 
-          (channel.name.toLowerCase().includes('voice') || 
-           channel.name.toLowerCase().includes('bot'))
-        );
-      }
-
-      // If still no channel found, use the default text channel or the first available one
-      if (!textChannel) {
-        textChannel = voiceChannel.guild.systemChannel || 
-                     voiceChannel.guild.channels.cache.find(
-                       channel => channel.type === 'GUILD_TEXT'
-                     );
-      }
-
-      // If we still can't find a text channel, use the original message channel
-      textChannel = textChannel || message.channel;
-
+      // Create WAV file with error handling
       const wavFile = path.join(os.tmpdir(), `${Date.now()}.wav`);
       logger.info("Creating WAV file", {
         filepath: wavFile,
@@ -186,39 +160,68 @@ class VoiceHandler {
         guildId: message.guild.id
       });
 
-      await this.createWavFile(buffer, wavFile);
-      
-      if (!fs.existsSync(wavFile)) {
-        throw new Error(`WAV file not created: ${wavFile}`);
+      try {
+        await this.createWavFile(buffer, wavFile);
+        
+        if (!fs.existsSync(wavFile)) {
+          throw new Error('WAV file creation failed');
+        }
+      } catch (wavError) {
+        logger.error('Error creating WAV file:', { error: wavError.message });
+        await textChannel.send({
+          embeds: [{
+            color: 0xFF6B6B,
+            title: "🎤 Voice Processing Error",
+            description: "I had trouble processing your voice input. Please try speaking again.",
+            fields: [
+              {
+                name: "Troubleshooting Tips",
+                value: "• Make sure your microphone is working properly\n• Try speaking a bit louder\n• Ensure there isn't too much background noise"
+              }
+            ]
+          }]
+        });
+        return;
       }
 
-      logger.logVoiceEvent('transcribe_start', message.author.id, message.guild.id, {
-        event: 'transcribe_start'
-      });
+      logger.logVoiceEvent('transcribe_start', message.author.id, message.guild.id);
 
+      // Transcribe audio
       const transcription = await aiService.transcribeAudio(wavFile);
       
-      if (!transcription) {
-        throw new Error('Failed to transcribe audio');
+      if (!transcription || transcription.trim().length === 0) {
+        await textChannel.send({
+          embeds: [{
+            color: 0xFFA500,
+            title: "🎤 Voice Recognition Issue",
+            description: "I couldn't understand what you said.",
+            fields: [
+              {
+                name: "Tips for Better Recognition",
+                value: "• Speak clearly and at a normal pace\n• Minimize background noise\n• Try to speak closer to your microphone"
+              }
+            ]
+          }]
+        });
+        return;
       }
 
-      // Show transcription in voice channel's text chat
+      // Show transcription in chat
       await textChannel.send({
         embeds: [{
           color: 0x4CAF50,
-          description: transcription,
+          description: `"${transcription}"`,
           author: {
             name: message.author.username,
             icon_url: message.author.displayAvatarURL()
           },
           footer: {
-            text: "🎙️ Voice transcription"
+            text: "🎙️ Voice Input"
           }
         }]
       });
 
       logger.logVoiceEvent('transcribe_success', message.author.id, message.guild.id, {
-        event: 'transcribe_success',
         length: transcription.length
       });
 
@@ -229,155 +232,166 @@ class VoiceHandler {
         throw new Error('Failed to get AI response');
       }
 
-      // Send response in voice channel's text chat with mention
+      // Send response in text chat
       await textChannel.send({
         content: `<@${message.author.id}>`,
         embeds: [{
           color: 0x0099ff,
           description: aiResponse,
           footer: {
-            text: "🤖 AI Response"
+            text: `🤖 AI Response • ${settings.model || "GPT35"}`
           }
         }]
       });
 
-      // Generate and play TTS response
+      // Generate and play TTS response asynchronously
       const audioPath = await ttsService.generateTTS(aiResponse, settings.ttsProvider, {
         isVoiceInput: true
       });
-      await this.playResponse(audioPath, connection);
+      this.playResponse(audioPath, connection);
 
-      // Clean up the temporary WAV file
-      try {
-        await fs.promises.unlink(wavFile);
-      } catch (unlinkError) {
-        logger.error('Error deleting wav file:', { error: unlinkError.message });
-      }
     } catch (error) {
-      logger.error("Error processing audio buffer", { 
+      logger.error("Error in voice processing", { 
         error: error.message,
         userId: message.author.id,
         guildId: message.guild.id
       });
 
-      await message.channel.send({
-        content: `<@${message.author.id}>`,
+      await textChannel.send({
         embeds: [{
           color: 0xFF6B6B,
-          description: "❌ Sorry, I had trouble processing that audio. Please try again.",
-          footer: {
-            text: "Error Processing Audio"
-          }
+          title: "❌ Voice Processing Error",
+          description: "I encountered an error while processing your voice input.",
+          fields: [
+            {
+              name: "What to Try",
+              value: "• Wait a moment and try speaking again\n• Make sure you're speaking clearly\n• Try reconnecting to the voice channel if issues persist"
+            }
+          ]
         }]
       });
+    } finally {
+      // Clean up the temporary WAV file if it exists
+      const wavFile = path.join(os.tmpdir(), `${Date.now()}.wav`);
+      if (fs.existsSync(wavFile)) {
+        try {
+          await fs.promises.unlink(wavFile);
+        } catch (unlinkError) {
+          logger.error('Error deleting wav file:', { error: unlinkError.message });
+        }
+      }
     }
   }
 
   async createWavFile(buffer, filepath) {
     return new Promise((resolve, reject) => {
-      const writer = new wav.FileWriter(filepath, {
-        channels: 2,
-        sampleRate: 48000,
-        bitDepth: 16,
-      });
+      try {
+        const writer = new wav.FileWriter(filepath, {
+          channels: 2,
+          sampleRate: 48000,
+          bitDepth: 16,
+        });
 
-      writer.on('error', (err) => {
-        reject(err);
-      });
+        writer.on('error', (err) => {
+          reject(err);
+        });
 
-      writer.on('finish', () => {
-        resolve();
-      });
+        writer.on('finish', () => {
+          // Verify the file was created
+          if (fs.existsSync(filepath)) {
+            resolve();
+          } else {
+            reject(new Error('WAV file was not created'));
+          }
+        });
 
-      writer.write(buffer);
-      writer.end();
+        writer.write(buffer);
+        writer.end();
+      } catch (error) {
+        reject(error);
+      }
     });
   }
 
   async playResponse(audioPath, connection) {
-    return new Promise((resolve, reject) => {
-      try {
-        logger.info("Playing audio response", { audioPath });
-        
-        if (!fs.existsSync(audioPath)) {
-          throw new Error(`Audio file not found: ${audioPath}`);
-        }
+    try {
+      logger.info("Playing audio response", { audioPath });
+      
+      if (!fs.existsSync(audioPath)) {
+        throw new Error(`Audio file not found: ${audioPath}`);
+      }
 
-        const stats = fs.statSync(audioPath);
-        if (stats.size === 0) {
-          throw new Error(`Audio file is empty: ${audioPath}`);
-        }
+      const stats = fs.statSync(audioPath);
+      if (stats.size === 0) {
+        throw new Error(`Audio file is empty: ${audioPath}`);
+      }
 
-        const player = createAudioPlayer();
-        const resource = createAudioResource(audioPath, {
-          inputType: StreamType.Arbitrary,
-          inlineVolume: true
-        });
+      const player = createAudioPlayer();
+      const resource = createAudioResource(audioPath, {
+        inputType: StreamType.Arbitrary,
+        inlineVolume: true
+      });
 
-        if (!resource) {
-          throw new Error('Failed to create audio resource');
-        }
+      if (!resource) {
+        throw new Error('Failed to create audio resource');
+      }
 
-        resource.volume?.setVolume(1); // Set volume to 100%
+      resource.volume?.setVolume(1); // Set volume to 100%
 
-        const subscription = connection.subscribe(player);
-        if (!subscription) {
-          throw new Error('Failed to subscribe to audio player');
-        }
+      const subscription = connection.subscribe(player);
+      if (!subscription) {
+        throw new Error('Failed to subscribe to audio player');
+      }
 
-        player.on(AudioPlayerStatus.Playing, () => {
-          logger.info("Started playing audio", { audioPath });
-        });
+      player.on(AudioPlayerStatus.Playing, () => {
+        logger.info("Started playing audio", { audioPath });
+      });
 
-        player.on(AudioPlayerStatus.Idle, () => {
-          logger.info("Finished playing audio", { audioPath });
-          try {
-            fs.unlinkSync(audioPath); // Clean up the audio file
-          } catch (error) {
-            logger.warn("Failed to clean up audio file", { 
-              error: error.message,
-              audioPath 
-            });
-          }
-          subscription.unsubscribe(); // Clean up subscription
-          player.stop();
-          resolve();
-        });
-
-        player.on('error', (error) => {
-          logger.error('Error playing audio:', { 
+      player.on(AudioPlayerStatus.Idle, () => {
+        logger.info("Finished playing audio", { audioPath });
+        try {
+          fs.unlinkSync(audioPath); // Clean up the audio file
+        } catch (error) {
+          logger.warn("Failed to clean up audio file", { 
             error: error.message,
             audioPath 
           });
-          try {
-            fs.unlinkSync(audioPath); // Clean up the audio file even on error
-          } catch (unlinkError) {
-            logger.warn("Failed to clean up audio file after error", { 
-              error: unlinkError.message,
-              audioPath 
-            });
-          }
-          subscription.unsubscribe(); // Clean up subscription
-          reject(error);
-        });
+        }
+        subscription.unsubscribe(); // Clean up subscription
+        player.stop();
+      });
 
-        player.play(resource);
-      } catch (error) {
-        logger.error('Error setting up audio playback:', { 
+      player.on('error', (error) => {
+        logger.error('Error playing audio:', { 
           error: error.message,
           audioPath 
         });
         try {
-          fs.unlinkSync(audioPath); // Clean up the audio file on setup error
+          fs.unlinkSync(audioPath); // Clean up the audio file even on error
         } catch (unlinkError) {
-          logger.warn("Failed to clean up audio file after setup error", { 
+          logger.warn("Failed to clean up audio file after error", { 
             error: unlinkError.message,
             audioPath 
           });
         }
-        reject(error);
+        subscription.unsubscribe(); // Clean up subscription
+      });
+
+      player.play(resource);
+    } catch (error) {
+      logger.error('Error setting up audio playback:', { 
+        error: error.message,
+        audioPath 
+      });
+      try {
+        fs.unlinkSync(audioPath); // Clean up the audio file on setup error
+      } catch (unlinkError) {
+        logger.warn("Failed to clean up audio file after setup error", { 
+          error: unlinkError.message,
+          audioPath 
+        });
       }
-    });
+    }
   }
 
   async joinVoiceChannel(channel) {

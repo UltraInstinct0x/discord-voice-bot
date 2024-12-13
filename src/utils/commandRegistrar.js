@@ -24,18 +24,19 @@ const commands = [
     ),
   new SlashCommandBuilder()
     .setName("setprovider")
-    .setDescription("Set TTS provider")
+    .setDescription("Set the TTS provider")
     .addStringOption((option) =>
       option
         .setName("provider")
-        .setDescription("Choose TTS provider")
+        .setDescription("The TTS provider to use")
         .setRequired(true)
         .addChoices(
-          { name: "ElevenLabs", value: "elevenlabs" },
-          { name: "Facebook MMS", value: "huggingface_facebook" },
-          { name: "Facebook FastSpeech2", value: "huggingface_fastspeech" },
-          { name: "Coqui XTTS-v2", value: "huggingface_coqui" },
-          { name: "Indic TTS", value: "huggingface_indic" },
+          { name: 'TikTok', value: 'tiktok' },
+          { name: 'HuggingFace Facebook', value: 'huggingface_facebook' },
+          { name: 'HuggingFace FastSpeech2', value: 'huggingface_fastspeech' },
+          { name: 'HuggingFace Coqui', value: 'huggingface_coqui' },
+          { name: 'HuggingFace Indic', value: 'huggingface_indic' },
+          { name: 'ElevenLabs', value: 'elevenlabs' }
         ),
     ),
   new SlashCommandBuilder()

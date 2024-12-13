@@ -1,3 +1,5 @@
+const { CONFIG } = require('../config/config');
+
 class ServerSettings {
     constructor(guildId) {
         this.guildId = guildId;
@@ -7,10 +9,40 @@ class ServerSettings {
         this.isListeningToEveryone = false;
         this.isMuted = false;
         this.lastActive = Date.now();
-        this.voiceSettings = {
-            language: 'en',
-            voiceId: 'default'
-        };
+        this.ttsProvider = CONFIG.DEFAULT_SETTINGS.ttsProvider || 'tiktok';
+        this.language = CONFIG.DEFAULT_SETTINGS.language || 'en';
+        this.voiceCommand = CONFIG.DEFAULT_SETTINGS.voiceCommand || false;
+        this.autoJoin = CONFIG.DEFAULT_SETTINGS.autoJoin || false;
+    }
+
+    setTTSProvider(provider) {
+        this.ttsProvider = provider;
+        this.lastActive = Date.now();
+    }
+
+    setLanguage(language) {
+        this.language = language;
+        this.lastActive = Date.now();
+    }
+
+    setVoiceCommand(enabled) {
+        this.voiceCommand = enabled;
+        this.lastActive = Date.now();
+    }
+
+    setAutoJoin(enabled) {
+        this.autoJoin = enabled;
+        this.lastActive = Date.now();
+    }
+
+    setChannel(channelId) {
+        this.channelId = channelId;
+        this.lastActive = Date.now();
+    }
+
+    setAdmin(userId) {
+        this.adminId = userId;
+        this.lastActive = Date.now();
     }
 
     addAllowedUser(userId) {
@@ -29,16 +61,6 @@ class ServerSettings {
                userId === this.adminId;
     }
 
-    setAdmin(userId) {
-        this.adminId = userId;
-        this.lastActive = Date.now();
-    }
-
-    setChannel(channelId) {
-        this.channelId = channelId;
-        this.lastActive = Date.now();
-    }
-
     setListeningMode(listenToEveryone) {
         this.isListeningToEveryone = listenToEveryone;
         this.lastActive = Date.now();
@@ -46,11 +68,6 @@ class ServerSettings {
 
     setMuted(muted) {
         this.isMuted = muted;
-        this.lastActive = Date.now();
-    }
-
-    updateVoiceSettings(settings) {
-        this.voiceSettings = { ...this.voiceSettings, ...settings };
         this.lastActive = Date.now();
     }
 
@@ -63,7 +80,10 @@ class ServerSettings {
             isListeningToEveryone: this.isListeningToEveryone,
             isMuted: this.isMuted,
             lastActive: this.lastActive,
-            voiceSettings: this.voiceSettings
+            ttsProvider: this.ttsProvider,
+            language: this.language,
+            voiceCommand: this.voiceCommand,
+            autoJoin: this.autoJoin
         };
     }
 
@@ -75,7 +95,10 @@ class ServerSettings {
         settings.isListeningToEveryone = data.isListeningToEveryone;
         settings.isMuted = data.isMuted;
         settings.lastActive = data.lastActive;
-        settings.voiceSettings = data.voiceSettings;
+        settings.ttsProvider = data.ttsProvider || CONFIG.DEFAULT_SETTINGS.ttsProvider;
+        settings.language = data.language || CONFIG.DEFAULT_SETTINGS.language;
+        settings.voiceCommand = data.voiceCommand || CONFIG.DEFAULT_SETTINGS.voiceCommand;
+        settings.autoJoin = data.autoJoin || CONFIG.DEFAULT_SETTINGS.autoJoin;
         return settings;
     }
 }

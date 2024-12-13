@@ -24,23 +24,24 @@ const CONFIG = {
   TIERS: {
     FREE: {
       maxTokens: 100,
-      ttsProvider: "huggingface_facebook",
+      ttsProvider: "tiktok",
       streaming: false,
       allowedModels: ["GPT35"],
     },
     PREMIUM: {
       maxTokens: 250,
-      ttsProvider: "elevenlabs",
+      ttsProvider: "tiktok",
       streaming: true,
       allowedModels: ["GPT35", "GPT4", "CLAUDE", "MIXTRAL"],
     },
   },
   TTS_PROVIDERS: {
     ELEVENLABS: "elevenlabs",
-    HUGGINGFACE_FACEBOOK: "huggingface_facebook",
+    HUGGINGFACE_FACEBOOK: "huggingface_facebook", 
     HUGGINGFACE_INDIC: "huggingface_indic",
     HUGGINGFACE_COQUI: "huggingface_coqui",
     HUGGINGFACE_FASTSPEECH: "huggingface_fastspeech",
+    TIKTOK: "tiktok",
   },
   TTS_MODELS: {
     huggingface_facebook: "facebook/mms-tts-eng",
@@ -49,24 +50,56 @@ const CONFIG = {
     huggingface_fastspeech: "facebook/fastspeech2-en-ljspeech",
   },
   TTS_FALLBACK_ORDER: [
-    "elevenlabs",
+    "tiktok",
     "huggingface_facebook",
     "huggingface_fastspeech",
     "huggingface_coqui",
     "huggingface_indic",
+    "elevenlabs", 
   ],
   AUDIO_SETTINGS: {
-    silenceThreshold: 500,
-    minAudioSize: 4800,
+    // Increased silence threshold for better voice detection
+    silenceThreshold: 2000,
+    // Increased minimum audio size for better quality
+    minAudioSize: 9600,
     sampleRate: 48000,
+    // Changed to mono for better transcription
     channels: 1,
     frameSize: 960,
+    // New settings for improved voice detection
+    noiseThreshold: -50,
+    // Voice activity detection settings
+    vadSettings: {
+      enabled: true,
+      threshold: 0.5,
+      smoothing: 0.1
+    },
+    // Audio preprocessing settings
+    preprocessing: {
+      normalize: true,
+      removeNoise: true,
+      trimSilence: true
+    },
+    // Whisper specific settings
+    whisperConfig: {
+      temperature: 0.3,
+      language: "en",
+      task: "transcribe",
+      // Use word timestamps for better accuracy
+      word_timestamps: true
+    }
+  },
+  DEFAULT_SETTINGS: {
+    ttsProvider: 'tiktok',
+    language: 'en',
+    voiceCommand: false,
+    autoJoin: false
   },
 };
 
 const RESPONSE_CONFIG = {
-  LONG_RESPONSE_THRESHOLD: 500,  // characters - increased for longer messages
-  SILENCE_DURATION: 2000,        // ms
+  LONG_RESPONSE_THRESHOLD: 500,
+  SILENCE_DURATION: 2000,
   THINKING_RESPONSES: [
     "Let me think about that for a moment...",
     "Processing your request...",
@@ -78,7 +111,15 @@ const RESPONSE_CONFIG = {
     "Almost there, finalizing the response...",
     "One moment please, putting the finishing touches...",
     "Bear with me, just a bit longer...",
-  ]
+  ],
+  // New error handling messages
+  ERROR_MESSAGES: {
+    TRANSCRIPTION_FAILED: "I couldn't understand that clearly. Could you please speak more slowly and clearly?",
+    AUDIO_TOO_SHORT: "The audio was too short to process. Please speak for a bit longer.",
+    AUDIO_TOO_QUIET: "I couldn't hear you clearly. Could you speak a bit louder?",
+    BACKGROUND_NOISE: "There seems to be too much background noise. Could you move to a quieter location?",
+    NETWORK_ERROR: "I'm having trouble with the connection. Could you try again?"
+  }
 };
 
 module.exports = {

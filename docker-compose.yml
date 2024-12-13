@@ -1,17 +1,22 @@
-# docker-compose.yml
 services:
   bot:
     build: .
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
+      - temp_data:/usr/src/app/temp  # Added persistent volume for temp files
     environment:
       - DISCORD_TOKEN=${DISCORD_TOKEN}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - ELEVENLABS_API_KEY=${ELEVENLABS_API_KEY}
       - HUGGING_FACE_TOKEN=${HUGGING_FACE_TOKEN}
       - CLIENT_ID=${CLIENT_ID}
-    platform: linux/arm64 # arm64 # For M2 Mac
+      - NODE_ENV=development
+    platform: linux/arm64 # For M2 Mac
     restart: unless-stopped
     mem_limit: 2g
     memswap_limit: 2g
+    user: "1000:1000"  # Use node user
+
+volumes:
+  temp_data:  # Define the volume
