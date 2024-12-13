@@ -46,17 +46,12 @@ class VoiceHandler {
   }
 
   async listenAndRespond(connection, receiver, message) {
+    logger.logVoiceEvent('start_listening', message.author.id, message.guild.id, {
+      channelId: message.channel.id
+    });
+
     if (this.currentConnection) {
       this.cleanup();
-    }
-
-    // Initialize server settings if first time joining
-    const settings = settingsService.getServerSettings(message.guild.id);
-    if (!settings.adminId) {
-      settings.setAdmin(message.author.id);
-      settings.setChannel(message.channel.id);
-      await settingsService.saveServerSettings(message.guild.id);
-      await message.channel.send(`<@${message.author.id}> has been set as the bot admin.`);
     }
 
     this.currentConnection = connection;
@@ -93,7 +88,13 @@ class VoiceHandler {
         audioBuffer = Buffer.alloc(0);
 
         this.processAudioBuffer(currentBuffer, connection, message)
-          .catch(error => logger.error("Error processing audio", { error: error.message }))
+          .catch(error => {
+            logger.error("Error processing audio", { 
+              error: error.message,
+              userId: message.author.id,
+              guildId: message.guild.id 
+            });
+          })
           .finally(() => {
             isProcessing = false;
           });
@@ -113,7 +114,11 @@ class VoiceHandler {
         try {
           await this.processAudioBuffer(currentBuffer, connection, message);
         } catch (error) {
-          logger.error("Error processing audio:", { error: error.message });
+          logger.error("Error processing audio buffer", { 
+            error: error.message,
+            userId: message.author.id,
+            guildId: message.guild.id
+          });
         } finally {
           isProcessing = false;
         }
@@ -121,42 +126,35 @@ class VoiceHandler {
     });
 
     this.currentAudioStream.on("end", () => {
-      logger.info("Audio stream ended");
+      logger.logVoiceEvent('stream_end', message.author.id, message.guild.id);
       this.cleanup();
       setTimeout(() => {
         this.listenAndRespond(connection, receiver, message);
       }, 100);
     });
 
-    connection.on(VoiceConnectionStatus.Disconnected, async () => {
+    connection.on(VoiceConnectionStatus.Disconnected, () => {
+      logger.logVoiceEvent('disconnected', message.author.id, message.guild.id);
       this.cleanup();
-      const settings = settingsService.getServerSettings(message.guild.id);
-      settings.setChannel(null);
-      await settingsService.saveServerSettings(message.guild.id);
     });
   }
 
   async processAudioBuffer(buffer, connection, message) {
-    const settings = settingsService.getServerSettings(message.guild.id);
-    
-    // Check if user is allowed to interact
-    if (!settings.isUserAllowed(message.author.id)) {
-      logger.info(`Ignored audio from unauthorized user: ${message.author.username}`);
-      return;
-    }
-
-    // Check if bot is muted
-    if (settings.isMuted) {
-      logger.info("Bot is currently muted");
-      return;
-    }
-
     try {
       const wavFile = path.join(os.tmpdir(), `${Date.now()}.wav`);
       await this.createWavFile(buffer, wavFile);
       
+      logger.logVoiceEvent('transcribe_start', message.author.id, message.guild.id);
       const transcription = await aiService.transcribeAudio(wavFile);
-      if (!transcription) return;
+      
+      if (!transcription) {
+        logger.logVoiceEvent('transcribe_empty', message.author.id, message.guild.id);
+        return;
+      }
+
+      logger.logVoiceEvent('transcribe_success', message.author.id, message.guild.id, {
+        length: transcription.length
+      });
 
       await message.channel.send({
         embeds: [{
@@ -172,75 +170,40 @@ class VoiceHandler {
         }]
       });
 
-      // Enqueue the request with user settings
-      await this.enqueueRequest(transcription, {
-        ...settings.toJSON(),
-        channel: message.channel,
-        userId: message.author.id
-      });
-
-      fs.unlink(wavFile, (err) => {
-        if (err) logger.error('Error deleting wav file:', err);
-      });
-    } catch (error) {
-      logger.error("Error processing audio buffer", { error: error.message });
-      await message.channel.send("Sorry, I had trouble processing that audio.");
-    }
-  }
-
-  async enqueueRequest(request, settings) {
-    this.requestQueue.push({ request, settings });
-    if (!this.isProcessingQueue) {
-      this.processQueue();
-    }
-  }
-
-  async processQueue() {
-    if (this.isProcessingQueue || this.requestQueue.length === 0) return;
-    this.isProcessingQueue = true;
-    const { request, settings } = this.requestQueue.shift();
-
-    try {
-      const serverSettings = settingsService.getServerSettings(settings.guildId);
-      if (serverSettings.isMuted) {
-        logger.info("Skipping response - bot is muted");
-        return;
+      const settings = settingsService.getUserSettings(message.author.id);
+      
+      if (transcription.length > RESPONSE_CONFIG.LONG_RESPONSE_THRESHOLD) {
+        const thinkingResponse = RESPONSE_CONFIG.THINKING_RESPONSES[Math.floor(Math.random() * RESPONSE_CONFIG.THINKING_RESPONSES.length)];
+        const audioPath = await ttsService.generateTTS(thinkingResponse, settings.ttsProvider);
+        await this.playResponse(audioPath, connection);
       }
 
-      const aiResponse = await aiService.handleResponse(request, settings);
-      if (aiResponse.length > RESPONSE_CONFIG.LONG_RESPONSE_THRESHOLD && this.currentConnection) {
+      const aiResponse = await aiService.handleResponse(transcription, settings);
+      
+      if (aiResponse.length > RESPONSE_CONFIG.LONG_RESPONSE_THRESHOLD && connection) {
         const summary = await aiService.handleResponse(`Summarize this in 2-3 sentences while keeping the main points: ${aiResponse}`, settings);
         const ttsResponse = `Here's a summary: ${summary}\nCheck the chat for the complete response.`;
         
-        await settings.channel.send({
-          embeds: [{
-            color: 0x4CAF50,
-            description: aiResponse,
-            footer: { text: "🤖 AI Response" }
-          }]
-        });
+        await message.channel.send(`🤖 Response:\n${aiResponse}`);
         
-        const audioPath = await ttsService.generateTTS(ttsResponse, settings.voiceSettings);
-        await this.playResponse(audioPath, this.currentConnection);
+        const audioPath = await ttsService.generateTTS(ttsResponse, settings.ttsProvider);
+        await this.playResponse(audioPath, connection);
       } else {
-        await settings.channel.send({
-          embeds: [{
-            color: 0x4CAF50,
-            description: aiResponse,
-            footer: { text: "🤖 AI Response" }
-          }]
-        });
-        
-        const audioPath = await ttsService.generateTTS(aiResponse, settings.voiceSettings);
-        await this.playResponse(audioPath, this.currentConnection);
+        await message.channel.send(`🤖 Response:\n${aiResponse}`);
+        const audioPath = await ttsService.generateTTS(aiResponse, settings.ttsProvider);
+        await this.playResponse(audioPath, connection);
       }
+
+      fs.unlink(wavFile, (err) => {
+        if (err) logger.error('Error deleting wav file:', { error: err.message });
+      });
     } catch (error) {
-      logger.error("Error processing queue:", { error: error.message });
-    } finally {
-      this.isProcessingQueue = false;
-      if (this.requestQueue.length > 0) {
-        this.processQueue();
-      }
+      logger.error("Error processing audio buffer", { 
+        error: error.message,
+        userId: message.author.id,
+        guildId: message.guild.id
+      });
+      await message.channel.send("Sorry, I had trouble processing that audio.");
     }
   }
 
@@ -291,6 +254,10 @@ class VoiceHandler {
 
   async joinVoiceChannel(channel) {
     try {
+      logger.logVoiceEvent('joining_channel', channel.members.first()?.id, channel.guild.id, {
+        channelId: channel.id
+      });
+
       const connection = joinVoiceChannel({
         channelId: channel.id,
         guildId: channel.guild.id,
@@ -306,13 +273,22 @@ class VoiceHandler {
             entersState(connection, VoiceConnectionStatus.Connecting, 5_000),
           ]);
         } catch (error) {
+          logger.error("Voice connection recovery failed", {
+            error: error.message,
+            channelId: channel.id,
+            guildId: channel.guild.id
+          });
           connection.destroy();
         }
       });
 
       return connection;
     } catch (error) {
-      logger.error("Error joining voice channel", { error: error.message });
+      logger.error("Error joining voice channel", { 
+        error: error.message,
+        channelId: channel.id,
+        guildId: channel.guild.id
+      });
       throw error;
     }
   }
