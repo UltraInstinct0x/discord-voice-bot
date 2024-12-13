@@ -138,3 +138,269 @@
 {"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T23:10:48.764Z"}
 {"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T23:10:55.537Z"}
 {"level":"info","message":"Audio stream ended","timestamp":"2024-12-10T23:11:12.096Z"}
+{"level":"info","message":"Registering slash commands...","timestamp":"2024-12-13T11:18:51.429Z"}
+{"level":"info","message":"Web server listening on port 3000","timestamp":"2024-12-13T11:18:51.433Z"}
+{"level":"info","message":"Slash commands registered successfully","timestamp":"2024-12-13T11:18:51.920Z"}
+{"level":"error","message":"Discord client error: ServerSettings is not a constructor","stack":"TypeError: ServerSettings is not a constructor\n    at SettingsService.getServerSettings (/usr/src/app/src/services/settingsService.js:66:30)\n    at CommandHandler.handleCommand (/usr/src/app/src/handlers/commandHandler.js:9:42)\n    at Client.<anonymous> (/usr/src/app/src/index.js:95:26)\n    at Client.emit (node:events:517:28)\n    at MessageCreateAction.handle (/usr/src/app/node_modules/discord.js/src/client/actions/MessageCreate.js:32:14)\n    at module.exports [as MESSAGE_CREATE] (/usr/src/app/node_modules/discord.js/src/client/websocket/handlers/MESSAGE_CREATE.js:4:32)\n    at WebSocketManager.handlePacket (/usr/src/app/node_modules/discord.js/src/client/websocket/WebSocketManager.js:348:31)\n    at WebSocketManager.<anonymous> (/usr/src/app/node_modules/discord.js/src/client/websocket/WebSocketManager.js:232:12)\n    at WebSocketManager.emit (/usr/src/app/node_modules/@vladfrangu/async_event_emitter/dist/index.cjs:287:31)\n    at WebSocketShard.<anonymous> (/usr/src/app/node_modules/@discordjs/ws/dist/index.js:1190:51)","timestamp":"2024-12-13T11:18:56.163Z"}
+{"level":"info","message":"Registering slash commands...","timestamp":"2024-12-13T11:20:34.580Z"}
+{"level":"info","message":"Web server listening on port 3000","timestamp":"2024-12-13T11:20:34.582Z"}
+{"level":"info","message":"Slash commands registered successfully","timestamp":"2024-12-13T11:20:34.903Z"}
+{"channelId":"1203065885435101268","error":"logger.logVoiceEvent is not a function","guildId":"1203065884990644245","level":"error","message":"Error joining voice channel","timestamp":"2024-12-13T11:20:38.531Z"}
+{"error":"logger.logVoiceEvent is not a function","level":"error","message":"Error handling machine command","timestamp":"2024-12-13T11:20:38.532Z"}
+{"level":"info","message":"Registering slash commands...","timestamp":"2024-12-13T11:22:14.230Z"}
+{"level":"info","message":"Web server listening on port 3000","timestamp":"2024-12-13T11:22:14.233Z"}
+{"level":"info","message":"Slash commands registered successfully","timestamp":"2024-12-13T11:22:14.665Z"}
+{"channelId":"1203065885435101268","event":"joining_channel","guildId":"1203065884990644245","level":"info","message":"Voice event: joining_channel","timestamp":"2024-12-13T11:22:20.889Z","userId":"422749762060550154"}
+{"channelId":"1203065885435101268","guildId":"1203065884990644245","level":"info","message":"Voice connection ready","timestamp":"2024-12-13T11:22:20.896Z"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T11:22:21.270Z","userId":"422749762060550154"}
+{"event":"stream_end","guildId":"1203065884990644245","level":"info","message":"Voice event: stream_end","timestamp":"2024-12-13T11:22:22.749Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T11:22:22.857Z","userId":"422749762060550154"}
+{"bufferSize":97920,"filepath":"/tmp/1734088947041.wav","guildId":"1203065884990644245","level":"info","message":"Creating WAV file","timestamp":"2024-12-13T11:22:27.042Z","userId":"422749762060550154"}
+{"event":"transcribe_start","guildId":"1203065884990644245","level":"info","message":"Voice event: transcribe_start","timestamp":"2024-12-13T11:22:27.049Z","userId":"422749762060550154"}
+{"event":"stream_end","guildId":"1203065884990644245","level":"info","message":"Voice event: stream_end","timestamp":"2024-12-13T11:22:28.590Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T11:22:28.696Z","userId":"422749762060550154"}
+{"error":"Failed to transcribe audio","guildId":"1203065884990644245","level":"error","message":"Error processing audio buffer","timestamp":"2024-12-13T11:22:29.837Z","userId":"422749762060550154"}
+{"bufferSize":97920,"filepath":"/tmp/1734088954347.wav","guildId":"1203065884990644245","level":"info","message":"Creating WAV file","timestamp":"2024-12-13T11:22:34.351Z","userId":"422749762060550154"}
+{"event":"transcribe_start","guildId":"1203065884990644245","level":"info","message":"Voice event: transcribe_start","timestamp":"2024-12-13T11:22:34.357Z","userId":"422749762060550154"}
+{"event":"stream_end","guildId":"1203065884990644245","level":"info","message":"Voice event: stream_end","timestamp":"2024-12-13T11:22:35.226Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T11:22:35.334Z","userId":"422749762060550154"}
+{"event":"transcribe_success","guildId":"1203065884990644245","length":14,"level":"info","message":"Voice event: transcribe_success","timestamp":"2024-12-13T11:22:35.742Z","userId":"422749762060550154"}
+{"isVoiceInput":true,"level":"info","message":"TTS generation started","textLength":79,"timestamp":"2024-12-13T11:22:36.641Z"}
+{"isVoiceInput":true,"level":"info","message":"ElevenLabs TTS started","textLength":79,"timestamp":"2024-12-13T11:22:36.643Z"}
+{"duration":1212,"error":"fs.createWriteStream is not a function","isVoiceInput":true,"level":"error","message":"ElevenLabs TTS failed","textLength":79,"timestamp":"2024-12-13T11:22:37.855Z"}
+{"error":"fs.createWriteStream is not a function","isVoiceInput":true,"level":"warn","message":"ElevenLabs TTS failed, falling back to HuggingFace","timestamp":"2024-12-13T11:22:37.858Z"}
+{"isVoiceInput":true,"level":"info","maxRetries":2,"message":"HuggingFace TTS started","model":"facebook/mms-tts-eng","textLength":79,"timestamp":"2024-12-13T11:22:37.859Z"}
+{"duration":1001,"fileSize":1024,"isVoiceInput":true,"level":"info","message":"HuggingFace TTS completed","model":"facebook/mms-tts-eng","outputPath":"/tmp/1734088957859_huggingface.wav","retries":0,"timestamp":"2024-12-13T11:22:38.860Z"}
+{"bufferSize":97920,"filepath":"/tmp/1734088976747.wav","guildId":"1203065884990644245","level":"info","message":"Creating WAV file","timestamp":"2024-12-13T11:22:56.749Z","userId":"422749762060550154"}
+{"event":"transcribe_start","guildId":"1203065884990644245","level":"info","message":"Voice event: transcribe_start","timestamp":"2024-12-13T11:22:56.780Z","userId":"422749762060550154"}
+{"event":"stream_end","guildId":"1203065884990644245","level":"info","message":"Voice event: stream_end","timestamp":"2024-12-13T11:22:57.938Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T11:22:58.041Z","userId":"422749762060550154"}
+{"event":"transcribe_success","guildId":"1203065884990644245","length":8,"level":"info","message":"Voice event: transcribe_success","timestamp":"2024-12-13T11:22:58.234Z","userId":"422749762060550154"}
+{"isVoiceInput":true,"level":"info","message":"TTS generation started","textLength":109,"timestamp":"2024-12-13T11:22:59.137Z"}
+{"isVoiceInput":true,"level":"info","message":"ElevenLabs TTS started","textLength":109,"timestamp":"2024-12-13T11:22:59.138Z"}
+{"duration":1515,"error":"fs.createWriteStream is not a function","isVoiceInput":true,"level":"error","message":"ElevenLabs TTS failed","textLength":109,"timestamp":"2024-12-13T11:23:00.654Z"}
+{"error":"fs.createWriteStream is not a function","isVoiceInput":true,"level":"warn","message":"ElevenLabs TTS failed, falling back to HuggingFace","timestamp":"2024-12-13T11:23:00.655Z"}
+{"isVoiceInput":true,"level":"info","maxRetries":2,"message":"HuggingFace TTS started","model":"facebook/mms-tts-eng","textLength":109,"timestamp":"2024-12-13T11:23:00.655Z"}
+{"duration":1004,"fileSize":1024,"isVoiceInput":true,"level":"info","message":"HuggingFace TTS completed","model":"facebook/mms-tts-eng","outputPath":"/tmp/1734088980655_huggingface.wav","retries":0,"timestamp":"2024-12-13T11:23:01.660Z"}
+{"event":"stream_end","guildId":"1203065884990644245","level":"info","message":"Voice event: stream_end","timestamp":"2024-12-13T11:23:13.365Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T11:23:13.471Z","userId":"422749762060550154"}
+{"event":"stream_end","guildId":"1203065884990644245","level":"info","message":"Voice event: stream_end","timestamp":"2024-12-13T11:23:15.967Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T11:23:16.070Z","userId":"422749762060550154"}
+{"event":"stream_end","guildId":"1203065884990644245","level":"info","message":"Voice event: stream_end","timestamp":"2024-12-13T11:23:19.742Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T11:23:19.846Z","userId":"422749762060550154"}
+{"isVoiceChannel":true,"level":"info","message":"Processing message","prompt":"eggs?","timestamp":"2024-12-13T11:23:48.200Z","userId":"422749762060550154"}
+{"error":"Cannot read properties of undefined (reading 'ttsProvider')","level":"error","message":"Error handling message","timestamp":"2024-12-13T11:23:48.207Z"}
+{"isVoiceChannel":true,"level":"info","message":"Processing message","prompt":"eggs?","timestamp":"2024-12-13T11:23:48.571Z","userId":"422749762060550154"}
+{"isVoiceInput":false,"level":"info","message":"TTS generation started","textLength":62,"timestamp":"2024-12-13T11:23:48.571Z"}
+{"isVoiceInput":false,"level":"info","maxRetries":2,"message":"HuggingFace TTS started","model":"facebook/mms-tts-eng","textLength":62,"timestamp":"2024-12-13T11:23:48.572Z"}
+{"duration":1002,"fileSize":1024,"isVoiceInput":false,"level":"info","message":"HuggingFace TTS completed","model":"facebook/mms-tts-eng","outputPath":"/tmp/1734089028572_huggingface.wav","retries":0,"timestamp":"2024-12-13T11:23:49.575Z"}
+{"isVoiceInput":false,"level":"info","message":"TTS generation started","textLength":275,"timestamp":"2024-12-13T11:23:51.055Z"}
+{"isVoiceInput":false,"level":"info","maxRetries":2,"message":"HuggingFace TTS started","model":"facebook/mms-tts-eng","textLength":275,"timestamp":"2024-12-13T11:23:51.056Z"}
+{"duration":1003,"fileSize":1024,"isVoiceInput":false,"level":"info","message":"HuggingFace TTS completed","model":"facebook/mms-tts-eng","outputPath":"/tmp/1734089031056_huggingface.wav","retries":0,"timestamp":"2024-12-13T11:23:52.059Z"}
+{"isVoiceChannel":true,"level":"info","message":"Processing message","prompt":"maybe i can eat eggs then","timestamp":"2024-12-13T11:24:07.967Z","userId":"422749762060550154"}
+{"error":"Cannot read properties of undefined (reading 'ttsProvider')","level":"error","message":"Error handling message","timestamp":"2024-12-13T11:24:07.967Z"}
+{"isVoiceChannel":true,"level":"info","message":"Processing message","prompt":"maybe i can eat eggs then","timestamp":"2024-12-13T11:24:08.298Z","userId":"422749762060550154"}
+{"isVoiceInput":false,"level":"info","message":"TTS generation started","textLength":62,"timestamp":"2024-12-13T11:24:08.299Z"}
+{"isVoiceInput":false,"level":"info","maxRetries":2,"message":"HuggingFace TTS started","model":"facebook/mms-tts-eng","textLength":62,"timestamp":"2024-12-13T11:24:08.299Z"}
+{"duration":1002,"fileSize":1024,"isVoiceInput":false,"level":"info","message":"HuggingFace TTS completed","model":"facebook/mms-tts-eng","outputPath":"/tmp/1734089048299_huggingface.wav","retries":0,"timestamp":"2024-12-13T11:24:09.301Z"}
+{"isVoiceInput":false,"level":"info","message":"TTS generation started","textLength":275,"timestamp":"2024-12-13T11:24:10.667Z"}
+{"isVoiceInput":false,"level":"info","maxRetries":2,"message":"HuggingFace TTS started","model":"facebook/mms-tts-eng","textLength":275,"timestamp":"2024-12-13T11:24:10.668Z"}
+{"duration":1004,"fileSize":1024,"isVoiceInput":false,"level":"info","message":"HuggingFace TTS completed","model":"facebook/mms-tts-eng","outputPath":"/tmp/1734089050668_huggingface.wav","retries":0,"timestamp":"2024-12-13T11:24:11.672Z"}
+{"allowedUsers":0,"guildId":"1203065884990644245","hasAdmin":false,"level":"info","message":"Server settings saved","settingsSize":138,"timestamp":"2024-12-13T11:24:35.139Z"}
+{"level":"error","message":"Discord client error: settings.setChannel is not a function","stack":"TypeError: settings.setChannel is not a function\n    at Client.<anonymous> (/usr/src/app/src/index.js:123:16)\n    at Client.emit (node:events:517:28)\n    at VoiceStateUpdate.handle (/usr/src/app/node_modules/discord.js/src/client/actions/VoiceStateUpdate.js:38:14)\n    at module.exports [as VOICE_STATE_UPDATE] (/usr/src/app/node_modules/discord.js/src/client/websocket/handlers/VOICE_STATE_UPDATE.js:4:35)\n    at WebSocketManager.handlePacket (/usr/src/app/node_modules/discord.js/src/client/websocket/WebSocketManager.js:348:31)\n    at WebSocketManager.<anonymous> (/usr/src/app/node_modules/discord.js/src/client/websocket/WebSocketManager.js:232:12)\n    at WebSocketManager.emit (/usr/src/app/node_modules/@vladfrangu/async_event_emitter/dist/index.cjs:287:31)\n    at WebSocketShard.<anonymous> (/usr/src/app/node_modules/@discordjs/ws/dist/index.js:1190:51)\n    at WebSocketShard.emit (/usr/src/app/node_modules/@vladfrangu/async_event_emitter/dist/index.cjs:287:31)\n    at WebSocketShard.onMessage (/usr/src/app/node_modules/@discordjs/ws/dist/index.js:1005:14)","timestamp":"2024-12-13T11:26:17.328Z"}
+{"event":"disconnected","guildId":"1203065884990644245","level":"info","message":"Voice event: disconnected","timestamp":"2024-12-13T11:26:17.362Z","userId":"422749762060550154"}
+{"event":"disconnected","guildId":"1203065884990644245","level":"info","message":"Voice event: disconnected","timestamp":"2024-12-13T11:26:17.363Z","userId":"422749762060550154"}
+{"event":"disconnected","guildId":"1203065884990644245","level":"info","message":"Voice event: disconnected","timestamp":"2024-12-13T11:26:17.363Z","userId":"422749762060550154"}
+{"event":"disconnected","guildId":"1203065884990644245","level":"info","message":"Voice event: disconnected","timestamp":"2024-12-13T11:26:17.364Z","userId":"422749762060550154"}
+{"event":"disconnected","guildId":"1203065884990644245","level":"info","message":"Voice event: disconnected","timestamp":"2024-12-13T11:26:17.364Z","userId":"422749762060550154"}
+{"event":"disconnected","guildId":"1203065884990644245","level":"info","message":"Voice event: disconnected","timestamp":"2024-12-13T11:26:17.364Z","userId":"422749762060550154"}
+{"event":"disconnected","guildId":"1203065884990644245","level":"info","message":"Voice event: disconnected","timestamp":"2024-12-13T11:26:17.364Z","userId":"422749762060550154"}
+{"event":"disconnected","guildId":"1203065884990644245","level":"info","message":"Voice event: disconnected","timestamp":"2024-12-13T11:26:17.365Z","userId":"422749762060550154"}
+{"channelId":"1203065885435101268","error":"The operation was aborted","guildId":"1203065884990644245","level":"error","message":"Voice connection recovery failed","timestamp":"2024-12-13T11:26:22.374Z"}
+{"level":"info","message":"Registering slash commands...","timestamp":"2024-12-13T11:27:05.966Z"}
+{"level":"info","message":"Web server listening on port 3000","timestamp":"2024-12-13T11:27:05.969Z"}
+{"level":"info","message":"Slash commands registered successfully","timestamp":"2024-12-13T11:27:06.417Z"}
+{"channelId":"1203065885435101268","event":"joining_channel","guildId":"1203065884990644245","level":"info","message":"Voice event: joining_channel","timestamp":"2024-12-13T11:27:09.108Z","userId":"422749762060550154"}
+{"channelId":"1203065885435101268","guildId":"1203065884990644245","level":"info","message":"Voice connection ready","timestamp":"2024-12-13T11:27:09.111Z"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T11:27:09.390Z","userId":"422749762060550154"}
+{"event":"stream_end","guildId":"1203065884990644245","level":"info","message":"Voice event: stream_end","timestamp":"2024-12-13T11:27:13.646Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T11:27:13.749Z","userId":"422749762060550154"}
+{"bufferSize":97920,"filepath":"/tmp/1734089234772.wav","guildId":"1203065884990644245","level":"info","message":"Creating WAV file","timestamp":"2024-12-13T11:27:14.772Z","userId":"422749762060550154"}
+{"event":"transcribe_start","guildId":"1203065884990644245","level":"info","message":"Voice event: transcribe_start","timestamp":"2024-12-13T11:27:14.775Z","userId":"422749762060550154"}
+{"event":"stream_end","guildId":"1203065884990644245","level":"info","message":"Voice event: stream_end","timestamp":"2024-12-13T11:27:16.003Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T11:27:16.108Z","userId":"422749762060550154"}
+{"error":"Failed to transcribe audio","guildId":"1203065884990644245","level":"error","message":"Error processing audio buffer","timestamp":"2024-12-13T11:27:17.877Z","userId":"422749762060550154"}
+{"bufferSize":97920,"filepath":"/tmp/1734089244548.wav","guildId":"1203065884990644245","level":"info","message":"Creating WAV file","timestamp":"2024-12-13T11:27:24.548Z","userId":"422749762060550154"}
+{"error":"WAV file not created: /tmp/1734089244548.wav","guildId":"1203065884990644245","level":"error","message":"Error processing audio buffer","timestamp":"2024-12-13T11:27:24.551Z","userId":"422749762060550154"}
+{"event":"stream_end","guildId":"1203065884990644245","level":"info","message":"Voice event: stream_end","timestamp":"2024-12-13T11:27:25.887Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T11:27:25.991Z","userId":"422749762060550154"}
+{"bufferSize":97920,"filepath":"/tmp/1734089248964.wav","guildId":"1203065884990644245","level":"info","message":"Creating WAV file","timestamp":"2024-12-13T11:27:28.964Z","userId":"422749762060550154"}
+{"error":"WAV file not created: /tmp/1734089248964.wav","guildId":"1203065884990644245","level":"error","message":"Error processing audio buffer","timestamp":"2024-12-13T11:27:28.967Z","userId":"422749762060550154"}
+{"event":"stream_end","guildId":"1203065884990644245","level":"info","message":"Voice event: stream_end","timestamp":"2024-12-13T11:27:30.006Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T11:27:30.110Z","userId":"422749762060550154"}
+{"bufferSize":97920,"filepath":"/tmp/1734089252923.wav","guildId":"1203065884990644245","level":"info","message":"Creating WAV file","timestamp":"2024-12-13T11:27:32.924Z","userId":"422749762060550154"}
+{"event":"transcribe_start","guildId":"1203065884990644245","level":"info","message":"Voice event: transcribe_start","timestamp":"2024-12-13T11:27:32.926Z","userId":"422749762060550154"}
+{"event":"transcribe_success","guildId":"1203065884990644245","length":5,"level":"info","message":"Voice event: transcribe_success","timestamp":"2024-12-13T11:27:34.272Z","userId":"422749762060550154"}
+{"event":"stream_end","guildId":"1203065884990644245","level":"info","message":"Voice event: stream_end","timestamp":"2024-12-13T11:27:34.806Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T11:27:34.910Z","userId":"422749762060550154"}
+{"isVoiceInput":true,"level":"info","message":"TTS generation started","textLength":61,"timestamp":"2024-12-13T11:27:35.055Z"}
+{"isVoiceInput":true,"level":"info","message":"ElevenLabs TTS started","textLength":61,"timestamp":"2024-12-13T11:27:35.057Z"}
+{"duration":2272,"fileSize":53498,"isVoiceInput":true,"level":"info","message":"ElevenLabs TTS completed","outputPath":"/tmp/1734089257057_elevenlabs.mp3","timestamp":"2024-12-13T11:27:37.330Z"}
+{"event":"stream_end","guildId":"1203065884990644245","level":"info","message":"Voice event: stream_end","timestamp":"2024-12-13T11:27:39.244Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T11:27:39.348Z","userId":"422749762060550154"}
+{"event":"stream_end","guildId":"1203065884990644245","level":"info","message":"Voice event: stream_end","timestamp":"2024-12-13T11:27:46.106Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T11:27:46.208Z","userId":"422749762060550154"}
+{"bufferSize":97920,"filepath":"/tmp/1734089273060.wav","guildId":"1203065884990644245","level":"info","message":"Creating WAV file","timestamp":"2024-12-13T11:27:53.060Z","userId":"422749762060550154"}
+{"error":"WAV file not created: /tmp/1734089273060.wav","guildId":"1203065884990644245","level":"error","message":"Error processing audio buffer","timestamp":"2024-12-13T11:27:53.062Z","userId":"422749762060550154"}
+{"event":"stream_end","guildId":"1203065884990644245","level":"info","message":"Voice event: stream_end","timestamp":"2024-12-13T11:27:54.031Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T11:27:54.137Z","userId":"422749762060550154"}
+{"bufferSize":97920,"filepath":"/tmp/1734089275802.wav","guildId":"1203065884990644245","level":"info","message":"Creating WAV file","timestamp":"2024-12-13T11:27:55.802Z","userId":"422749762060550154"}
+{"event":"transcribe_start","guildId":"1203065884990644245","level":"info","message":"Voice event: transcribe_start","timestamp":"2024-12-13T11:27:55.806Z","userId":"422749762060550154"}
+{"event":"stream_end","guildId":"1203065884990644245","level":"info","message":"Voice event: stream_end","timestamp":"2024-12-13T11:27:56.847Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T11:27:56.950Z","userId":"422749762060550154"}
+{"event":"transcribe_success","guildId":"1203065884990644245","length":14,"level":"info","message":"Voice event: transcribe_success","timestamp":"2024-12-13T11:27:57.258Z","userId":"422749762060550154"}
+{"isVoiceInput":true,"level":"info","message":"TTS generation started","textLength":68,"timestamp":"2024-12-13T11:27:59.116Z"}
+{"isVoiceInput":true,"level":"info","message":"ElevenLabs TTS started","textLength":68,"timestamp":"2024-12-13T11:27:59.116Z"}
+{"duration":1471,"fileSize":64365,"isVoiceInput":true,"level":"info","message":"ElevenLabs TTS completed","outputPath":"/tmp/1734089280328_elevenlabs.mp3","timestamp":"2024-12-13T11:28:00.587Z"}
+{"event":"stream_end","guildId":"1203065884990644245","level":"info","message":"Voice event: stream_end","timestamp":"2024-12-13T11:28:32.430Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T11:28:32.536Z","userId":"422749762060550154"}
+{"allowedUsers":0,"guildId":"1203065884990644245","hasAdmin":false,"level":"info","message":"Server settings saved","settingsSize":34,"timestamp":"2024-12-13T11:28:38.618Z"}
+{"isVoiceChannel":true,"level":"info","message":"Processing message","prompt":"can you review my article?","timestamp":"2024-12-13T11:28:50.594Z","userId":"422749762060550154"}
+{"error":"Cannot read properties of undefined (reading 'ttsProvider')","level":"error","message":"Error handling message","timestamp":"2024-12-13T11:28:50.612Z"}
+{"isVoiceChannel":true,"level":"info","message":"Processing message","prompt":"can you review my article?","timestamp":"2024-12-13T11:28:50.941Z","userId":"422749762060550154"}
+{"isVoiceInput":false,"level":"info","message":"TTS generation started","textLength":74,"timestamp":"2024-12-13T11:28:50.942Z"}
+{"isVoiceInput":false,"level":"info","maxRetries":2,"message":"HuggingFace TTS started","model":"facebook/mms-tts-eng","textLength":74,"timestamp":"2024-12-13T11:28:50.942Z"}
+{"duration":1004,"fileSize":1024,"isVoiceInput":false,"level":"info","message":"HuggingFace TTS completed","model":"facebook/mms-tts-eng","outputPath":"/tmp/1734089330943_huggingface.wav","retries":0,"timestamp":"2024-12-13T11:28:51.947Z"}
+{"isVoiceInput":false,"level":"info","message":"TTS generation started","textLength":73,"timestamp":"2024-12-13T11:28:53.276Z"}
+{"isVoiceInput":false,"level":"info","maxRetries":2,"message":"HuggingFace TTS started","model":"facebook/mms-tts-eng","textLength":73,"timestamp":"2024-12-13T11:28:53.277Z"}
+{"duration":1004,"fileSize":1024,"isVoiceInput":false,"level":"info","message":"HuggingFace TTS completed","model":"facebook/mms-tts-eng","outputPath":"/tmp/1734089333277_huggingface.wav","retries":0,"timestamp":"2024-12-13T11:28:54.282Z"}
+{"isVoiceChannel":true,"level":"info","message":"Processing message","prompt":"one sec pls","timestamp":"2024-12-13T11:29:15.894Z","userId":"422749762060550154"}
+{"error":"Cannot read properties of undefined (reading 'ttsProvider')","level":"error","message":"Error handling message","timestamp":"2024-12-13T11:29:15.897Z"}
+{"isVoiceChannel":true,"level":"info","message":"Processing message","prompt":"one sec pls","timestamp":"2024-12-13T11:29:16.253Z","userId":"422749762060550154"}
+{"isVoiceInput":false,"level":"info","message":"TTS generation started","textLength":62,"timestamp":"2024-12-13T11:29:16.254Z"}
+{"isVoiceInput":false,"level":"info","maxRetries":2,"message":"HuggingFace TTS started","model":"facebook/mms-tts-eng","textLength":62,"timestamp":"2024-12-13T11:29:16.254Z"}
+{"duration":1004,"fileSize":1024,"isVoiceInput":false,"level":"info","message":"HuggingFace TTS completed","model":"facebook/mms-tts-eng","outputPath":"/tmp/1734089356255_huggingface.wav","retries":0,"timestamp":"2024-12-13T11:29:17.258Z"}
+{"isVoiceInput":false,"level":"info","message":"TTS generation started","textLength":52,"timestamp":"2024-12-13T11:29:18.633Z"}
+{"isVoiceInput":false,"level":"info","maxRetries":2,"message":"HuggingFace TTS started","model":"facebook/mms-tts-eng","textLength":52,"timestamp":"2024-12-13T11:29:18.634Z"}
+{"duration":1003,"fileSize":1024,"isVoiceInput":false,"level":"info","message":"HuggingFace TTS completed","model":"facebook/mms-tts-eng","outputPath":"/tmp/1734089358634_huggingface.wav","retries":0,"timestamp":"2024-12-13T11:29:19.637Z"}
+{"bufferSize":97920,"filepath":"/tmp/1734089382933.wav","guildId":"1203065884990644245","level":"info","message":"Creating WAV file","timestamp":"2024-12-13T11:29:42.934Z","userId":"422749762060550154"}
+{"error":"WAV file not created: /tmp/1734089382933.wav","guildId":"1203065884990644245","level":"error","message":"Error processing audio buffer","timestamp":"2024-12-13T11:29:42.948Z","userId":"422749762060550154"}
+{"event":"stream_end","guildId":"1203065884990644245","level":"info","message":"Voice event: stream_end","timestamp":"2024-12-13T11:29:44.128Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T11:29:44.236Z","userId":"422749762060550154"}
+{"event":"stream_end","guildId":"1203065884990644245","level":"info","message":"Voice event: stream_end","timestamp":"2024-12-13T11:30:25.404Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T11:30:25.518Z","userId":"422749762060550154"}
+{"level":"info","message":"Registering slash commands...","timestamp":"2024-12-13T11:31:04.865Z"}
+{"level":"info","message":"Web server listening on port 3000","timestamp":"2024-12-13T11:31:04.868Z"}
+{"level":"info","message":"Slash commands registered successfully","timestamp":"2024-12-13T11:31:05.854Z"}
+{"level":"error","message":"Discord client error: settings.setChannel is not a function","stack":"TypeError: settings.setChannel is not a function\n    at Client.<anonymous> (/usr/src/app/src/index.js:119:16)\n    at Client.emit (node:events:517:28)\n    at VoiceStateUpdate.handle (/usr/src/app/node_modules/discord.js/src/client/actions/VoiceStateUpdate.js:38:14)\n    at module.exports [as VOICE_STATE_UPDATE] (/usr/src/app/node_modules/discord.js/src/client/websocket/handlers/VOICE_STATE_UPDATE.js:4:35)\n    at WebSocketManager.handlePacket (/usr/src/app/node_modules/discord.js/src/client/websocket/WebSocketManager.js:348:31)\n    at WebSocketManager.<anonymous> (/usr/src/app/node_modules/discord.js/src/client/websocket/WebSocketManager.js:232:12)\n    at WebSocketManager.emit (/usr/src/app/node_modules/@vladfrangu/async_event_emitter/dist/index.cjs:287:31)\n    at WebSocketShard.<anonymous> (/usr/src/app/node_modules/@discordjs/ws/dist/index.js:1190:51)\n    at WebSocketShard.emit (/usr/src/app/node_modules/@vladfrangu/async_event_emitter/dist/index.cjs:287:31)\n    at WebSocketShard.onMessage (/usr/src/app/node_modules/@discordjs/ws/dist/index.js:1005:14)","timestamp":"2024-12-13T11:31:08.825Z"}
+{"channelId":"1203065885435101268","event":"joining_channel","guildId":"1203065884990644245","level":"info","message":"Voice event: joining_channel","timestamp":"2024-12-13T11:31:11.331Z","userId":"422749762060550154"}
+{"channelId":"1203065885435101268","guildId":"1203065884990644245","level":"info","message":"Voice connection ready","timestamp":"2024-12-13T11:31:11.334Z"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T11:31:11.677Z","userId":"422749762060550154"}
+{"bufferSize":97920,"filepath":"/tmp/1734089474866.wav","guildId":"1203065884990644245","level":"info","message":"Creating WAV file","timestamp":"2024-12-13T11:31:14.866Z","userId":"422749762060550154"}
+{"event":"transcribe_start","guildId":"1203065884990644245","level":"info","message":"Voice event: transcribe_start","timestamp":"2024-12-13T11:31:14.873Z","userId":"422749762060550154"}
+{"event":"transcribe_success","guildId":"1203065884990644245","length":4,"level":"info","message":"Voice event: transcribe_success","timestamp":"2024-12-13T11:31:16.268Z","userId":"422749762060550154"}
+{"isVoiceInput":true,"level":"info","message":"TTS generation started","textLength":26,"timestamp":"2024-12-13T11:31:17.002Z"}
+{"isVoiceInput":true,"level":"info","message":"ElevenLabs TTS started","textLength":26,"timestamp":"2024-12-13T11:31:17.003Z"}
+{"event":"stream_end","guildId":"1203065884990644245","level":"info","message":"Voice event: stream_end","timestamp":"2024-12-13T11:31:17.771Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T11:31:17.878Z","userId":"422749762060550154"}
+{"duration":1046,"fileSize":25077,"isVoiceInput":true,"level":"info","message":"ElevenLabs TTS completed","outputPath":"/tmp/1734089477779_elevenlabs.mp3","timestamp":"2024-12-13T11:31:18.050Z"}
+{"event":"stream_end","guildId":"1203065884990644245","level":"info","message":"Voice event: stream_end","timestamp":"2024-12-13T11:31:20.630Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T11:31:20.736Z","userId":"422749762060550154"}
+{"event":"stream_end","guildId":"1203065884990644245","level":"info","message":"Voice event: stream_end","timestamp":"2024-12-13T11:31:37.417Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T11:31:37.524Z","userId":"422749762060550154"}
+{"allowedUsers":0,"guildId":"1203065884990644245","hasAdmin":false,"level":"info","message":"Server settings saved","settingsSize":34,"timestamp":"2024-12-13T11:31:42.068Z"}
+{"isVoiceChannel":true,"level":"info","message":"Processing message","prompt":"no I said what are you doing?","timestamp":"2024-12-13T11:31:53.670Z","userId":"422749762060550154"}
+{"isVoiceInput":false,"level":"info","message":"TTS generation started","textLength":65,"timestamp":"2024-12-13T11:31:53.672Z"}
+{"isVoiceInput":false,"level":"info","maxRetries":2,"message":"HuggingFace TTS started","model":"facebook/mms-tts-eng","textLength":65,"timestamp":"2024-12-13T11:31:53.672Z"}
+{"duration":1005,"fileSize":1024,"isVoiceInput":false,"level":"info","message":"HuggingFace TTS completed","model":"facebook/mms-tts-eng","outputPath":"/tmp/1734089513673_huggingface.wav","retries":0,"timestamp":"2024-12-13T11:31:54.678Z"}
+{"isVoiceInput":false,"level":"info","message":"TTS generation started","textLength":140,"timestamp":"2024-12-13T11:31:55.914Z"}
+{"isVoiceInput":false,"level":"info","maxRetries":2,"message":"HuggingFace TTS started","model":"facebook/mms-tts-eng","textLength":140,"timestamp":"2024-12-13T11:31:55.914Z"}
+{"duration":1002,"fileSize":1024,"isVoiceInput":false,"level":"info","message":"HuggingFace TTS completed","model":"facebook/mms-tts-eng","outputPath":"/tmp/1734089515915_huggingface.wav","retries":0,"timestamp":"2024-12-13T11:31:56.916Z"}
+{"event":"stream_end","guildId":"1203065884990644245","level":"info","message":"Voice event: stream_end","timestamp":"2024-12-13T11:32:13.278Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T11:32:13.385Z","userId":"422749762060550154"}
+{"isVoiceChannel":true,"level":"info","message":"Processing message","prompt":"what?","timestamp":"2024-12-13T11:32:30.124Z","userId":"422749762060550154"}
+{"isVoiceInput":false,"level":"info","message":"TTS generation started","textLength":65,"timestamp":"2024-12-13T11:32:30.126Z"}
+{"isVoiceInput":false,"level":"info","maxRetries":2,"message":"HuggingFace TTS started","model":"facebook/mms-tts-eng","textLength":65,"timestamp":"2024-12-13T11:32:30.126Z"}
+{"duration":1005,"fileSize":1024,"isVoiceInput":false,"level":"info","message":"HuggingFace TTS completed","model":"facebook/mms-tts-eng","outputPath":"/tmp/1734089550127_huggingface.wav","retries":0,"timestamp":"2024-12-13T11:32:31.132Z"}
+{"isVoiceInput":false,"level":"info","message":"TTS generation started","textLength":101,"timestamp":"2024-12-13T11:32:32.357Z"}
+{"isVoiceInput":false,"level":"info","maxRetries":2,"message":"HuggingFace TTS started","model":"facebook/mms-tts-eng","textLength":101,"timestamp":"2024-12-13T11:32:32.358Z"}
+{"duration":1006,"fileSize":1024,"isVoiceInput":false,"level":"info","message":"HuggingFace TTS completed","model":"facebook/mms-tts-eng","outputPath":"/tmp/1734089552358_huggingface.wav","retries":0,"timestamp":"2024-12-13T11:32:33.365Z"}
+{"event":"stream_end","guildId":"1203065884990644245","level":"info","message":"Voice event: stream_end","timestamp":"2024-12-13T11:32:39.719Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T11:32:39.821Z","userId":"422749762060550154"}
+{"allowedUsers":0,"guildId":"1203065884990644245","hasAdmin":false,"level":"info","message":"Server settings saved","settingsSize":34,"timestamp":"2024-12-13T11:33:05.604Z"}
+{"isVoiceChannel":true,"level":"info","message":"Processing message","prompt":"tell me a story","timestamp":"2024-12-13T11:33:12.387Z","userId":"422749762060550154"}
+{"isVoiceInput":false,"level":"info","message":"TTS generation started","textLength":62,"timestamp":"2024-12-13T11:33:12.388Z"}
+{"isVoiceInput":false,"level":"info","maxRetries":2,"message":"HuggingFace TTS started","model":"facebook/mms-tts-eng","textLength":62,"timestamp":"2024-12-13T11:33:12.388Z"}
+{"duration":1003,"fileSize":1024,"isVoiceInput":false,"level":"info","message":"HuggingFace TTS completed","model":"facebook/mms-tts-eng","outputPath":"/tmp/1734089592389_huggingface.wav","retries":0,"timestamp":"2024-12-13T11:33:13.391Z"}
+{"isVoiceInput":false,"level":"info","message":"TTS generation started","textLength":319,"timestamp":"2024-12-13T11:33:15.985Z"}
+{"isVoiceInput":false,"level":"info","maxRetries":2,"message":"HuggingFace TTS started","model":"facebook/mms-tts-eng","textLength":319,"timestamp":"2024-12-13T11:33:15.986Z"}
+{"duration":1004,"fileSize":1024,"isVoiceInput":false,"level":"info","message":"HuggingFace TTS completed","model":"facebook/mms-tts-eng","outputPath":"/tmp/1734089595986_huggingface.wav","retries":0,"timestamp":"2024-12-13T11:33:16.990Z"}
+{"bufferSize":97920,"filepath":"/tmp/1734089622278.wav","guildId":"1203065884990644245","level":"info","message":"Creating WAV file","timestamp":"2024-12-13T11:33:42.284Z","userId":"422749762060550154"}
+{"event":"transcribe_start","guildId":"1203065884990644245","level":"info","message":"Voice event: transcribe_start","timestamp":"2024-12-13T11:33:42.295Z","userId":"422749762060550154"}
+{"event":"transcribe_success","guildId":"1203065884990644245","length":4,"level":"info","message":"Voice event: transcribe_success","timestamp":"2024-12-13T11:33:43.888Z","userId":"422749762060550154"}
+{"event":"stream_end","guildId":"1203065884990644245","level":"info","message":"Voice event: stream_end","timestamp":"2024-12-13T11:33:44.179Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T11:33:44.283Z","userId":"422749762060550154"}
+{"isVoiceInput":true,"level":"info","message":"TTS generation started","textLength":110,"timestamp":"2024-12-13T11:33:44.849Z"}
+{"isVoiceInput":true,"level":"info","message":"ElevenLabs TTS started","textLength":110,"timestamp":"2024-12-13T11:33:44.850Z"}
+{"duration":1801,"fileSize":92786,"isVoiceInput":true,"level":"info","message":"ElevenLabs TTS completed","outputPath":"/tmp/1734089626405_elevenlabs.mp3","timestamp":"2024-12-13T11:33:46.652Z"}
+{"isVoiceChannel":true,"level":"info","message":"Processing message","prompt":"tell me a joke with 3 words","timestamp":"2024-12-13T11:35:16.274Z","userId":"422749762060550154"}
+{"isVoiceInput":false,"level":"info","message":"TTS generation started","textLength":62,"timestamp":"2024-12-13T11:35:16.277Z"}
+{"isVoiceInput":false,"level":"info","maxRetries":2,"message":"HuggingFace TTS started","model":"facebook/mms-tts-eng","textLength":62,"timestamp":"2024-12-13T11:35:16.277Z"}
+{"duration":1005,"fileSize":1024,"isVoiceInput":false,"level":"info","message":"HuggingFace TTS completed","model":"facebook/mms-tts-eng","outputPath":"/tmp/1734089716278_huggingface.wav","retries":0,"timestamp":"2024-12-13T11:35:17.283Z"}
+{"isVoiceInput":false,"level":"info","message":"TTS generation started","textLength":61,"timestamp":"2024-12-13T11:35:18.506Z"}
+{"isVoiceInput":false,"level":"info","maxRetries":2,"message":"HuggingFace TTS started","model":"facebook/mms-tts-eng","textLength":61,"timestamp":"2024-12-13T11:35:18.506Z"}
+{"duration":1002,"fileSize":1024,"isVoiceInput":false,"level":"info","message":"HuggingFace TTS completed","model":"facebook/mms-tts-eng","outputPath":"/tmp/1734089718506_huggingface.wav","retries":0,"timestamp":"2024-12-13T11:35:19.508Z"}
+{"level":"info","message":"Registering slash commands...","timestamp":"2024-12-13T11:37:34.416Z"}
+{"level":"info","message":"Web server listening on port 3000","timestamp":"2024-12-13T11:37:34.420Z"}
+{"level":"info","message":"Slash commands registered successfully","timestamp":"2024-12-13T11:37:34.879Z"}
+{"level":"error","message":"Discord client error: settings.setChannel is not a function","stack":"TypeError: settings.setChannel is not a function\n    at Client.<anonymous> (/usr/src/app/src/index.js:119:16)\n    at Client.emit (node:events:517:28)\n    at VoiceStateUpdate.handle (/usr/src/app/node_modules/discord.js/src/client/actions/VoiceStateUpdate.js:38:14)\n    at module.exports [as VOICE_STATE_UPDATE] (/usr/src/app/node_modules/discord.js/src/client/websocket/handlers/VOICE_STATE_UPDATE.js:4:35)\n    at WebSocketManager.handlePacket (/usr/src/app/node_modules/discord.js/src/client/websocket/WebSocketManager.js:348:31)\n    at WebSocketManager.<anonymous> (/usr/src/app/node_modules/discord.js/src/client/websocket/WebSocketManager.js:232:12)\n    at WebSocketManager.emit (/usr/src/app/node_modules/@vladfrangu/async_event_emitter/dist/index.cjs:287:31)\n    at WebSocketShard.<anonymous> (/usr/src/app/node_modules/@discordjs/ws/dist/index.js:1190:51)\n    at WebSocketShard.emit (/usr/src/app/node_modules/@vladfrangu/async_event_emitter/dist/index.cjs:287:31)\n    at WebSocketShard.onMessage (/usr/src/app/node_modules/@discordjs/ws/dist/index.js:1005:14)","timestamp":"2024-12-13T11:37:36.944Z"}
+{"channelId":"1203065885435101268","event":"joining_channel","guildId":"1203065884990644245","level":"info","message":"Voice event: joining_channel","timestamp":"2024-12-13T11:37:39.897Z","userId":"422749762060550154"}
+{"channelId":"1203065885435101268","guildId":"1203065884990644245","level":"info","message":"Voice connection ready","timestamp":"2024-12-13T11:37:39.902Z"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T11:37:40.278Z","userId":"422749762060550154"}
+{"isVoiceChannel":true,"level":"info","message":"Processing message","prompt":"hello","timestamp":"2024-12-13T11:37:48.521Z","userId":"422749762060550154"}
+{"isVoiceInput":false,"level":"info","message":"TTS generation started","textLength":62,"timestamp":"2024-12-13T11:37:48.522Z"}
+{"isVoiceInput":false,"level":"info","maxRetries":2,"message":"HuggingFace TTS started","model":"facebook/mms-tts-eng","textLength":62,"timestamp":"2024-12-13T11:37:48.524Z"}
+{"error":"HuggingFace API error: Bad Request","level":"warn","maxRetries":2,"message":"HuggingFace TTS retry","retry":1,"timestamp":"2024-12-13T11:37:49.164Z"}
+{"error":"HuggingFace API error: Bad Request","level":"warn","maxRetries":2,"message":"HuggingFace TTS retry","retry":2,"timestamp":"2024-12-13T11:37:50.620Z"}
+{"error":"HuggingFace API error: Bad Request","level":"error","message":"TTS generation failed","provider":"huggingface_facebook","textLength":62,"timestamp":"2024-12-13T11:37:53.092Z"}
+{"error":"HuggingFace API error: Bad Request","level":"error","message":"Error handling message","timestamp":"2024-12-13T11:37:53.093Z"}
+{"level":"info","message":"Registering slash commands...","timestamp":"2024-12-13T11:38:50.245Z"}
+{"level":"info","message":"Web server listening on port 3000","timestamp":"2024-12-13T11:38:50.304Z"}
+{"level":"info","message":"Slash commands registered successfully","timestamp":"2024-12-13T11:38:50.754Z"}
+{"isVoiceChannel":true,"level":"info","message":"Processing message","prompt":"helloo","timestamp":"2024-12-13T11:38:55.155Z","userId":"422749762060550154"}
+{"isVoiceChannel":true,"level":"info","message":"Processing message","prompt":"tell me a recipe with eggs","timestamp":"2024-12-13T11:39:23.235Z","userId":"422749762060550154"}
+{"allowedUsers":0,"guildId":"1203065884990644245","hasAdmin":false,"level":"info","message":"Server settings saved","settingsSize":34,"timestamp":"2024-12-13T11:39:38.327Z"}
+{"allowedUsers":0,"guildId":"1203065884990644245","hasAdmin":false,"level":"info","message":"Server settings saved","settingsSize":34,"timestamp":"2024-12-13T11:40:00.934Z"}
+{"isVoiceChannel":true,"level":"info","message":"Processing message","prompt":"hello","timestamp":"2024-12-13T11:40:07.464Z","userId":"422749762060550154"}
+{"level":"error","message":"Discord client error: settings.setChannel is not a function","stack":"TypeError: settings.setChannel is not a function\n    at Client.<anonymous> (/usr/src/app/src/index.js:119:16)\n    at Client.emit (node:events:517:28)\n    at VoiceStateUpdate.handle (/usr/src/app/node_modules/discord.js/src/client/actions/VoiceStateUpdate.js:38:14)\n    at module.exports [as VOICE_STATE_UPDATE] (/usr/src/app/node_modules/discord.js/src/client/websocket/handlers/VOICE_STATE_UPDATE.js:4:35)\n    at WebSocketManager.handlePacket (/usr/src/app/node_modules/discord.js/src/client/websocket/WebSocketManager.js:348:31)\n    at WebSocketManager.<anonymous> (/usr/src/app/node_modules/discord.js/src/client/websocket/WebSocketManager.js:232:12)\n    at WebSocketManager.emit (/usr/src/app/node_modules/@vladfrangu/async_event_emitter/dist/index.cjs:287:31)\n    at WebSocketShard.<anonymous> (/usr/src/app/node_modules/@discordjs/ws/dist/index.js:1190:51)\n    at WebSocketShard.emit (/usr/src/app/node_modules/@vladfrangu/async_event_emitter/dist/index.cjs:287:31)\n    at WebSocketShard.onMessage (/usr/src/app/node_modules/@discordjs/ws/dist/index.js:1005:14)","timestamp":"2024-12-13T11:40:15.552Z"}
+{"level":"info","message":"Registering slash commands...","timestamp":"2024-12-13T11:41:38.844Z"}
+{"level":"info","message":"Web server listening on port 3000","timestamp":"2024-12-13T11:41:38.846Z"}
+{"level":"info","message":"Slash commands registered successfully","timestamp":"2024-12-13T11:41:39.206Z"}
+{"channelId":"1203065885435101268","event":"joining_channel","guildId":"1203065884990644245","level":"info","message":"Voice event: joining_channel","timestamp":"2024-12-13T11:41:44.687Z","userId":"422749762060550154"}
+{"channelId":"1203065885435101268","guildId":"1203065884990644245","level":"info","message":"Voice connection ready","timestamp":"2024-12-13T11:41:44.690Z"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T11:41:45.008Z","userId":"422749762060550154"}
+{"bufferSize":97920,"filepath":"/tmp/1734090107131.wav","guildId":"1203065884990644245","level":"info","message":"Creating WAV file","timestamp":"2024-12-13T11:41:47.131Z","userId":"422749762060550154"}
+{"event":"transcribe_start","guildId":"1203065884990644245","level":"info","message":"Voice event: transcribe_start","timestamp":"2024-12-13T11:41:47.138Z","userId":"422749762060550154"}
+{"event":"stream_end","guildId":"1203065884990644245","level":"info","message":"Voice event: stream_end","timestamp":"2024-12-13T11:41:48.069Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T11:41:48.174Z","userId":"422749762060550154"}
+{"event":"transcribe_success","guildId":"1203065884990644245","length":8,"level":"info","message":"Voice event: transcribe_success","timestamp":"2024-12-13T11:41:48.271Z","userId":"422749762060550154"}
+{"isVoiceInput":true,"level":"info","message":"TTS generation started","textLength":26,"timestamp":"2024-12-13T11:41:49.035Z"}
+{"isVoiceInput":true,"level":"info","message":"ElevenLabs TTS started","textLength":26,"timestamp":"2024-12-13T11:41:49.037Z"}
+{"duration":1021,"fileSize":22987,"isVoiceInput":true,"level":"info","message":"ElevenLabs TTS completed","outputPath":"/tmp/1734090109835_elevenlabs.mp3","timestamp":"2024-12-13T11:41:50.059Z"}
+{"audioPath":"/tmp/1734090109835_elevenlabs.mp3","level":"info","message":"Playing audio response","timestamp":"2024-12-13T11:41:50.060Z"}
+{"audioPath":"/tmp/1734090109835_elevenlabs.mp3","level":"info","message":"Started playing audio","timestamp":"2024-12-13T11:41:50.081Z"}
+{"audioPath":"/tmp/1734090109835_elevenlabs.mp3","level":"info","message":"Finished playing audio","timestamp":"2024-12-13T11:41:51.623Z"}
+{"event":"stream_end","guildId":"1203065884990644245","level":"info","message":"Voice event: stream_end","timestamp":"2024-12-13T11:41:52.215Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T11:41:52.319Z","userId":"422749762060550154"}
+{"allowedUsers":0,"guildId":"1203065884990644245","hasAdmin":false,"level":"info","message":"Server settings saved","settingsSize":34,"timestamp":"2024-12-13T11:42:00.219Z"}
+{"bufferSize":97920,"filepath":"/tmp/1734090123962.wav","guildId":"1203065884990644245","level":"info","message":"Creating WAV file","timestamp":"2024-12-13T11:42:03.962Z","userId":"422749762060550154"}
+{"event":"transcribe_start","guildId":"1203065884990644245","level":"info","message":"Voice event: transcribe_start","timestamp":"2024-12-13T11:42:03.967Z","userId":"422749762060550154"}
+{"event":"stream_end","guildId":"1203065884990644245","level":"info","message":"Voice event: stream_end","timestamp":"2024-12-13T11:42:05.236Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T11:42:05.341Z","userId":"422749762060550154"}
+{"event":"transcribe_success","guildId":"1203065884990644245","length":16,"level":"info","message":"Voice event: transcribe_success","timestamp":"2024-12-13T11:42:05.573Z","userId":"422749762060550154"}
+{"isVoiceInput":true,"level":"info","message":"TTS generation started","textLength":35,"timestamp":"2024-12-13T11:42:06.746Z"}
+{"isVoiceInput":true,"level":"info","message":"ElevenLabs TTS started","textLength":35,"timestamp":"2024-12-13T11:42:06.747Z"}
+{"duration":1123,"fileSize":28003,"isVoiceInput":true,"level":"info","message":"ElevenLabs TTS completed","outputPath":"/tmp/1734090127594_elevenlabs.mp3","timestamp":"2024-12-13T11:42:07.869Z"}
+{"audioPath":"/tmp/1734090127594_elevenlabs.mp3","level":"info","message":"Playing audio response","timestamp":"2024-12-13T11:42:07.870Z"}
+{"audioPath":"/tmp/1734090127594_elevenlabs.mp3","level":"info","message":"Started playing audio","timestamp":"2024-12-13T11:42:07.889Z"}
+{"audioPath":"/tmp/1734090127594_elevenlabs.mp3","level":"info","message":"Finished playing audio","timestamp":"2024-12-13T11:42:09.750Z"}

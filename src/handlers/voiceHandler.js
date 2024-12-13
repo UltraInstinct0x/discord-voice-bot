@@ -297,28 +297,84 @@ class VoiceHandler {
   async playResponse(audioPath, connection) {
     return new Promise((resolve, reject) => {
       try {
+        logger.info("Playing audio response", { audioPath });
+        
+        if (!fs.existsSync(audioPath)) {
+          throw new Error(`Audio file not found: ${audioPath}`);
+        }
+
+        const stats = fs.statSync(audioPath);
+        if (stats.size === 0) {
+          throw new Error(`Audio file is empty: ${audioPath}`);
+        }
+
         const player = createAudioPlayer();
         const resource = createAudioResource(audioPath, {
           inputType: StreamType.Arbitrary,
           inlineVolume: true
         });
 
-        player.play(resource);
-        connection.subscribe(player);
+        if (!resource) {
+          throw new Error('Failed to create audio resource');
+        }
 
-        player.on('stateChange', (oldState, newState) => {
-          if (newState.status === 'idle') {
-            player.stop();
-            resolve();
+        resource.volume?.setVolume(1); // Set volume to 100%
+
+        const subscription = connection.subscribe(player);
+        if (!subscription) {
+          throw new Error('Failed to subscribe to audio player');
+        }
+
+        player.on(AudioPlayerStatus.Playing, () => {
+          logger.info("Started playing audio", { audioPath });
+        });
+
+        player.on(AudioPlayerStatus.Idle, () => {
+          logger.info("Finished playing audio", { audioPath });
+          try {
+            fs.unlinkSync(audioPath); // Clean up the audio file
+          } catch (error) {
+            logger.warn("Failed to clean up audio file", { 
+              error: error.message,
+              audioPath 
+            });
           }
+          subscription.unsubscribe(); // Clean up subscription
+          player.stop();
+          resolve();
         });
 
         player.on('error', (error) => {
-          logger.error('Error playing audio:', { error: error.message });
+          logger.error('Error playing audio:', { 
+            error: error.message,
+            audioPath 
+          });
+          try {
+            fs.unlinkSync(audioPath); // Clean up the audio file even on error
+          } catch (unlinkError) {
+            logger.warn("Failed to clean up audio file after error", { 
+              error: unlinkError.message,
+              audioPath 
+            });
+          }
+          subscription.unsubscribe(); // Clean up subscription
           reject(error);
         });
+
+        player.play(resource);
       } catch (error) {
-        logger.error('Error setting up audio playback:', { error: error.message });
+        logger.error('Error setting up audio playback:', { 
+          error: error.message,
+          audioPath 
+        });
+        try {
+          fs.unlinkSync(audioPath); // Clean up the audio file on setup error
+        } catch (unlinkError) {
+          logger.warn("Failed to clean up audio file after setup error", { 
+            error: unlinkError.message,
+            audioPath 
+          });
+        }
         reject(error);
       }
     });

@@ -5,9 +5,13 @@ const ttsService = require("../services/ttsService");
 const { generateInitialResponse } = require("../utils/responseUtils");
 const { CONFIG, RESPONSE_CONFIG } = require("../config/config");
 const logger = require("../utils/logger");
+const fs = require("fs");
 
 class MessageHandler {
   async handleMessage(message, settings, clients) {
+    let initialResponsePath = null;
+    let audioPath = null;
+    
     try {
       // Only respond to messages where bot is mentioned
       if (!message.mentions.has(message.client.user)) return;
@@ -29,7 +33,6 @@ class MessageHandler {
         message.member?.voice.channel?.id === connection.joinConfig.channelId;
 
       // Generate initial or thinking response based on message length
-      let initialResponsePath;
       if (prompt.length > RESPONSE_CONFIG.LONG_RESPONSE_THRESHOLD) {
         const thinkingResponse = RESPONSE_CONFIG.THINKING_RESPONSES[
           Math.floor(Math.random() * RESPONSE_CONFIG.THINKING_RESPONSES.length)
@@ -44,6 +47,7 @@ class MessageHandler {
       // Play initial response if in voice channel
       if (isInSameVoiceChannel && initialResponsePath) {
         await voiceHandler.playResponse(initialResponsePath, connection);
+        initialResponsePath = null; // playResponse will clean up the file
       }
 
       // Generate AI response
@@ -69,8 +73,11 @@ class MessageHandler {
         });
         
         // Generate and play TTS for summary
-        const audioPath = await ttsService.generateTTS(ttsResponse, settings.ttsProvider);
-        await voiceHandler.playResponse(audioPath, connection);
+        audioPath = await ttsService.generateTTS(ttsResponse, settings.ttsProvider);
+        if (audioPath) {
+          await voiceHandler.playResponse(audioPath, connection);
+          audioPath = null; // playResponse will clean up the file
+        }
       } else {
         // For shorter responses, handle normally
         await message.reply({
@@ -83,13 +90,42 @@ class MessageHandler {
           }]
         });
         if (isInSameVoiceChannel) {
-          const audioPath = await ttsService.generateTTS(aiResponse, settings.ttsProvider);
-          await voiceHandler.playResponse(audioPath, connection);
+          audioPath = await ttsService.generateTTS(aiResponse, settings.ttsProvider);
+          if (audioPath) {
+            await voiceHandler.playResponse(audioPath, connection);
+            audioPath = null; // playResponse will clean up the file
+          }
         }
       }
     } catch (error) {
-      logger.error("Error handling message", { error: error.message });
-      await message.reply("Sorry, I encountered an error while processing your request.");
+      logger.error("Error handling message", { 
+        error: error.message,
+        userId: message.author.id,
+        guildId: message.guild.id
+      });
+      await message.reply({
+        embeds: [{
+          color: 0xFF6B6B,
+          description: "Sorry, I encountered an error while processing your request.",
+          footer: {
+            text: "Please try again in a moment"
+          }
+        }]
+      });
+    } finally {
+      // Clean up any leftover audio files
+      for (const path of [initialResponsePath, audioPath]) {
+        if (path) {
+          try {
+            fs.unlinkSync(path);
+          } catch (error) {
+            logger.warn("Failed to clean up audio file", {
+              error: error.message,
+              path
+            });
+          }
+        }
+      }
     }
   }
 

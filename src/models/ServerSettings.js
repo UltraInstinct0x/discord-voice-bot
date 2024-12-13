@@ -79,3 +79,5 @@ class ServerSettings {
         return settings;
     }
 }
+
+module.exports = ServerSettings;

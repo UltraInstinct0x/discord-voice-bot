@@ -76,6 +76,10 @@ registerCommands();
 client.on(Events.MessageCreate, async (message) => {
   if (message.author.bot) return;
 
+  // Get settings for all message types
+  const settings = getUserSettings(message.author.id, message.guild.id);
+  const clients = { openai, groq, anthropic, voice };
+
   // Handle legacy !machine command
   if (message.content.toLowerCase() === '!machine') {
     await commandHandler.handleLegacyCommand(message);
@@ -84,7 +88,8 @@ client.on(Events.MessageCreate, async (message) => {
 
   // Handle normal messages (mentions, etc)
   if (message.mentions.has(client.user)) {
-    await messageHandler.handleMessage(message);
+    await messageHandler.handleMessage(message, settings, clients);
+    return;
   }
 
   // Handle voice bot commands
@@ -94,15 +99,6 @@ client.on(Events.MessageCreate, async (message) => {
     await commandHandler.handleCommand(message, command, args);
     return;
   }
-
-  // Handle normal messages
-  const settings = getUserSettings(message.author.id, message.guild.id);
-  await messageHandler.handleMessage(message, settings, {
-    openai,
-    groq,
-    anthropic,
-    voice,
-  });
 });
 
 // Command handler
@@ -118,25 +114,25 @@ client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
     voiceHandler.cleanup();
     
     // Clear channel reference in settings
-    const settings = settingsService.getServerSettings(oldState.guild.id);
+    const settings = await settingsService.getServerSettings(oldState.guild.id);
     if (settings) {
       settings.setChannel(null);
-      await settingsService.saveServerSettings(oldState.guild.id);
+      await settingsService.saveSettings(oldState.guild.id, settings);
     }
   }
 
   // Handle user leaving voice channel
   if (oldState.channel && !newState.channel) {
-    const settings = settingsService.getServerSettings(oldState.guild.id);
+    const settings = await settingsService.getServerSettings(oldState.guild.id);
     if (settings && settings.adminId === oldState.member.id) {
       const timeoutDuration = PERMISSIONS.TIMEOUTS.VOICE_SESSION;
       setTimeout(async () => {
-        const currentSettings = settingsService.getServerSettings(oldState.guild.id);
+        const currentSettings = await settingsService.getServerSettings(oldState.guild.id);
         if (currentSettings && 
             currentSettings.adminId === oldState.member.id && 
             !oldState.member.voice.channel) {
           currentSettings.setAdmin(null);
-          await settingsService.saveServerSettings(oldState.guild.id);
+          await settingsService.saveSettings(oldState.guild.id, currentSettings);
           if (oldState.channel) {
             oldState.channel.send("Bot admin has been reset due to inactivity.");
           }

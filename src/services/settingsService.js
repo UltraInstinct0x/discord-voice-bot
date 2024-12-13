@@ -1,6 +1,7 @@
 const logger = require('../utils/logger');
 const fs = require('fs').promises;
 const path = require('path');
+const ServerSettings = require('../models/ServerSettings');
 
 class SettingsService {
     constructor() {
@@ -24,10 +25,11 @@ class SettingsService {
         const filepath = this.getSettingsPath(guildId);
         try {
             const data = await fs.readFile(filepath, 'utf8');
-            return JSON.parse(data);
+            const jsonData = JSON.parse(data);
+            return ServerSettings.fromJSON(jsonData);
         } catch (error) {
             if (error.code === 'ENOENT') {
-                return this.getDefaultSettings();
+                return new ServerSettings(guildId);
             }
             throw error;
         }
@@ -36,12 +38,12 @@ class SettingsService {
     async saveSettings(guildId, settings) {
         const filepath = this.getSettingsPath(guildId);
         try {
-            await fs.writeFile(filepath, JSON.stringify(settings, null, 2));
+            await fs.writeFile(filepath, JSON.stringify(settings.toJSON(), null, 2));
             logger.info('Server settings saved', {
                 guildId,
                 settingsSize: JSON.stringify(settings).length,
                 hasAdmin: !!settings.adminId,
-                allowedUsers: settings.allowedUsers?.length || 0
+                allowedUsers: settings.allowedUsers?.size || 0
             });
         } catch (error) {
             logger.error('Error saving settings', {
@@ -52,16 +54,8 @@ class SettingsService {
         }
     }
 
-    getDefaultSettings() {
-        return {
-            tier: 'FREE',
-            model: 'GPT35',
-            ttsProvider: 'huggingface_facebook',
-            maxTokens: 100,
-            streaming: false,
-            allowedUsers: [],
-            adminId: null
-        };
+    getDefaultSettings(guildId) {
+        return new ServerSettings(guildId);
     }
 
     async getServerSettings(guildId) {
@@ -73,40 +67,24 @@ class SettingsService {
     }
 
     async updateServerSettings(guildId, updates) {
-        const currentSettings = await this.getServerSettings(guildId);
-        const newSettings = { ...currentSettings, ...updates };
+        const settings = await this.getServerSettings(guildId);
         
-        // Validate settings
-        if (updates.model) {
-            if (!this.isModelAllowedForTier(updates.model, newSettings.tier)) {
-                throw new Error('model_not_allowed');
+        // Update settings
+        Object.entries(updates).forEach(([key, value]) => {
+            if (typeof settings[key] !== 'undefined') {
+                settings[key] = value;
             }
-        }
+        });
         
-        await this.saveSettings(guildId, newSettings);
-        this.settings.set(guildId, newSettings);
-        return newSettings;
-    }
-
-    isModelAllowedForTier(model, tier) {
-        const tierModels = {
-            'FREE': ['GPT35'],
-            'PREMIUM': ['GPT35', 'GPT4', 'CLAUDE', 'MIXTRAL']
-        };
-        return tierModels[tier]?.includes(model) || false;
+        await this.saveSettings(guildId, settings);
+        return settings;
     }
 
     async initializeGuildSettings(guildId, adminId) {
-        const settings = this.getDefaultSettings();
-        settings.adminId = adminId;
+        const settings = new ServerSettings(guildId);
+        settings.setAdmin(adminId);
         await this.saveSettings(guildId, settings);
         this.settings.set(guildId, settings);
-        
-        logger.info('Initialized guild settings with admin', {
-            guildId,
-            adminId
-        });
-        
         return settings;
     }
 
@@ -114,18 +92,11 @@ class SettingsService {
         const settings = await this.getServerSettings(guildId);
         
         if (settings.adminId !== currentAdminId) {
-            throw new Error('not_admin');
+            throw new Error('unauthorized');
         }
         
-        settings.adminId = newAdminId;
+        settings.setAdmin(newAdminId);
         await this.saveSettings(guildId, settings);
-        
-        logger.info('Admin rights transferred', {
-            guildId,
-            previousAdmin: currentAdminId,
-            newAdmin: newAdminId
-        });
-        
         return settings;
     }
 }

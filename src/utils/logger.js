@@ -23,4 +23,38 @@ const logger = winston.createLogger({
   ],
 });
 
-module.exports = logger;
+// Helper functions for structured logging
+function logVoiceEvent(event, userId, guildId, metadata = {}) {
+  logger.info(`Voice event: ${event}`, {
+    userId,
+    guildId,
+    event,
+    ...metadata,
+  });
+}
+
+function logInteraction(level, message, context = {}) {
+  logger[level](message, context);
+}
+
+function logCommand(command, userId, guildId, success = true, error = null) {
+  const level = success ? 'info' : 'error';
+  const message = `Command executed: ${command}`;
+  const context = {
+    userId,
+    guildId,
+    success,
+    ...(error && { error: error.message || error }),
+  };
+  logger[level](message, context);
+}
+
+module.exports = {
+  error: logger.error.bind(logger),
+  warn: logger.warn.bind(logger),
+  info: logger.info.bind(logger),
+  debug: logger.debug.bind(logger),
+  logVoiceEvent,
+  logInteraction,
+  logCommand
+};

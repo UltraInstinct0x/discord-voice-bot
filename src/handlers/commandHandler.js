@@ -26,6 +26,8 @@ class CommandHandler {
                     return this.handleSettingsCommand(interaction, settings);
                 case 'test':
                     return this.handleTestCommand(interaction, settings);
+                case 'setprovider':
+                    return this.handleSetProviderCommand(interaction, settings);
                 default:
                     return interaction.reply({
                         content: '❌ Unknown command',
@@ -127,6 +129,33 @@ class CommandHandler {
             content: `🔄 Testing ${feature} feature...`,
             ephemeral: true
         });
+    }
+
+    async handleSetProviderCommand(interaction, settings) {
+        const provider = interaction.options.getString('provider');
+        
+        try {
+            await settingsService.updateServerSettings(interaction.guild.id, {
+                ...settings,
+                ttsProvider: provider
+            });
+
+            return interaction.reply({
+                content: `✅ TTS provider set to ${provider}`,
+                ephemeral: true
+            });
+        } catch (error) {
+            logger.error('Error setting TTS provider', {
+                error: error.message,
+                provider,
+                guildId: interaction.guild.id
+            });
+
+            return interaction.reply({
+                content: '❌ Failed to set TTS provider',
+                ephemeral: true
+            });
+        }
     }
 
     // Legacy command handler for !machine command only

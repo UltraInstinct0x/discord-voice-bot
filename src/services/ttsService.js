@@ -1,6 +1,7 @@
 const path = require('path');
 const os = require('os');
-const fs = require('fs').promises;
+const fs = require('fs');
+const fsPromises = require('fs').promises;
 const logger = require('../utils/logger');
 const { CONFIG } = require('../config/config');
 const { pipeline } = require('stream/promises');
@@ -81,7 +82,7 @@ class TTSService {
             await pipeline(response.body, fileStream);
 
             const duration = Date.now() - startTime;
-            const stats = await fs.stat(outputPath);
+            const stats = await fsPromises.stat(outputPath);
 
             logger.info('ElevenLabs TTS completed', {
                 duration,
@@ -119,12 +120,29 @@ class TTSService {
             try {
                 const outputPath = path.join(os.tmpdir(), `${Date.now()}_huggingface.wav`);
                 
-                // Call HuggingFace TTS API here
-                // For now, we'll simulate it with a delay
-                await new Promise(resolve => setTimeout(resolve, 1000));
+                const response = await fetch(
+                    'https://api-inference.huggingface.co/models/facebook/mms-tts-eng',
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            inputs: text,
+                        }),
+                    }
+                );
+
+                if (!response.ok) {
+                    throw new Error(`HuggingFace API error: ${response.statusText}`);
+                }
+
+                const arrayBuffer = await response.arrayBuffer();
+                await fs.promises.writeFile(outputPath, Buffer.from(arrayBuffer));
                 
                 const duration = Date.now() - startTime;
-                const stats = { size: 1024 }; // Simulated file size
+                const stats = await fs.promises.stat(outputPath);
 
                 logger.info('HuggingFace TTS completed', {
                     model: 'facebook/mms-tts-eng',

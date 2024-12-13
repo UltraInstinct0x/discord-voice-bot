@@ -23,6 +23,22 @@ const commands = [
         ),
     ),
   new SlashCommandBuilder()
+    .setName("setprovider")
+    .setDescription("Set TTS provider")
+    .addStringOption((option) =>
+      option
+        .setName("provider")
+        .setDescription("Choose TTS provider")
+        .setRequired(true)
+        .addChoices(
+          { name: "ElevenLabs", value: "elevenlabs" },
+          { name: "Facebook MMS", value: "huggingface_facebook" },
+          { name: "Facebook FastSpeech2", value: "huggingface_fastspeech" },
+          { name: "Coqui XTTS-v2", value: "huggingface_coqui" },
+          { name: "Indic TTS", value: "huggingface_indic" },
+        ),
+    ),
+  new SlashCommandBuilder()
     .setName("test")
     .setDescription("Test the bot's functionality")
     .addStringOption((option) =>
@@ -47,22 +63,6 @@ const commands = [
         .addChoices(
           { name: "Free", value: "FREE" },
           { name: "Premium", value: "PREMIUM" },
-        ),
-    ),
-  new SlashCommandBuilder()
-    .setName("setprovider")
-    .setDescription("Set TTS provider")
-    .addStringOption((option) =>
-      option
-        .setName("provider")
-        .setDescription("Choose TTS provider")
-        .setRequired(true)
-        .addChoices(
-          { name: "ElevenLabs", value: "elevenlabs" },
-          { name: "Facebook MMS", value: "huggingface_facebook" },
-          { name: "Facebook FastSpeech2", value: "huggingface_fastspeech" },
-          { name: "Coqui XTTS-v2", value: "huggingface_coqui" },
-          { name: "Indic TTS", value: "huggingface_indic" },
         ),
     ),
   new SlashCommandBuilder()
