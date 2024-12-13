@@ -72,21 +72,20 @@ function getUserSettings(userId, guildId) {
 // Register slash commands
 registerCommands();
 
-// Command handlers
-client.on(Events.InteractionCreate, async (interaction) => {
-  if (!interaction.isCommand()) return;
-  const settings = getUserSettings(interaction.user.id, interaction.guild.id);
-  await messageHandler.handleInteraction(interaction, settings, {
-    openai,
-    groq,
-    anthropic,
-    voice,
-  });
-});
-
 // Message handler
 client.on(Events.MessageCreate, async (message) => {
   if (message.author.bot) return;
+
+  // Handle legacy !machine command
+  if (message.content.toLowerCase() === '!machine') {
+    await commandHandler.handleLegacyCommand(message);
+    return;
+  }
+
+  // Handle normal messages (mentions, etc)
+  if (message.mentions.has(client.user)) {
+    await messageHandler.handleMessage(message);
+  }
 
   // Handle voice bot commands
   if (message.content.startsWith('!')) {
@@ -104,6 +103,12 @@ client.on(Events.MessageCreate, async (message) => {
     anthropic,
     voice,
   });
+});
+
+// Command handler
+client.on(Events.InteractionCreate, async (interaction) => {
+  if (!interaction.isCommand()) return;
+  await commandHandler.handleInteraction(interaction);
 });
 
 // Voice state update handler

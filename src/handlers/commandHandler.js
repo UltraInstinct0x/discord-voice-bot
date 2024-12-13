@@ -1,156 +1,140 @@
 const { PERMISSIONS } = require('../config/permissions');
 const settingsService = require('../services/settingsService');
 const logger = require('../utils/logger');
+const messageHandler = require('./messageHandler');
 
 class CommandHandler {
-    async handleCommand(message, command, args) {
-        const guildId = message.guild.id;
-        const userId = message.author.id;
-        const settings = settingsService.getServerSettings(guildId);
+    async handleInteraction(interaction) {
+        if (!interaction.isCommand()) return;
 
-        switch (command) {
-            case 'listen':
-                return this.handleListenCommand(message, args, settings);
-            case 'config':
-                return this.handleConfigCommand(message, settings);
-            case 'transfer-admin':
-                return this.handleTransferAdminCommand(message, args, settings);
-            case 'status':
-                return this.handleStatusCommand(message, settings);
-            case 'mute':
-            case 'unmute':
-                return this.handleMuteCommand(message, command === 'mute', settings);
-            default:
-                return message.reply('Unknown command. Use !help for available commands.');
+        const { commandName } = interaction;
+        const guildId = interaction.guild.id;
+        const userId = interaction.user.id;
+
+        try {
+            // Get settings asynchronously
+            const settings = await settingsService.getServerSettings(guildId);
+
+            switch (commandName) {
+                case 'agentic':
+                    return this.handleAgenticCommand(interaction, settings);
+                case 'model':
+                    return this.handleModelCommand(interaction, settings);
+                case 'settier':
+                    return this.handleSetTierCommand(interaction, settings);
+                case 'settings':
+                    return this.handleSettingsCommand(interaction, settings);
+                case 'test':
+                    return this.handleTestCommand(interaction, settings);
+                default:
+                    return interaction.reply({
+                        content: '❌ Unknown command',
+                        ephemeral: true
+                    });
+            }
+        } catch (error) {
+            logger.error('Error handling interaction', {
+                error: error.message,
+                command: commandName,
+                options: interaction.options?._hoistedOptions || [],
+                userId,
+                guildId
+            });
+
+            return interaction.reply({
+                content: '❌ An error occurred while processing your command',
+                ephemeral: true
+            });
         }
     }
 
-    async handleListenCommand(message, args, settings) {
-        if (!this.checkAdminPermission(message, settings)) return;
+    async handleAgenticCommand(interaction, settings) {
+        const member = interaction.member;
+        const voiceChannel = member.voice.channel;
 
-        const subcommand = args[0]?.toLowerCase();
-        switch (subcommand) {
-            case 'add':
-                const userToAdd = message.mentions.users.first();
-                if (!userToAdd) return message.reply(PERMISSIONS.ERRORS.INVALID_USER);
-                
-                await settingsService.updateServerSettings(settings.guildId, (settings) => {
-                    settings.addAllowedUser(userToAdd.id);
+        if (!voiceChannel) {
+            return interaction.reply({
+                content: '❌ You need to be in a voice channel first!',
+                ephemeral: true
+            });
+        }
+
+        // Toggle voice connection
+        await messageHandler.handleMachineCommand(interaction, settings);
+        return interaction.reply({
+            content: '✅ Voice connection toggled',
+            ephemeral: true
+        });
+    }
+
+    async handleModelCommand(interaction, settings) {
+        const model = interaction.options.getString('model');
+        
+        try {
+            await settingsService.updateServerSettings(interaction.guild.id, { model });
+            return interaction.reply({
+                content: `✅ Model updated to ${model}`,
+                ephemeral: true
+            });
+        } catch (error) {
+            if (error.message.includes('model_not_allowed')) {
+                return interaction.reply({
+                    content: '❌ This model is not available in your current tier',
+                    ephemeral: true
                 });
-                return message.reply(`${PERMISSIONS.SUCCESS.USER_ADDED} <@${userToAdd.id}>`);
-
-            case 'remove':
-                const userToRemove = message.mentions.users.first();
-                if (!userToRemove) return message.reply(PERMISSIONS.ERRORS.INVALID_USER);
-                
-                await settingsService.updateServerSettings(settings.guildId, (settings) => {
-                    settings.removeAllowedUser(userToRemove.id);
-                });
-                return message.reply(`${PERMISSIONS.SUCCESS.USER_REMOVED} <@${userToRemove.id}>`);
-
-            case 'everyone':
-                await settingsService.updateServerSettings(settings.guildId, (settings) => {
-                    settings.setListeningMode(true);
-                });
-                return message.reply(PERMISSIONS.SUCCESS.LISTENING_EVERYONE);
-
-            case 'whitelist':
-                await settingsService.updateServerSettings(settings.guildId, (settings) => {
-                    settings.setListeningMode(false);
-                });
-                return message.reply(PERMISSIONS.SUCCESS.LISTENING_WHITELIST);
-
-            default:
-                return message.reply('Available subcommands: add @user, remove @user, everyone, whitelist');
+            }
+            throw error;
         }
     }
 
-    async handleConfigCommand(message, settings) {
-        if (!this.checkAdminPermission(message, settings)) return;
-
-        const allowedUsers = Array.from(settings.allowedUsers)
-            .map(id => `<@${id}>`)
-            .join(', ');
-
-        return message.reply({
-            embeds: [{
-                color: 0x0099ff,
-                title: 'Voice Bot Configuration',
-                fields: [
-                    {
-                        name: 'Admin',
-                        value: settings.adminId ? `<@${settings.adminId}>` : 'None'
-                    },
-                    {
-                        name: 'Listening Mode',
-                        value: settings.isListeningToEveryone ? 'Everyone' : 'Whitelist'
-                    },
-                    {
-                        name: 'Allowed Users',
-                        value: allowedUsers || 'None'
-                    },
-                    {
-                        name: 'Status',
-                        value: settings.isMuted ? 'Muted' : 'Active'
-                    },
-                    {
-                        name: 'Voice Settings',
-                        value: `Language: ${settings.voiceSettings.language}\nVoice ID: ${settings.voiceSettings.voiceId}`
-                    }
-                ]
-            }]
-        });
-    }
-
-    async handleTransferAdminCommand(message, args, settings) {
-        if (!this.checkAdminPermission(message, settings)) return;
-
-        const newAdmin = message.mentions.users.first();
-        if (!newAdmin) return message.reply(PERMISSIONS.ERRORS.INVALID_USER);
-
-        await settingsService.updateServerSettings(settings.guildId, (settings) => {
-            settings.setAdmin(newAdmin.id);
-        });
-        return message.reply(`${PERMISSIONS.SUCCESS.ADMIN_TRANSFERRED} <@${newAdmin.id}>`);
-    }
-
-    async handleStatusCommand(message, settings) {
-        const allowedStatus = settings.isUserAllowed(message.author.id) ? 'Allowed' : 'Not Allowed';
-        const adminStatus = settings.adminId === message.author.id ? 'Yes' : 'No';
-
-        return message.reply({
-            embeds: [{
-                color: 0x0099ff,
-                title: 'Your Voice Bot Status',
-                fields: [
-                    {
-                        name: 'Permission Status',
-                        value: allowedStatus
-                    },
-                    {
-                        name: 'Admin Status',
-                        value: adminStatus
-                    }
-                ]
-            }]
-        });
-    }
-
-    async handleMuteCommand(message, mute, settings) {
-        if (!this.checkAdminPermission(message, settings)) return;
-
-        await settingsService.updateServerSettings(settings.guildId, (settings) => {
-            settings.setMuted(mute);
-        });
-        return message.reply(mute ? PERMISSIONS.SUCCESS.MUTED : PERMISSIONS.SUCCESS.UNMUTED);
-    }
-
-    checkAdminPermission(message, settings) {
-        if (settings.adminId !== message.author.id) {
-            message.reply(PERMISSIONS.ERRORS.NOT_ADMIN);
-            return false;
+    async handleSetTierCommand(interaction, settings) {
+        const tier = interaction.options.getString('tier');
+        
+        try {
+            await settingsService.updateServerSettings(interaction.guild.id, { tier });
+            return interaction.reply({
+                content: `✅ Tier updated to ${tier}`,
+                ephemeral: true
+            });
+        } catch (error) {
+            throw error;
         }
-        return true;
+    }
+
+    async handleSettingsCommand(interaction, settings) {
+        const embed = {
+            color: 0x0099ff,
+            title: 'Current Settings',
+            fields: [
+                { name: 'Tier', value: settings.tier || 'FREE', inline: true },
+                { name: 'Model', value: settings.model || 'GPT35', inline: true },
+                { name: 'TTS Provider', value: settings.ttsProvider || 'huggingface_facebook', inline: true },
+                { name: 'Max Tokens', value: settings.maxTokens?.toString() || '100', inline: true },
+                { name: 'Streaming', value: settings.streaming ? 'Enabled' : 'Disabled', inline: true }
+            ]
+        };
+
+        return interaction.reply({
+            embeds: [embed],
+            ephemeral: true
+        });
+    }
+
+    async handleTestCommand(interaction, settings) {
+        const feature = interaction.options.getString('feature');
+        
+        return interaction.reply({
+            content: `🔄 Testing ${feature} feature...`,
+            ephemeral: true
+        });
+    }
+
+    // Legacy command handler for !machine command only
+    async handleLegacyCommand(message) {
+        if (message.content.toLowerCase() === '!machine') {
+            const settings = await settingsService.getServerSettings(message.guild.id);
+            return messageHandler.handleMachineCommand(message, settings);
+        }
     }
 }
 
