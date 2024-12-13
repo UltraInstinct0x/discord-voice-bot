@@ -26,6 +26,8 @@ class VoiceHandler {
     this.currentAudioStream = null;
     this.currentOpusDecoder = null;
     this.currentSilenceInterval = null;
+    this.requestQueue = [];
+    this.isProcessingQueue = false;
   }
 
   cleanup() {
@@ -33,13 +35,60 @@ class VoiceHandler {
       clearInterval(this.currentSilenceInterval);
       this.currentSilenceInterval = null;
     }
+    if (this.currentAudioStream) {
+      this.currentAudioStream.destroy();
+      this.currentAudioStream = null;
+    }
     if (this.currentOpusDecoder) {
       this.currentOpusDecoder.destroy();
       this.currentOpusDecoder = null;
     }
-    if (this.currentAudioStream) {
-      this.currentAudioStream.destroy();
-      this.currentAudioStream = null;
+  }
+
+  async enqueueRequest(request, settings) {
+    this.requestQueue.push({ request, settings });
+    if (!this.isProcessingQueue) {
+      this.processQueue();
+    }
+  }
+
+  async processQueue() {
+    if (this.isProcessingQueue || this.requestQueue.length === 0) return;
+    this.isProcessingQueue = true;
+    const { request, settings } = this.requestQueue.shift();
+    try {
+      const aiResponse = await aiService.handleResponse(request, settings);
+      if (aiResponse.length > RESPONSE_CONFIG.LONG_RESPONSE_THRESHOLD && this.currentConnection) {
+        const summary = await aiService.handleResponse(`Summarize this in 2-3 sentences while keeping the main points: ${aiResponse}`, settings);
+        const ttsResponse = `Here's a summary: ${summary}\nCheck the chat for the complete response.`;
+        await settings.channel.send({
+          embeds: [{
+            color: 0x4CAF50,
+            description: aiResponse,
+            footer: { text: "🤖 AI Response" }
+          }]
+        });
+        const audioPath = await ttsService.generateTTS(ttsResponse, settings.ttsProvider);
+        await this.playResponse(audioPath, this.currentConnection);
+      } else {
+        await settings.channel.send({
+          embeds: [{
+            color: 0x4CAF50,
+            description: aiResponse,
+            footer: { text: "🤖 AI Response" }
+          }]
+        });
+        const audioPath = await ttsService.generateTTS(aiResponse, settings.ttsProvider);
+        await this.playResponse(audioPath, this.currentConnection);
+      }
+    } catch (error) {
+      logger.error("Error processing queue:", { error: error.message });
+      await settings.channel.send("Sorry, I encountered an error processing your request.");
+    } finally {
+      this.isProcessingQueue = false;
+      if (this.requestQueue.length > 0) {
+        this.processQueue();
+      }
     }
   }
 
@@ -69,19 +118,14 @@ class VoiceHandler {
 
     this.currentSilenceInterval = setInterval(() => {
       const now = Date.now();
-      if (
-        now - lastChunkTime > CONFIG.AUDIO_SETTINGS.silenceThreshold &&
-        !silenceStart
-      ) {
+      if (now - lastChunkTime > CONFIG.AUDIO_SETTINGS.silenceThreshold && !silenceStart) {
         silenceStart = now;
       }
 
-      if (
-        silenceStart &&
-        now - silenceStart > CONFIG.AUDIO_SETTINGS.silenceThreshold &&
-        audioBuffer.length > 0 &&
-        !isProcessing
-      ) {
+      if (silenceStart && 
+          now - silenceStart > CONFIG.AUDIO_SETTINGS.silenceThreshold && 
+          audioBuffer.length > 0 && 
+          !isProcessing) {
         isProcessing = true;
         const currentBuffer = audioBuffer;
         audioBuffer = Buffer.alloc(0);
@@ -97,13 +141,9 @@ class VoiceHandler {
     this.currentAudioStream.pipe(this.currentOpusDecoder).on("data", async (chunk) => {
       lastChunkTime = Date.now();
       if (silenceStart) silenceStart = null;
-
       audioBuffer = Buffer.concat([audioBuffer, chunk]);
 
-      if (
-        audioBuffer.length > CONFIG.AUDIO_SETTINGS.sampleRate * 2 &&
-        !isProcessing
-      ) {
+      if (audioBuffer.length > CONFIG.AUDIO_SETTINGS.sampleRate * 2 && !isProcessing) {
         isProcessing = true;
         const currentBuffer = audioBuffer;
         audioBuffer = Buffer.alloc(0);
@@ -111,7 +151,7 @@ class VoiceHandler {
         try {
           await this.processAudioBuffer(currentBuffer, connection, message);
         } catch (error) {
-          logger.error("Error processing audio:", error);
+          logger.error("Error processing audio:", { error: error.message });
         } finally {
           isProcessing = false;
         }
@@ -121,7 +161,6 @@ class VoiceHandler {
     this.currentAudioStream.on("end", () => {
       logger.info("Audio stream ended");
       this.cleanup();
-      // Restart listening
       setTimeout(() => {
         this.listenAndRespond(connection, receiver, message);
       }, 100);
@@ -138,8 +177,8 @@ class VoiceHandler {
         channelId: channel.id,
         guildId: channel.guild.id,
         adapterCreator: channel.guild.voiceAdapterCreator,
-        selfDeaf: false, // Make sure bot is not deafened
-        selfMute: false  // Make sure bot is not muted
+        selfDeaf: false,
+        selfMute: false
       });
 
       connection.on(VoiceConnectionStatus.Disconnected, async () => {
@@ -168,7 +207,6 @@ class VoiceHandler {
       const transcription = await aiService.transcribeAudio(wavFile);
       if (!transcription) return;
 
-      // Format the transcribed request with embed
       await message.channel.send({
         embeds: [{
           color: 0x4CAF50,
@@ -184,33 +222,7 @@ class VoiceHandler {
       });
 
       const settings = settingsService.getUserSettings(message.author.id);
-      
-      // Only provide initial response for long transcriptions
-      if (transcription.length > RESPONSE_CONFIG.LONG_RESPONSE_THRESHOLD) {
-        const thinkingResponse = RESPONSE_CONFIG.THINKING_RESPONSES[Math.floor(Math.random() * RESPONSE_CONFIG.THINKING_RESPONSES.length)];
-        const audioPath = await ttsService.generateTTS(thinkingResponse, settings.ttsProvider);
-        await this.playResponse(audioPath, connection);
-      }
-
-      const aiResponse = await aiService.handleResponse(transcription, settings);
-      
-      // Handle long responses differently
-      if (aiResponse.length > RESPONSE_CONFIG.LONG_RESPONSE_THRESHOLD && connection) {
-        const summary = await aiService.handleResponse(`Summarize this in 2-3 sentences while keeping the main points: ${aiResponse}`, settings);
-        const ttsResponse = `Here's a summary: ${summary}\nCheck the chat for the complete response.`;
-        
-        // Send full response in text channel
-        await message.channel.send(`🤖 Response:\n${aiResponse}`);
-        
-        // Generate and play TTS for summary
-        const audioPath = await ttsService.generateTTS(ttsResponse, settings.ttsProvider);
-        await this.playResponse(audioPath, connection);
-      } else {
-        // For shorter responses, handle normally
-        await message.channel.send(`🤖 Response:\n${aiResponse}`);
-        const audioPath = await ttsService.generateTTS(aiResponse, settings.ttsProvider);
-        await this.playResponse(audioPath, connection);
-      }
+      await this.enqueueRequest(transcription, { ...settings, channel: message.channel });
 
       fs.unlink(wavFile, (err) => {
         if (err) logger.error('Error deleting wav file:', err);

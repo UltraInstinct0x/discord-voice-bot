@@ -1,0 +1,98 @@
+const {
+  joinVoiceChannel,
+  createAudioResource,
+  createAudioPlayer,
+  StreamType,
+  AudioPlayerStatus,
+  VoiceConnectionStatus,
+  EndBehaviorType,
+  entersState,
+} = require("@discordjs/voice");
+const prism = require("prism-media");
+const path = require("path");
+const fs = require("fs");
+const os = require("os");
+const { CONFIG, RESPONSE_CONFIG } = require("../config/config");
+const aiService = require("../services/aiService");
+const ttsService = require("../services/ttsService");
+const settingsService = require("../services/settingsService");
+const { generateInitialResponse } = require("../utils/responseUtils");
+const logger = require("../utils/logger");
+const wav = require("wav");
+
+class VoiceHandler {
+  constructor() {
+    this.currentConnection = null;
+    this.currentAudioStream = null;
+    this.currentOpusDecoder = null;
+    this.currentSilenceInterval = null;
+    this.requestQueue = [];
+    this.isProcessingQueue = false;
+  }
+
+  cleanup() {
+    if (this.currentSilenceInterval) {
+      clearInterval(this.currentSilenceInterval);
+      this.currentSilenceInterval = null;
+    }
+    if (this.currentAudioStream) {
+      this.currentAudioStream.destroy();
+      this.currentAudioStream = null;
+    }
+    if (this.currentOpusDecoder) {
+      this.currentOpusDecoder.destroy();
+      this.currentOpusDecoder = null;
+    }
+  }
+
+  async enqueueRequest(request, settings) {
+    this.requestQueue.push({ request, settings });
+    if (!this.isProcessingQueue) {
+      this.processQueue();
+    }
+  }
+
+  async processQueue() {
+    if (this.isProcessingQueue || this.requestQueue.length === 0) return;
+    this.isProcessingQueue = true;
+    const { request, settings } = this.requestQueue.shift();
+    try {
+      const aiResponse = await aiService.handleResponse(request, settings);
+      if (aiResponse.length > RESPONSE_CONFIG.LONG_RESPONSE_THRESHOLD && this.currentConnection) {
+        const summary = await aiService.handleResponse(`Summarize this in 2-3 sentences while keeping the main points: ${aiResponse}`, settings);
+        const ttsResponse = `Here's a summary: ${summary}\nCheck the chat for the complete response.`;
+        await settings.channel.send(`🤖 Response:\n${aiResponse}`);
+        const audioPath = await ttsService.generateTTS(ttsResponse, settings.ttsProvider);
+        await this.playResponse(audioPath, this.currentConnection);
+      } else {
+        await settings.channel.send(`🤖 Response:\n${aiResponse}`);
+        const audioPath = await ttsService.generateTTS(aiResponse, settings.ttsProvider);
+        await this.playResponse(audioPath, this.currentConnection);
+      }
+    } catch (error) {
+      logger.error("Error processing queue:", error);
+    } finally {
+      this.isProcessingQueue = false;
+      if (this.requestQueue.length > 0) {
+        this.processQueue();
+      }
+    }
+  }
+
+  async playResponse(audioPath, connection) {
+    try {
+      const resource = createAudioResource(audioPath, { inputType: StreamType.Arbitrary });
+      const player = createAudioPlayer();
+      connection.subscribe(player);
+      player.play(resource);
+      await entersState(player, AudioPlayerStatus.Playing, 5_000);
+      player.on(AudioPlayerStatus.Idle, () => {
+        this.cleanup();
+        this.processQueue();
+      });
+    } catch (error) {
+      logger.error("Error playing response:", error);
+      this.cleanup();
+    }
+  }
+}
