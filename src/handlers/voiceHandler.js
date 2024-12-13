@@ -276,16 +276,21 @@ class VoiceHandler {
   async createWavFile(buffer, filepath) {
     return new Promise((resolve, reject) => {
       const writer = new wav.FileWriter(filepath, {
-        channels: CONFIG.AUDIO_SETTINGS.channels,
-        sampleRate: CONFIG.AUDIO_SETTINGS.sampleRate,
+        channels: 2,
+        sampleRate: 48000,
         bitDepth: 16,
+      });
+
+      writer.on('error', (err) => {
+        reject(err);
+      });
+
+      writer.on('finish', () => {
+        resolve();
       });
 
       writer.write(buffer);
       writer.end();
-
-      writer.on('finish', () => resolve());
-      writer.on('error', reject);
     });
   }
 
@@ -320,43 +325,117 @@ class VoiceHandler {
   }
 
   async joinVoiceChannel(channel) {
+    return new Promise((resolve, reject) => {
+      try {
+        logger.logVoiceEvent('joining_channel', channel.members.first()?.id, channel.guild.id, {
+          channelId: channel.id
+        });
+
+        const connection = joinVoiceChannel({
+          channelId: channel.id,
+          guildId: channel.guild.id,
+          adapterCreator: channel.guild.voiceAdapterCreator,
+          selfDeaf: false,
+          selfMute: false
+        });
+
+        connection.on(VoiceConnectionStatus.Disconnected, async () => {
+          try {
+            await Promise.race([
+              entersState(connection, VoiceConnectionStatus.Signalling, 5_000),
+              entersState(connection, VoiceConnectionStatus.Connecting, 5_000),
+            ]);
+          } catch (error) {
+            logger.error("Voice connection recovery failed", {
+              error: error.message,
+              channelId: channel.id,
+              guildId: channel.guild.id
+            });
+            connection.destroy();
+          }
+        });
+
+        resolve(connection);
+      } catch (error) {
+        logger.error("Error joining voice channel", { 
+          error: error.message,
+          channelId: channel.id,
+          guildId: channel.guild.id
+        });
+        reject(error);
+      }
+    });
+  }
+
+  async createVoiceConnection(channel) {
+    return new Promise((resolve, reject) => {
+      try {
+        const connection = joinVoiceChannel({
+          channelId: channel.id,
+          guildId: channel.guild.id,
+          adapterCreator: channel.guild.voiceAdapterCreator,
+          selfDeaf: false,
+        });
+
+        // Clear any existing listeners to prevent memory leaks
+        connection.removeAllListeners('stateChange');
+        
+        connection.on('stateChange', (oldState, newState) => {
+          const oldNetworking = Reflect.get(oldState, 'networking');
+          const newNetworking = Reflect.get(newState, 'networking');
+          
+          const networkStateChange = oldNetworking !== newNetworking;
+          
+          if (networkStateChange) {
+            const newUdp = Reflect.get(newNetworking, 'udp');
+            clearInterval(newUdp?.keepAliveInterval);
+          }
+        });
+
+        resolve(connection);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
+  async startListening(connection, message) {
     try {
-      logger.logVoiceEvent('joining_channel', channel.members.first()?.id, channel.guild.id, {
-        channelId: channel.id
+      const receiver = connection.receiver;
+      const subscription = receiver.subscribe(message.member.id, {
+        end: {
+          behavior: EndBehaviorType.AfterSilence,
+          duration: 1000, // Increase silence duration to 1 second
+        },
       });
 
-      const connection = joinVoiceChannel({
-        channelId: channel.id,
-        guildId: channel.guild.id,
-        adapterCreator: channel.guild.voiceAdapterCreator,
-        selfDeaf: false,
-        selfMute: false
+      let buffer = [];
+      let lastPacketTime = Date.now();
+      const PACKET_TIMEOUT = 2000; // 2 seconds timeout
+
+      subscription.on('data', (data) => {
+        buffer.push(data);
+        lastPacketTime = Date.now();
       });
 
-      connection.on(VoiceConnectionStatus.Disconnected, async () => {
-        try {
-          await Promise.race([
-            entersState(connection, VoiceConnectionStatus.Signalling, 5_000),
-            entersState(connection, VoiceConnectionStatus.Connecting, 5_000),
-          ]);
-        } catch (error) {
-          logger.error("Voice connection recovery failed", {
-            error: error.message,
-            channelId: channel.id,
-            guildId: channel.guild.id
-          });
-          connection.destroy();
+      subscription.on('end', async () => {
+        const currentTime = Date.now();
+        if (currentTime - lastPacketTime < PACKET_TIMEOUT && buffer.length > 0) {
+          await this.processAudioBuffer(Buffer.concat(buffer), connection, message);
         }
+        buffer = [];
+        
+        // Start listening again
+        this.startListening(connection, message);
       });
 
-      return connection;
+      return subscription;
     } catch (error) {
-      logger.error("Error joining voice channel", { 
+      logger.error('Error starting voice subscription', {
         error: error.message,
-        channelId: channel.id,
-        guildId: channel.guild.id
+        userId: message.author.id,
+        guildId: message.guild.id,
       });
-      throw error;
     }
   }
 }

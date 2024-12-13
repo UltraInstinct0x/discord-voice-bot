@@ -1,107 +1,132 @@
+const logger = require('../utils/logger');
 const fs = require('fs').promises;
 const path = require('path');
-const ServerSettings = require('../models/ServerSettings');
-const logger = require('../utils/logger');
-const { PERMISSIONS } = require('../config/permissions');
 
 class SettingsService {
     constructor() {
         this.settings = new Map();
-        this.settingsPath = path.join(__dirname, '../../data/settings');
+        this.settingsPath = path.join(process.cwd(), 'data', 'settings');
     }
 
     async initialize() {
         try {
             await fs.mkdir(this.settingsPath, { recursive: true });
-            await this.loadAllSettings();
-            this.startCleanupInterval();
         } catch (error) {
-            logger.error('Failed to initialize settings service:', error);
+            logger.error('Error creating settings directory', { error: error.message });
+        }
+    }
+
+    getSettingsPath(guildId) {
+        return path.join(this.settingsPath, `${guildId}.json`);
+    }
+
+    async loadSettings(guildId) {
+        const filepath = this.getSettingsPath(guildId);
+        try {
+            const data = await fs.readFile(filepath, 'utf8');
+            return JSON.parse(data);
+        } catch (error) {
+            if (error.code === 'ENOENT') {
+                return this.getDefaultSettings();
+            }
             throw error;
         }
     }
 
-    async loadAllSettings() {
+    async saveSettings(guildId, settings) {
+        const filepath = this.getSettingsPath(guildId);
         try {
-            const files = await fs.readdir(this.settingsPath);
-            for (const file of files) {
-                if (file.endsWith('.json')) {
-                    const guildId = file.replace('.json', '');
-                    await this.loadServerSettings(guildId);
-                }
-            }
+            await fs.writeFile(filepath, JSON.stringify(settings, null, 2));
+            logger.info('Server settings saved', {
+                guildId,
+                settingsSize: JSON.stringify(settings).length,
+                hasAdmin: !!settings.adminId,
+                allowedUsers: settings.allowedUsers?.length || 0
+            });
         } catch (error) {
-            logger.error('Error loading settings:', error);
+            logger.error('Error saving settings', {
+                error: error.message,
+                guildId
+            });
+            throw error;
         }
     }
 
-    async loadServerSettings(guildId) {
-        try {
-            const filePath = path.join(this.settingsPath, `${guildId}.json`);
-            const data = await fs.readFile(filePath, 'utf8');
-            const settingsData = JSON.parse(data);
-            this.settings.set(guildId, ServerSettings.fromJSON(settingsData));
-        } catch (error) {
-            if (error.code !== 'ENOENT') {
-                logger.error(`Error loading settings for guild ${guildId}:`, error);
-            }
-            return null;
-        }
+    getDefaultSettings() {
+        return {
+            tier: 'FREE',
+            model: 'GPT35',
+            ttsProvider: 'huggingface_facebook',
+            maxTokens: 100,
+            streaming: false,
+            allowedUsers: [],
+            adminId: null
+        };
     }
 
-    async saveServerSettings(guildId) {
-        const settings = this.settings.get(guildId);
-        if (!settings) return;
-
-        try {
-            const filePath = path.join(this.settingsPath, `${guildId}.json`);
-            await fs.writeFile(filePath, JSON.stringify(settings.toJSON(), null, 2));
-        } catch (error) {
-            logger.error(`Error saving settings for guild ${guildId}:`, error);
-        }
-    }
-
-    getServerSettings(guildId) {
+    async getServerSettings(guildId) {
         if (!this.settings.has(guildId)) {
-            const settings = new ServerSettings(guildId);
+            const settings = await this.loadSettings(guildId);
             this.settings.set(guildId, settings);
-            this.saveServerSettings(guildId);
         }
         return this.settings.get(guildId);
     }
 
-    startCleanupInterval() {
-        setInterval(() => {
-            const now = Date.now();
-            for (const [guildId, settings] of this.settings.entries()) {
-                if (now - settings.lastActive > PERMISSIONS.TIMEOUTS.ADMIN_INACTIVITY) {
-                    settings.setAdmin(null);
-                    this.saveServerSettings(guildId);
-                }
+    async updateServerSettings(guildId, updates) {
+        const currentSettings = await this.getServerSettings(guildId);
+        const newSettings = { ...currentSettings, ...updates };
+        
+        // Validate settings
+        if (updates.model) {
+            if (!this.isModelAllowedForTier(updates.model, newSettings.tier)) {
+                throw new Error('model_not_allowed');
             }
-        }, PERMISSIONS.TIMEOUTS.ADMIN_INACTIVITY);
+        }
+        
+        await this.saveSettings(guildId, newSettings);
+        this.settings.set(guildId, newSettings);
+        return newSettings;
     }
 
-    isUserAdmin(guildId, userId) {
-        const settings = this.getServerSettings(guildId);
-        return settings.adminId === userId;
+    isModelAllowedForTier(model, tier) {
+        const tierModels = {
+            'FREE': ['GPT35'],
+            'PREMIUM': ['GPT35', 'GPT4', 'CLAUDE', 'MIXTRAL']
+        };
+        return tierModels[tier]?.includes(model) || false;
     }
 
-    async updateServerSettings(guildId, updateFn) {
-        const settings = this.getServerSettings(guildId);
-        await updateFn(settings);
-        await this.saveServerSettings(guildId);
+    async initializeGuildSettings(guildId, adminId) {
+        const settings = this.getDefaultSettings();
+        settings.adminId = adminId;
+        await this.saveSettings(guildId, settings);
+        this.settings.set(guildId, settings);
+        
+        logger.info('Initialized guild settings with admin', {
+            guildId,
+            adminId
+        });
+        
         return settings;
     }
 
-    async cleanupServer(guildId) {
-        try {
-            const filePath = path.join(this.settingsPath, `${guildId}.json`);
-            await fs.unlink(filePath);
-            this.settings.delete(guildId);
-        } catch (error) {
-            logger.error(`Error cleaning up settings for guild ${guildId}:`, error);
+    async transferAdmin(guildId, currentAdminId, newAdminId) {
+        const settings = await this.getServerSettings(guildId);
+        
+        if (settings.adminId !== currentAdminId) {
+            throw new Error('not_admin');
         }
+        
+        settings.adminId = newAdminId;
+        await this.saveSettings(guildId, settings);
+        
+        logger.info('Admin rights transferred', {
+            guildId,
+            previousAdmin: currentAdminId,
+            newAdmin: newAdminId
+        });
+        
+        return settings;
     }
 }
 

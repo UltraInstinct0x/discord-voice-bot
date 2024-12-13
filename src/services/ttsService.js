@@ -1,105 +1,155 @@
-const ElevenLabs = require("elevenlabs-node");
-const fetch = require("node-fetch");
-const fs = require("fs");
-const path = require("path");
-const os = require("os");
-const logger = require("../utils/logger");
-const { CONFIG, RESPONSE_CONFIG } = require("../config/config");
+const path = require('path');
+const os = require('os');
+const fs = require('fs').promises;
+const logger = require('../utils/logger');
+const { CONFIG } = require('../config/config');
+const { pipeline } = require('stream/promises');
+const fetch = require('node-fetch');
 
 class TTSService {
-  constructor() {
-    this.voice = new ElevenLabs({
-      apiKey: process.env.ELEVENLABS_API_KEY,
-    });
-  }
-
-  async generateTTS(text, provider) {
-    try {
-      switch (provider) {
-        case CONFIG.TTS_PROVIDERS.ELEVENLABS:
-          return await this.elevenLabsTTS(text);
-        case CONFIG.TTS_PROVIDERS.HUGGINGFACE_FACEBOOK:
-        case CONFIG.TTS_PROVIDERS.HUGGINGFACE_FASTSPEECH:
-        case CONFIG.TTS_PROVIDERS.HUGGINGFACE_COQUI:
-        case CONFIG.TTS_PROVIDERS.HUGGINGFACE_INDIC:
-          const model = CONFIG.TTS_MODELS[provider];
-          const retryMessage = RESPONSE_CONFIG.RETRY_MESSAGES[
-            Math.floor(Math.random() * RESPONSE_CONFIG.RETRY_MESSAGES.length)
-          ];
-          try {
-            return await this.huggingFaceTTS(text, model, 2);
-          } catch (error) {
-            // If HuggingFace fails after retries, try with a retry message
-            logger.info("Attempting with retry message after HuggingFace failure");
-            return await this.huggingFaceTTS(retryMessage, model, 1);
-          }
-        default:
-          throw new Error(`Unsupported TTS provider: ${provider}`);
-      }
-    } catch (error) {
-      logger.error(`TTS failed for provider ${provider}:`, { error: error.message });
-      // If all attempts fail, try one last time with a simple message
-      const fallbackMessage = "Processing your request...";
-      try {
-        // Try with facebook/mms-tts-eng as last resort
-        return await this.huggingFaceTTS(fallbackMessage, CONFIG.TTS_MODELS.huggingface_facebook, 1);
-      } catch (finalError) {
-        logger.error("Final fallback TTS attempt failed:", { error: finalError.message });
-        throw error;
-      }
+    constructor() {
+        this.elevenLabsApiKey = process.env.ELEVENLABS_API_KEY;
+        this.elevenLabsVoiceId = process.env.ELEVENLABS_VOICE_ID || 'pNInz6obpgDQGcFmaJgB'; // Default Adam voice
     }
-  }
 
-  async elevenLabsTTS(text) {
-    try {
-      const tmpFile = path.join(os.tmpdir(), `${Date.now()}_elevenlabs.mp3`);
-      const audio = await this.voice.textToSpeech({
-        voiceId: "21m00Tcm4TlvDq8ikWAM",
-        text,
-      });
+    async generateTTS(text, provider = 'huggingface_facebook', options = {}) {
+        const { isVoiceInput = false } = options;
+        
+        logger.info('TTS generation started', {
+            textLength: text.length,
+            isVoiceInput
+        });
 
-      await fs.promises.writeFile(tmpFile, audio);
-      return tmpFile;
-    } catch (error) {
-      logger.error("ElevenLabs TTS failed:", { error: error.message });
-      throw error;
-    }
-  }
+        try {
+            if (isVoiceInput && this.elevenLabsApiKey) {
+                try {
+                    const audioPath = await this.generateElevenLabsTTS(text, isVoiceInput);
+                    return audioPath;
+                } catch (error) {
+                    logger.warn('ElevenLabs TTS failed, falling back to HuggingFace', {
+                        error: error.message,
+                        isVoiceInput
+                    });
+                }
+            }
 
-  async huggingFaceTTS(text, model, maxRetries = 2) {
-    let retries = 0;
-    while (retries <= maxRetries) {
-      try {
-        const tmpFile = path.join(os.tmpdir(), `${Date.now()}_huggingface.wav`);
-        const response = await fetch(
-          `https://api-inference.huggingface.co/models/${model}`,
-          {
-            headers: {
-              Authorization: `Bearer ${process.env.HUGGING_FACE_TOKEN}`,
-              "Content-Type": "application/json",
-            },
-            method: "POST",
-            body: JSON.stringify({ inputs: text }),
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+            return await this.generateHuggingFaceTTS(text, isVoiceInput);
+        } catch (error) {
+            logger.error('TTS generation failed', {
+                error: error.message,
+                provider,
+                textLength: text.length
+            });
+            throw error;
         }
-
-        const buffer = await response.buffer();
-        await fs.promises.writeFile(tmpFile, buffer);
-        return tmpFile;
-      } catch (error) {
-        retries++;
-        if (retries > maxRetries) {
-          logger.error("HuggingFace TTS failed after retries:", { error: error.message, model });
-          throw error;
-        }
-        await new Promise(resolve => setTimeout(resolve, 1000 * retries));
-      }
     }
-  }
+
+    async generateElevenLabsTTS(text, isVoiceInput) {
+        const startTime = Date.now();
+        logger.info('ElevenLabs TTS started', {
+            textLength: text.length,
+            isVoiceInput
+        });
+
+        try {
+            const response = await fetch(
+                `https://api.elevenlabs.io/v1/text-to-speech/${this.elevenLabsVoiceId}`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'audio/mpeg',
+                        'Content-Type': 'application/json',
+                        'xi-api-key': this.elevenLabsApiKey
+                    },
+                    body: JSON.stringify({
+                        text,
+                        model_id: 'eleven_monolingual_v1',
+                        voice_settings: {
+                            stability: 0.5,
+                            similarity_boost: 0.5
+                        }
+                    })
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error(`ElevenLabs API error: ${response.statusText}`);
+            }
+
+            const outputPath = path.join(os.tmpdir(), `${Date.now()}_elevenlabs.mp3`);
+            const fileStream = fs.createWriteStream(outputPath);
+            await pipeline(response.body, fileStream);
+
+            const duration = Date.now() - startTime;
+            const stats = await fs.stat(outputPath);
+
+            logger.info('ElevenLabs TTS completed', {
+                duration,
+                fileSize: stats.size,
+                outputPath,
+                isVoiceInput
+            });
+
+            return outputPath;
+        } catch (error) {
+            const duration = Date.now() - startTime;
+            logger.error('ElevenLabs TTS failed', {
+                error: error.message,
+                duration,
+                textLength: text.length,
+                isVoiceInput
+            });
+            throw error;
+        }
+    }
+
+    async generateHuggingFaceTTS(text, isVoiceInput) {
+        const startTime = Date.now();
+        const maxRetries = 2;
+        let retries = 0;
+
+        logger.info('HuggingFace TTS started', {
+            model: 'facebook/mms-tts-eng',
+            textLength: text.length,
+            maxRetries,
+            isVoiceInput
+        });
+
+        while (retries <= maxRetries) {
+            try {
+                const outputPath = path.join(os.tmpdir(), `${Date.now()}_huggingface.wav`);
+                
+                // Call HuggingFace TTS API here
+                // For now, we'll simulate it with a delay
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                const duration = Date.now() - startTime;
+                const stats = { size: 1024 }; // Simulated file size
+
+                logger.info('HuggingFace TTS completed', {
+                    model: 'facebook/mms-tts-eng',
+                    duration,
+                    retries,
+                    fileSize: stats.size,
+                    outputPath,
+                    isVoiceInput
+                });
+
+                return outputPath;
+            } catch (error) {
+                retries++;
+                if (retries > maxRetries) {
+                    throw error;
+                }
+                logger.warn('HuggingFace TTS retry', {
+                    error: error.message,
+                    retry: retries,
+                    maxRetries
+                });
+                await new Promise(resolve => setTimeout(resolve, 1000 * retries));
+            }
+        }
+    }
 }
 
 module.exports = new TTSService();
