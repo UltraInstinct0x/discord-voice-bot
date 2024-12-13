@@ -45,56 +45,18 @@ class VoiceHandler {
     }
   }
 
-  async enqueueRequest(request, settings) {
-    this.requestQueue.push({ request, settings });
-    if (!this.isProcessingQueue) {
-      this.processQueue();
-    }
-  }
-
-  async processQueue() {
-    if (this.isProcessingQueue || this.requestQueue.length === 0) return;
-    this.isProcessingQueue = true;
-    const { request, settings } = this.requestQueue.shift();
-    try {
-      const aiResponse = await aiService.handleResponse(request, settings);
-      if (aiResponse.length > RESPONSE_CONFIG.LONG_RESPONSE_THRESHOLD && this.currentConnection) {
-        const summary = await aiService.handleResponse(`Summarize this in 2-3 sentences while keeping the main points: ${aiResponse}`, settings);
-        const ttsResponse = `Here's a summary: ${summary}\nCheck the chat for the complete response.`;
-        await settings.channel.send({
-          embeds: [{
-            color: 0x4CAF50,
-            description: aiResponse,
-            footer: { text: "🤖 AI Response" }
-          }]
-        });
-        const audioPath = await ttsService.generateTTS(ttsResponse, settings.ttsProvider);
-        await this.playResponse(audioPath, this.currentConnection);
-      } else {
-        await settings.channel.send({
-          embeds: [{
-            color: 0x4CAF50,
-            description: aiResponse,
-            footer: { text: "🤖 AI Response" }
-          }]
-        });
-        const audioPath = await ttsService.generateTTS(aiResponse, settings.ttsProvider);
-        await this.playResponse(audioPath, this.currentConnection);
-      }
-    } catch (error) {
-      logger.error("Error processing queue:", { error: error.message });
-      await settings.channel.send("Sorry, I encountered an error processing your request.");
-    } finally {
-      this.isProcessingQueue = false;
-      if (this.requestQueue.length > 0) {
-        this.processQueue();
-      }
-    }
-  }
-
   async listenAndRespond(connection, receiver, message) {
     if (this.currentConnection) {
       this.cleanup();
+    }
+
+    // Initialize server settings if first time joining
+    const settings = settingsService.getServerSettings(message.guild.id);
+    if (!settings.adminId) {
+      settings.setAdmin(message.author.id);
+      settings.setChannel(message.channel.id);
+      await settingsService.saveServerSettings(message.guild.id);
+      await message.channel.send(`<@${message.author.id}> has been set as the bot admin.`);
     }
 
     this.currentConnection = connection;
@@ -166,40 +128,29 @@ class VoiceHandler {
       }, 100);
     });
 
-    connection.on(VoiceConnectionStatus.Disconnected, () => {
+    connection.on(VoiceConnectionStatus.Disconnected, async () => {
       this.cleanup();
+      const settings = settingsService.getServerSettings(message.guild.id);
+      settings.setChannel(null);
+      await settingsService.saveServerSettings(message.guild.id);
     });
   }
 
-  async joinVoiceChannel(channel) {
-    try {
-      const connection = joinVoiceChannel({
-        channelId: channel.id,
-        guildId: channel.guild.id,
-        adapterCreator: channel.guild.voiceAdapterCreator,
-        selfDeaf: false,
-        selfMute: false
-      });
-
-      connection.on(VoiceConnectionStatus.Disconnected, async () => {
-        try {
-          await Promise.race([
-            entersState(connection, VoiceConnectionStatus.Signalling, 5_000),
-            entersState(connection, VoiceConnectionStatus.Connecting, 5_000),
-          ]);
-        } catch (error) {
-          connection.destroy();
-        }
-      });
-
-      return connection;
-    } catch (error) {
-      logger.error("Error joining voice channel", { error: error.message });
-      throw error;
-    }
-  }
-
   async processAudioBuffer(buffer, connection, message) {
+    const settings = settingsService.getServerSettings(message.guild.id);
+    
+    // Check if user is allowed to interact
+    if (!settings.isUserAllowed(message.author.id)) {
+      logger.info(`Ignored audio from unauthorized user: ${message.author.username}`);
+      return;
+    }
+
+    // Check if bot is muted
+    if (settings.isMuted) {
+      logger.info("Bot is currently muted");
+      return;
+    }
+
     try {
       const wavFile = path.join(os.tmpdir(), `${Date.now()}.wav`);
       await this.createWavFile(buffer, wavFile);
@@ -221,8 +172,12 @@ class VoiceHandler {
         }]
       });
 
-      const settings = settingsService.getUserSettings(message.author.id);
-      await this.enqueueRequest(transcription, { ...settings, channel: message.channel });
+      // Enqueue the request with user settings
+      await this.enqueueRequest(transcription, {
+        ...settings.toJSON(),
+        channel: message.channel,
+        userId: message.author.id
+      });
 
       fs.unlink(wavFile, (err) => {
         if (err) logger.error('Error deleting wav file:', err);
@@ -230,6 +185,62 @@ class VoiceHandler {
     } catch (error) {
       logger.error("Error processing audio buffer", { error: error.message });
       await message.channel.send("Sorry, I had trouble processing that audio.");
+    }
+  }
+
+  async enqueueRequest(request, settings) {
+    this.requestQueue.push({ request, settings });
+    if (!this.isProcessingQueue) {
+      this.processQueue();
+    }
+  }
+
+  async processQueue() {
+    if (this.isProcessingQueue || this.requestQueue.length === 0) return;
+    this.isProcessingQueue = true;
+    const { request, settings } = this.requestQueue.shift();
+
+    try {
+      const serverSettings = settingsService.getServerSettings(settings.guildId);
+      if (serverSettings.isMuted) {
+        logger.info("Skipping response - bot is muted");
+        return;
+      }
+
+      const aiResponse = await aiService.handleResponse(request, settings);
+      if (aiResponse.length > RESPONSE_CONFIG.LONG_RESPONSE_THRESHOLD && this.currentConnection) {
+        const summary = await aiService.handleResponse(`Summarize this in 2-3 sentences while keeping the main points: ${aiResponse}`, settings);
+        const ttsResponse = `Here's a summary: ${summary}\nCheck the chat for the complete response.`;
+        
+        await settings.channel.send({
+          embeds: [{
+            color: 0x4CAF50,
+            description: aiResponse,
+            footer: { text: "🤖 AI Response" }
+          }]
+        });
+        
+        const audioPath = await ttsService.generateTTS(ttsResponse, settings.voiceSettings);
+        await this.playResponse(audioPath, this.currentConnection);
+      } else {
+        await settings.channel.send({
+          embeds: [{
+            color: 0x4CAF50,
+            description: aiResponse,
+            footer: { text: "🤖 AI Response" }
+          }]
+        });
+        
+        const audioPath = await ttsService.generateTTS(aiResponse, settings.voiceSettings);
+        await this.playResponse(audioPath, this.currentConnection);
+      }
+    } catch (error) {
+      logger.error("Error processing queue:", { error: error.message });
+    } finally {
+      this.isProcessingQueue = false;
+      if (this.requestQueue.length > 0) {
+        this.processQueue();
+      }
     }
   }
 
@@ -276,6 +287,34 @@ class VoiceHandler {
         reject(error);
       }
     });
+  }
+
+  async joinVoiceChannel(channel) {
+    try {
+      const connection = joinVoiceChannel({
+        channelId: channel.id,
+        guildId: channel.guild.id,
+        adapterCreator: channel.guild.voiceAdapterCreator,
+        selfDeaf: false,
+        selfMute: false
+      });
+
+      connection.on(VoiceConnectionStatus.Disconnected, async () => {
+        try {
+          await Promise.race([
+            entersState(connection, VoiceConnectionStatus.Signalling, 5_000),
+            entersState(connection, VoiceConnectionStatus.Connecting, 5_000),
+          ]);
+        } catch (error) {
+          connection.destroy();
+        }
+      });
+
+      return connection;
+    } catch (error) {
+      logger.error("Error joining voice channel", { error: error.message });
+      throw error;
+    }
   }
 }
 
