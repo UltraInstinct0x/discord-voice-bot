@@ -12,8 +12,11 @@ const express = require("express");
 const logger = require("./utils/logger");
 const messageHandler = require("./handlers/messageHandler");
 const voiceHandler = require("./handlers/voiceHandler");
+const commandHandler = require("./handlers/commandHandler");
+const settingsService = require("./services/settingsService");
 const { registerCommands } = require("./utils/commandRegistrar");
 const { CONFIG, RESPONSE_CONFIG } = require("./config/config");
+const { PERMISSIONS } = require("./config/permissions");
 
 // Initialize AI clients
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
@@ -46,22 +49,24 @@ const client = new Client({
   ],
 });
 
-// Initialize user settings
-const userSettings = new Map();
+// Initialize services
+settingsService.initialize().catch(error => {
+  logger.error("Failed to initialize settings service:", error);
+  process.exit(1);
+});
 
-function getUserSettings(userId) {
+function getUserSettings(userId, guildId) {
+  const serverSettings = settingsService.getServerSettings(guildId);
   const defaultSettings = {
     tier: "FREE",
     ttsProvider: CONFIG.TIERS.FREE.ttsProvider,
     streaming: CONFIG.TIERS.FREE.streaming,
     model: CONFIG.TIERS.FREE.allowedModels[0],
-    maxTokens: CONFIG.TIERS.FREE.maxTokens
+    maxTokens: CONFIG.TIERS.FREE.maxTokens,
+    ...serverSettings.voiceSettings
   };
 
-  if (!userSettings.has(userId)) {
-    userSettings.set(userId, defaultSettings);
-  }
-  return userSettings.get(userId);
+  return defaultSettings;
 }
 
 // Register slash commands
@@ -70,7 +75,7 @@ registerCommands();
 // Command handlers
 client.on(Events.InteractionCreate, async (interaction) => {
   if (!interaction.isCommand()) return;
-  const settings = getUserSettings(interaction.user.id);
+  const settings = getUserSettings(interaction.user.id, interaction.guild.id);
   await messageHandler.handleInteraction(interaction, settings, {
     openai,
     groq,
@@ -81,18 +86,18 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
 // Message handler
 client.on(Events.MessageCreate, async (message) => {
-  // Handle !machine command
-  if (message.content.toLowerCase() === "!machine") {
-    const settings = getUserSettings(message.author.id);
-    await messageHandler.handleMachineCommand(message, settings, {
-      openai,
-      groq,
-      anthropic,
-      voice,
-    });
+  if (message.author.bot) return;
+
+  // Handle voice bot commands
+  if (message.content.startsWith('!')) {
+    const args = message.content.slice(1).trim().split(/ +/);
+    const command = args.shift().toLowerCase();
+    await commandHandler.handleCommand(message, command, args);
     return;
   }
-  const settings = getUserSettings(message.author.id);
+
+  // Handle normal messages
+  const settings = getUserSettings(message.author.id, message.guild.id);
   await messageHandler.handleMessage(message, settings, {
     openai,
     groq,
@@ -106,6 +111,33 @@ client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
   // Handle bot disconnection
   if (oldState.member?.id === client.user?.id && !newState.channel) {
     voiceHandler.cleanup();
+    
+    // Clear channel reference in settings
+    const settings = settingsService.getServerSettings(oldState.guild.id);
+    if (settings) {
+      settings.setChannel(null);
+      await settingsService.saveServerSettings(oldState.guild.id);
+    }
+  }
+
+  // Handle user leaving voice channel
+  if (oldState.channel && !newState.channel) {
+    const settings = settingsService.getServerSettings(oldState.guild.id);
+    if (settings && settings.adminId === oldState.member.id) {
+      const timeoutDuration = PERMISSIONS.TIMEOUTS.VOICE_SESSION;
+      setTimeout(async () => {
+        const currentSettings = settingsService.getServerSettings(oldState.guild.id);
+        if (currentSettings && 
+            currentSettings.adminId === oldState.member.id && 
+            !oldState.member.voice.channel) {
+          currentSettings.setAdmin(null);
+          await settingsService.saveServerSettings(oldState.guild.id);
+          if (oldState.channel) {
+            oldState.channel.send("Bot admin has been reset due to inactivity.");
+          }
+        }
+      }, timeoutDuration);
+    }
   }
 });
 
