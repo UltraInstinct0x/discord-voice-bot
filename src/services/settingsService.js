@@ -97,14 +97,19 @@ class SettingsService {
     async updateServerSettings(guildId, updates) {
         const settings = await this.getServerSettings(guildId);
         
-        // Update settings
+        // Update settings using appropriate setters
         Object.entries(updates).forEach(([key, value]) => {
-            if (typeof settings[key] !== 'undefined') {
+            const setterName = `set${key.charAt(0).toUpperCase() + key.slice(1)}`;
+            if (typeof settings[setterName] === 'function') {
+                settings[setterName](value);
+            } else if (typeof settings[key] !== 'undefined') {
                 settings[key] = value;
             }
         });
         
         await this.saveSettings(guildId, settings);
+        // Update the cache
+        this.settings.set(guildId, settings);
         return settings;
     }
 
@@ -126,6 +131,60 @@ class SettingsService {
         settings.setAdmin(newAdminId);
         await this.saveSettings(guildId, settings);
         return settings;
+    }
+
+    async setModel(guildId, model) {
+        try {
+            const validModels = ['GPT35', 'GPT4', 'CLAUDE', 'MIXTRAL'];
+            if (!validModels.includes(model)) {
+                throw new Error(`Invalid AI model: ${model}`);
+            }
+
+            const settings = await this.getServerSettings(guildId);
+            settings.model = model;
+            await this.saveSettings(guildId, settings);
+            
+            logger.info('AI model updated', {
+                guildId,
+                model
+            });
+
+            return settings;
+        } catch (error) {
+            logger.error('Failed to set AI model', {
+                error: error.message,
+                model,
+                guildId
+            });
+            throw error;
+        }
+    }
+
+    async setTier(guildId, tier) {
+        try {
+            const validTiers = ['FREE', 'PREMIUM'];
+            if (!validTiers.includes(tier)) {
+                throw new Error(`Invalid tier: ${tier}`);
+            }
+
+            const settings = await this.getServerSettings(guildId);
+            settings.tier = tier;
+            await this.saveSettings(guildId, settings);
+            
+            logger.info('Tier updated', {
+                guildId,
+                tier
+            });
+
+            return settings;
+        } catch (error) {
+            logger.error('Failed to set tier', {
+                error: error.message,
+                tier,
+                guildId
+            });
+            throw error;
+        }
     }
 }
 

@@ -60,7 +60,7 @@ function getUserSettings(userId, guildId) {
     tier: "FREE",
     ttsProvider: CONFIG.DEFAULT_SETTINGS.ttsProvider,
     streaming: true,
-    model: "gpt-3.5-turbo",
+    model: "GPT35",
     maxTokens: 150
   };
 }
@@ -122,10 +122,10 @@ client.on(Events.InteractionCreate, async (interaction) => {
   }
 });
 
-// Voice state update handler
+/* Voice state update handler
 client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
   await voiceHandler.handleVoiceStateUpdate(oldState, newState);
-});
+});*/
 
 // Handle errors
 client.on(Events.Error, error => {

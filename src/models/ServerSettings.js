@@ -13,6 +13,8 @@ class ServerSettings {
         this.language = CONFIG.DEFAULT_SETTINGS.language || 'en';
         this.voiceCommand = CONFIG.DEFAULT_SETTINGS.voiceCommand || false;
         this.autoJoin = CONFIG.DEFAULT_SETTINGS.autoJoin || false;
+        this.model = 'GPT35';
+        this.tier = 'FREE';
     }
 
     setTTSProvider(provider) {
@@ -71,6 +73,16 @@ class ServerSettings {
         this.lastActive = Date.now();
     }
 
+    setModel(model) {
+        this.model = model;
+        this.lastActive = Date.now();
+    }
+
+    setTier(tier) {
+        this.tier = tier;
+        this.lastActive = Date.now();
+    }
+
     toJSON() {
         return {
             guildId: this.guildId,
@@ -83,7 +95,9 @@ class ServerSettings {
             ttsProvider: this.ttsProvider,
             language: this.language,
             voiceCommand: this.voiceCommand,
-            autoJoin: this.autoJoin
+            autoJoin: this.autoJoin,
+            model: this.model,
+            tier: this.tier
         };
     }
 
@@ -99,6 +113,8 @@ class ServerSettings {
         settings.language = data.language || CONFIG.DEFAULT_SETTINGS.language;
         settings.voiceCommand = data.voiceCommand || CONFIG.DEFAULT_SETTINGS.voiceCommand;
         settings.autoJoin = data.autoJoin || CONFIG.DEFAULT_SETTINGS.autoJoin;
+        settings.model = data.model || 'GPT35';
+        settings.tier = data.tier || 'FREE';
         return settings;
     }
 }

@@ -1140,3 +1140,322 @@
 {"audioPath":"/tmp/1734096277378_tiktok.mp3","level":"info","message":"Started playing audio","timestamp":"2024-12-13T13:24:38.493Z"}
 {"level":"error","message":"Discord client error: voiceHandler.handleVoiceStateUpdate is not a function","stack":"TypeError: voiceHandler.handleVoiceStateUpdate is not a function\n    at Client.<anonymous> (/usr/src/app/src/index.js:127:22)\n    at Client.emit (node:events:517:28)\n    at VoiceStateUpdate.handle (/usr/src/app/node_modules/discord.js/src/client/actions/VoiceStateUpdate.js:38:14)\n    at module.exports [as VOICE_STATE_UPDATE] (/usr/src/app/node_modules/discord.js/src/client/websocket/handlers/VOICE_STATE_UPDATE.js:4:35)\n    at WebSocketManager.handlePacket (/usr/src/app/node_modules/discord.js/src/client/websocket/WebSocketManager.js:348:31)\n    at WebSocketManager.<anonymous> (/usr/src/app/node_modules/discord.js/src/client/websocket/WebSocketManager.js:232:12)\n    at WebSocketManager.emit (/usr/src/app/node_modules/@vladfrangu/async_event_emitter/dist/index.cjs:287:31)\n    at WebSocketShard.<anonymous> (/usr/src/app/node_modules/@discordjs/ws/dist/index.js:1190:51)\n    at WebSocketShard.emit (/usr/src/app/node_modules/@vladfrangu/async_event_emitter/dist/index.cjs:287:31)\n    at WebSocketShard.onMessage (/usr/src/app/node_modules/@discordjs/ws/dist/index.js:1005:14)","timestamp":"2024-12-13T13:24:39.227Z"}
 {"audioPath":"/tmp/1734096277378_tiktok.mp3","level":"info","message":"Finished playing audio","timestamp":"2024-12-13T13:24:41.491Z"}
+{"envKeys":["OPENAI_API_KEY","ELEVENLABS_API_KEY","HUGGINGFACE_API_KEY","GROQ_API_KEY","ANTHROPIC_API_KEY","TIKTOK_SESSION_ID"],"hasElevenLabsKey":true,"hasHuggingFaceKey":true,"hasTiktokSession":true,"level":"info","message":"TTS Service initialized","timestamp":"2024-12-13T18:18:21.306Z"}
+{"level":"info","message":"Registering slash commands...","timestamp":"2024-12-13T18:18:21.332Z"}
+{"level":"info","message":"Web server listening on port 3000","timestamp":"2024-12-13T18:18:21.334Z"}
+{"level":"info","message":"Slash commands registered successfully","timestamp":"2024-12-13T18:18:21.746Z"}
+{"channelId":"1203065885435101268","event":"joining_channel","guildId":"1203065884990644245","level":"info","message":"Voice event: joining_channel","timestamp":"2024-12-13T18:18:29.897Z","userId":"422749762060550154"}
+{"level":"error","message":"Discord client error: voiceHandler.handleVoiceStateUpdate is not a function","stack":"TypeError: voiceHandler.handleVoiceStateUpdate is not a function\n    at Client.<anonymous> (/usr/src/app/src/index.js:127:22)\n    at Client.emit (node:events:517:28)\n    at VoiceStateUpdate.handle (/usr/src/app/node_modules/discord.js/src/client/actions/VoiceStateUpdate.js:38:14)\n    at module.exports [as VOICE_STATE_UPDATE] (/usr/src/app/node_modules/discord.js/src/client/websocket/handlers/VOICE_STATE_UPDATE.js:4:35)\n    at WebSocketManager.handlePacket (/usr/src/app/node_modules/discord.js/src/client/websocket/WebSocketManager.js:348:31)\n    at WebSocketManager.<anonymous> (/usr/src/app/node_modules/discord.js/src/client/websocket/WebSocketManager.js:232:12)\n    at WebSocketManager.emit (/usr/src/app/node_modules/@vladfrangu/async_event_emitter/dist/index.cjs:287:31)\n    at WebSocketShard.<anonymous> (/usr/src/app/node_modules/@discordjs/ws/dist/index.js:1190:51)\n    at WebSocketShard.emit (/usr/src/app/node_modules/@vladfrangu/async_event_emitter/dist/index.cjs:287:31)\n    at WebSocketShard.onMessage (/usr/src/app/node_modules/@discordjs/ws/dist/index.js:1005:14)","timestamp":"2024-12-13T18:18:30.064Z"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T18:18:30.491Z","userId":"422749762060550154"}
+{"isPremium":false,"isVoiceChannel":true,"level":"info","message":"Processing message","prompt":"okay boss","timestamp":"2024-12-13T18:18:37.613Z","userId":"422749762060550154"}
+{"isPremium":false,"isVoiceInput":false,"level":"info","message":"TTS generation started","provider":"tiktok","textLength":62,"timestamp":"2024-12-13T18:18:37.615Z"}
+{"isVoiceInput":false,"level":"info","message":"TikTok TTS started","textLength":62,"timestamp":"2024-12-13T18:18:37.616Z"}
+{"duration":1565,"fileSize":76461,"isVoiceInput":false,"level":"info","message":"TikTok TTS completed","outputPath":"/tmp/1734113917617_tiktok.mp3","timestamp":"2024-12-13T18:18:39.181Z"}
+{"audioPath":"/tmp/1734113917617_tiktok.mp3","level":"info","message":"Playing audio response","timestamp":"2024-12-13T18:18:39.182Z"}
+{"error":"Cannot read properties of undefined (reading 'provider')","level":"error","message":"Error in AI response","timestamp":"2024-12-13T18:18:39.204Z"}
+{"error":"Cannot read properties of undefined (reading 'provider')","level":"error","message":"Error handling message","timestamp":"2024-12-13T18:18:39.205Z"}
+{"audioPath":"/tmp/1734113917617_tiktok.mp3","level":"info","message":"Started playing audio","timestamp":"2024-12-13T18:18:39.222Z"}
+{"audioPath":"/tmp/1734113917617_tiktok.mp3","level":"info","message":"Finished playing audio","timestamp":"2024-12-13T18:18:44.092Z"}
+{"audioPath":"/tmp/1734113917617_tiktok.mp3","error":"ENOENT: no such file or directory, unlink '/tmp/1734113917617_tiktok.mp3'","level":"warn","message":"Failed to clean up audio file","timestamp":"2024-12-13T18:18:44.093Z"}
+{"envKeys":["OPENAI_API_KEY","ELEVENLABS_API_KEY","HUGGINGFACE_API_KEY","GROQ_API_KEY","ANTHROPIC_API_KEY","TIKTOK_SESSION_ID"],"hasElevenLabsKey":true,"hasHuggingFaceKey":true,"hasTiktokSession":true,"level":"info","message":"TTS Service initialized","timestamp":"2024-12-13T18:19:06.681Z"}
+{"level":"info","message":"Registering slash commands...","timestamp":"2024-12-13T18:19:06.705Z"}
+{"level":"info","message":"Web server listening on port 3000","timestamp":"2024-12-13T18:19:06.709Z"}
+{"level":"info","message":"Slash commands registered successfully","timestamp":"2024-12-13T18:19:07.149Z"}
+{"channelId":"1203065885435101268","event":"joining_channel","guildId":"1203065884990644245","level":"info","message":"Voice event: joining_channel","timestamp":"2024-12-13T18:19:11.865Z","userId":"422749762060550154"}
+{"level":"error","message":"Discord client error: voiceHandler.handleVoiceStateUpdate is not a function","stack":"TypeError: voiceHandler.handleVoiceStateUpdate is not a function\n    at Client.<anonymous> (/usr/src/app/src/index.js:127:22)\n    at Client.emit (node:events:517:28)\n    at VoiceStateUpdate.handle (/usr/src/app/node_modules/discord.js/src/client/actions/VoiceStateUpdate.js:38:14)\n    at module.exports [as VOICE_STATE_UPDATE] (/usr/src/app/node_modules/discord.js/src/client/websocket/handlers/VOICE_STATE_UPDATE.js:4:35)\n    at WebSocketManager.handlePacket (/usr/src/app/node_modules/discord.js/src/client/websocket/WebSocketManager.js:348:31)\n    at WebSocketManager.<anonymous> (/usr/src/app/node_modules/discord.js/src/client/websocket/WebSocketManager.js:232:12)\n    at WebSocketManager.emit (/usr/src/app/node_modules/@vladfrangu/async_event_emitter/dist/index.cjs:287:31)\n    at WebSocketShard.<anonymous> (/usr/src/app/node_modules/@discordjs/ws/dist/index.js:1190:51)\n    at WebSocketShard.emit (/usr/src/app/node_modules/@vladfrangu/async_event_emitter/dist/index.cjs:287:31)\n    at WebSocketShard.onMessage (/usr/src/app/node_modules/@discordjs/ws/dist/index.js:1005:14)","timestamp":"2024-12-13T18:19:12.036Z"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T18:19:12.210Z","userId":"422749762060550154"}
+{"channelId":"1203065885435101268","event":"joining_channel","guildId":"1203065884990644245","level":"info","message":"Voice event: joining_channel","timestamp":"2024-12-13T18:19:16.196Z","userId":"422749762060550154"}
+{"level":"error","message":"Discord client error: voiceHandler.handleVoiceStateUpdate is not a function","stack":"TypeError: voiceHandler.handleVoiceStateUpdate is not a function\n    at Client.<anonymous> (/usr/src/app/src/index.js:127:22)\n    at Client.emit (node:events:517:28)\n    at VoiceStateUpdate.handle (/usr/src/app/node_modules/discord.js/src/client/actions/VoiceStateUpdate.js:38:14)\n    at module.exports [as VOICE_STATE_UPDATE] (/usr/src/app/node_modules/discord.js/src/client/websocket/handlers/VOICE_STATE_UPDATE.js:4:35)\n    at WebSocketManager.handlePacket (/usr/src/app/node_modules/discord.js/src/client/websocket/WebSocketManager.js:348:31)\n    at WebSocketManager.<anonymous> (/usr/src/app/node_modules/discord.js/src/client/websocket/WebSocketManager.js:232:12)\n    at WebSocketManager.emit (/usr/src/app/node_modules/@vladfrangu/async_event_emitter/dist/index.cjs:287:31)\n    at WebSocketShard.<anonymous> (/usr/src/app/node_modules/@discordjs/ws/dist/index.js:1190:51)\n    at WebSocketShard.emit (/usr/src/app/node_modules/@vladfrangu/async_event_emitter/dist/index.cjs:287:31)\n    at WebSocketShard.onMessage (/usr/src/app/node_modules/@discordjs/ws/dist/index.js:1005:14)","timestamp":"2024-12-13T18:19:16.366Z"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T18:19:16.501Z","userId":"422749762060550154"}
+{"envKeys":["OPENAI_API_KEY","ELEVENLABS_API_KEY","HUGGINGFACE_API_KEY","GROQ_API_KEY","ANTHROPIC_API_KEY","TIKTOK_SESSION_ID"],"hasElevenLabsKey":true,"hasHuggingFaceKey":true,"hasTiktokSession":true,"level":"info","message":"TTS Service initialized","timestamp":"2024-12-13T18:20:42.222Z"}
+{"level":"info","message":"Registering slash commands...","timestamp":"2024-12-13T18:20:42.243Z"}
+{"level":"info","message":"Web server listening on port 3000","timestamp":"2024-12-13T18:20:42.245Z"}
+{"level":"info","message":"Slash commands registered successfully","timestamp":"2024-12-13T18:20:42.950Z"}
+{"channelId":"1203065885435101268","event":"joining_channel","guildId":"1203065884990644245","level":"info","message":"Voice event: joining_channel","timestamp":"2024-12-13T18:20:46.318Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T18:20:46.736Z","userId":"422749762060550154"}
+{"isPremium":false,"isVoiceChannel":true,"level":"info","message":"Processing message","prompt":"fiinally","timestamp":"2024-12-13T18:20:51.403Z","userId":"422749762060550154"}
+{"isPremium":false,"isVoiceInput":false,"level":"info","message":"TTS generation started","provider":"tiktok","textLength":62,"timestamp":"2024-12-13T18:20:51.404Z"}
+{"isVoiceInput":false,"level":"info","message":"TikTok TTS started","textLength":62,"timestamp":"2024-12-13T18:20:51.406Z"}
+{"duration":1529,"fileSize":76461,"isVoiceInput":false,"level":"info","message":"TikTok TTS completed","outputPath":"/tmp/1734114051406_tiktok.mp3","timestamp":"2024-12-13T18:20:52.934Z"}
+{"audioPath":"/tmp/1734114051406_tiktok.mp3","level":"info","message":"Playing audio response","timestamp":"2024-12-13T18:20:52.935Z"}
+{"audioPath":"/tmp/1734114051406_tiktok.mp3","level":"info","message":"Started playing audio","timestamp":"2024-12-13T18:20:52.965Z"}
+{"isPremium":false,"isVoiceInput":false,"level":"info","message":"TTS generation started","provider":"tiktok","textLength":278,"timestamp":"2024-12-13T18:20:54.738Z"}
+{"isVoiceInput":false,"level":"info","message":"TikTok TTS started","textLength":278,"timestamp":"2024-12-13T18:20:54.738Z"}
+{"duration":2005,"fileSize":321837,"isVoiceInput":false,"level":"info","message":"TikTok TTS completed","outputPath":"/tmp/1734114054739_tiktok.mp3","timestamp":"2024-12-13T18:20:56.743Z"}
+{"audioPath":"/tmp/1734114054739_tiktok.mp3","level":"info","message":"Playing audio response","timestamp":"2024-12-13T18:20:56.744Z"}
+{"audioPath":"/tmp/1734114054739_tiktok.mp3","level":"info","message":"Started playing audio","timestamp":"2024-12-13T18:20:56.762Z"}
+{"audioPath":"/tmp/1734114054739_tiktok.mp3","level":"info","message":"Finished playing audio","timestamp":"2024-12-13T18:21:16.977Z"}
+{"audioPath":"/tmp/1734114054739_tiktok.mp3","error":"ENOENT: no such file or directory, unlink '/tmp/1734114054739_tiktok.mp3'","level":"warn","message":"Failed to clean up audio file","timestamp":"2024-12-13T18:21:16.979Z"}
+{"envKeys":["OPENAI_API_KEY","ELEVENLABS_API_KEY","HUGGINGFACE_API_KEY","GROQ_API_KEY","ANTHROPIC_API_KEY","TIKTOK_SESSION_ID"],"hasElevenLabsKey":true,"hasHuggingFaceKey":true,"hasTiktokSession":true,"level":"info","message":"TTS Service initialized","timestamp":"2024-12-13T18:27:57.252Z"}
+{"level":"info","message":"Registering slash commands...","timestamp":"2024-12-13T18:27:57.274Z"}
+{"level":"info","message":"Web server listening on port 3000","timestamp":"2024-12-13T18:27:57.277Z"}
+{"level":"info","message":"Slash commands registered successfully","timestamp":"2024-12-13T18:27:57.710Z"}
+{"channelId":"1203065885435101268","event":"joining_channel","guildId":"1203065884990644245","level":"info","message":"Voice event: joining_channel","timestamp":"2024-12-13T18:28:18.958Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T18:28:19.356Z","userId":"422749762060550154"}
+{"isPremium":false,"isVoiceChannel":true,"level":"info","message":"Processing message","prompt":"oha","timestamp":"2024-12-13T18:28:23.413Z","userId":"422749762060550154"}
+{"isPremium":false,"isVoiceInput":false,"level":"info","message":"TTS generation started","provider":"tiktok","textLength":62,"timestamp":"2024-12-13T18:28:23.415Z"}
+{"isVoiceInput":false,"level":"info","message":"TikTok TTS started","textLength":62,"timestamp":"2024-12-13T18:28:23.416Z"}
+{"duration":1151,"fileSize":76461,"isVoiceInput":false,"level":"info","message":"TikTok TTS completed","outputPath":"/tmp/1734114503417_tiktok.mp3","timestamp":"2024-12-13T18:28:24.568Z"}
+{"audioPath":"/tmp/1734114503417_tiktok.mp3","level":"info","message":"Playing audio response","timestamp":"2024-12-13T18:28:24.569Z"}
+{"audioPath":"/tmp/1734114503417_tiktok.mp3","level":"info","message":"Started playing audio","timestamp":"2024-12-13T18:28:24.597Z"}
+{"isPremium":false,"isVoiceInput":false,"level":"info","message":"TTS generation started","provider":"tiktok","textLength":34,"timestamp":"2024-12-13T18:28:25.931Z"}
+{"isVoiceInput":false,"level":"info","message":"TikTok TTS started","textLength":34,"timestamp":"2024-12-13T18:28:25.932Z"}
+{"duration":668,"fileSize":46125,"isVoiceInput":false,"level":"info","message":"TikTok TTS completed","outputPath":"/tmp/1734114505932_tiktok.mp3","timestamp":"2024-12-13T18:28:26.600Z"}
+{"audioPath":"/tmp/1734114505932_tiktok.mp3","level":"info","message":"Playing audio response","timestamp":"2024-12-13T18:28:26.600Z"}
+{"audioPath":"/tmp/1734114505932_tiktok.mp3","level":"info","message":"Started playing audio","timestamp":"2024-12-13T18:28:26.613Z"}
+{"audioPath":"/tmp/1734114505932_tiktok.mp3","level":"info","message":"Finished playing audio","timestamp":"2024-12-13T18:28:26.751Z"}
+{"audioPath":"/tmp/1734114505932_tiktok.mp3","error":"ENOENT: no such file or directory, unlink '/tmp/1734114505932_tiktok.mp3'","level":"warn","message":"Failed to clean up audio file","timestamp":"2024-12-13T18:28:26.752Z"}
+{"isPremium":false,"isVoiceChannel":true,"level":"info","message":"Processing message","prompt":"what?","timestamp":"2024-12-13T18:28:54.611Z","userId":"422749762060550154"}
+{"isPremium":false,"isVoiceInput":false,"level":"info","message":"TTS generation started","provider":"tiktok","textLength":65,"timestamp":"2024-12-13T18:28:54.614Z"}
+{"isVoiceInput":false,"level":"info","message":"TikTok TTS started","textLength":65,"timestamp":"2024-12-13T18:28:54.615Z"}
+{"duration":1043,"fileSize":73389,"isVoiceInput":false,"level":"info","message":"TikTok TTS completed","outputPath":"/tmp/1734114534615_tiktok.mp3","timestamp":"2024-12-13T18:28:55.659Z"}
+{"audioPath":"/tmp/1734114534615_tiktok.mp3","level":"info","message":"Playing audio response","timestamp":"2024-12-13T18:28:55.659Z"}
+{"audioPath":"/tmp/1734114534615_tiktok.mp3","level":"info","message":"Started playing audio","timestamp":"2024-12-13T18:28:55.682Z"}
+{"isPremium":false,"isVoiceInput":false,"level":"info","message":"TTS generation started","provider":"tiktok","textLength":86,"timestamp":"2024-12-13T18:28:57.072Z"}
+{"isVoiceInput":false,"level":"info","message":"TikTok TTS started","textLength":86,"timestamp":"2024-12-13T18:28:57.072Z"}
+{"duration":914,"fileSize":96045,"isVoiceInput":false,"level":"info","message":"TikTok TTS completed","outputPath":"/tmp/1734114537073_tiktok.mp3","timestamp":"2024-12-13T18:28:57.986Z"}
+{"audioPath":"/tmp/1734114537073_tiktok.mp3","level":"info","message":"Playing audio response","timestamp":"2024-12-13T18:28:57.987Z"}
+{"audioPath":"/tmp/1734114537073_tiktok.mp3","level":"info","message":"Started playing audio","timestamp":"2024-12-13T18:28:58.000Z"}
+{"audioPath":"/tmp/1734114537073_tiktok.mp3","level":"info","message":"Finished playing audio","timestamp":"2024-12-13T18:29:04.112Z"}
+{"audioPath":"/tmp/1734114537073_tiktok.mp3","error":"ENOENT: no such file or directory, unlink '/tmp/1734114537073_tiktok.mp3'","level":"warn","message":"Failed to clean up audio file","timestamp":"2024-12-13T18:29:04.114Z"}
+{"envKeys":["OPENAI_API_KEY","ELEVENLABS_API_KEY","HUGGINGFACE_API_KEY","GROQ_API_KEY","ANTHROPIC_API_KEY","TIKTOK_SESSION_ID"],"hasElevenLabsKey":true,"hasHuggingFaceKey":true,"hasTiktokSession":true,"level":"info","message":"TTS Service initialized","timestamp":"2024-12-13T18:30:49.100Z"}
+{"level":"info","message":"Registering slash commands...","timestamp":"2024-12-13T18:30:49.121Z"}
+{"level":"info","message":"Web server listening on port 3000","timestamp":"2024-12-13T18:30:49.122Z"}
+{"level":"info","message":"Slash commands registered successfully","timestamp":"2024-12-13T18:30:49.571Z"}
+{"channelId":"1203065885435101268","event":"joining_channel","guildId":"1203065884990644245","level":"info","message":"Voice event: joining_channel","timestamp":"2024-12-13T18:30:52.567Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T18:30:52.851Z","userId":"422749762060550154"}
+{"error":"settingsService.updateSettings is not a function","guildId":"1203065884990644245","level":"error","message":"Error setting AI model","timestamp":"2024-12-13T18:30:58.672Z"}
+{"envKeys":["OPENAI_API_KEY","ELEVENLABS_API_KEY","HUGGINGFACE_API_KEY","GROQ_API_KEY","ANTHROPIC_API_KEY","TIKTOK_SESSION_ID"],"hasElevenLabsKey":true,"hasHuggingFaceKey":true,"hasTiktokSession":true,"level":"info","message":"TTS Service initialized","timestamp":"2024-12-13T18:32:59.523Z"}
+{"level":"info","message":"Registering slash commands...","timestamp":"2024-12-13T18:32:59.545Z"}
+{"level":"info","message":"Web server listening on port 3000","timestamp":"2024-12-13T18:32:59.548Z"}
+{"level":"info","message":"Slash commands registered successfully","timestamp":"2024-12-13T18:32:59.905Z"}
+{"error":"settingsService.updateSettings is not a function","guildId":"1203065884990644245","level":"error","message":"Error setting AI model","timestamp":"2024-12-13T18:33:18.193Z"}
+{"envKeys":["OPENAI_API_KEY","ELEVENLABS_API_KEY","HUGGINGFACE_API_KEY","GROQ_API_KEY","ANTHROPIC_API_KEY","TIKTOK_SESSION_ID"],"hasElevenLabsKey":true,"hasHuggingFaceKey":true,"hasTiktokSession":true,"level":"info","message":"TTS Service initialized","timestamp":"2024-12-13T18:34:07.615Z"}
+{"level":"info","message":"Registering slash commands...","timestamp":"2024-12-13T18:34:07.635Z"}
+{"level":"info","message":"Web server listening on port 3000","timestamp":"2024-12-13T18:34:07.637Z"}
+{"level":"info","message":"Slash commands registered successfully","timestamp":"2024-12-13T18:34:08.119Z"}
+{"allowedUsers":0,"guildId":"1203065884990644245","hasAdmin":false,"level":"info","message":"Server settings saved","settingsSize":171,"timestamp":"2024-12-13T18:34:20.971Z"}
+{"allowedUsers":0,"guildId":"1203065884990644245","hasAdmin":false,"level":"info","message":"Server settings saved","settingsSize":171,"timestamp":"2024-12-13T18:34:55.880Z"}
+{"envKeys":["OPENAI_API_KEY","ELEVENLABS_API_KEY","HUGGINGFACE_API_KEY","GROQ_API_KEY","ANTHROPIC_API_KEY","TIKTOK_SESSION_ID"],"hasElevenLabsKey":true,"hasHuggingFaceKey":true,"hasTiktokSession":true,"level":"info","message":"TTS Service initialized","timestamp":"2024-12-13T18:37:01.493Z"}
+{"level":"info","message":"Registering slash commands...","timestamp":"2024-12-13T18:37:01.517Z"}
+{"level":"info","message":"Web server listening on port 3000","timestamp":"2024-12-13T18:37:01.519Z"}
+{"level":"info","message":"Slash commands registered successfully","timestamp":"2024-12-13T18:37:02.028Z"}
+{"allowedUsers":0,"guildId":"1203065884990644245","hasAdmin":false,"level":"info","message":"Server settings saved","settingsSize":171,"timestamp":"2024-12-13T18:37:59.487Z"}
+{"allowedUsers":0,"guildId":"1203065884990644245","hasAdmin":false,"level":"info","message":"Server settings saved","settingsSize":171,"timestamp":"2024-12-13T18:38:08.109Z"}
+{"allowedUsers":0,"guildId":"1203065884990644245","hasAdmin":false,"level":"info","message":"Server settings saved","settingsSize":171,"timestamp":"2024-12-13T18:38:41.745Z"}
+{"allowedUsers":0,"guildId":"1203065884990644245","hasAdmin":false,"level":"info","message":"Server settings saved","settingsSize":169,"timestamp":"2024-12-13T18:38:48.832Z"}
+{"allowedUsers":0,"guildId":"1203065884990644245","hasAdmin":false,"level":"info","message":"Server settings saved","settingsSize":155,"timestamp":"2024-12-13T18:39:06.483Z"}
+{"allowedUsers":0,"guildId":"1203065884990644245","hasAdmin":false,"level":"info","message":"Server settings saved","settingsSize":171,"timestamp":"2024-12-13T18:40:33.986Z"}
+{"isPremium":false,"isVoiceChannel":true,"level":"info","message":"Processing message","prompt":"fastspeech?","timestamp":"2024-12-13T18:40:40.098Z","userId":"422749762060550154"}
+{"channelId":"1203065885435101268","event":"joining_channel","guildId":"1203065884990644245","level":"info","message":"Voice event: joining_channel","timestamp":"2024-12-13T18:40:49.204Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T18:40:50.920Z","userId":"422749762060550154"}
+{"isPremium":false,"isVoiceChannel":true,"level":"info","message":"Processing message","prompt":"is fast speech really fast?","timestamp":"2024-12-13T18:41:01.707Z","userId":"422749762060550154"}
+{"isPremium":false,"isVoiceInput":false,"level":"info","message":"TTS generation started","provider":"tiktok","textLength":62,"timestamp":"2024-12-13T18:41:01.708Z"}
+{"isVoiceInput":false,"level":"info","message":"TikTok TTS started","textLength":62,"timestamp":"2024-12-13T18:41:01.709Z"}
+{"duration":1103,"fileSize":76461,"isVoiceInput":false,"level":"info","message":"TikTok TTS completed","outputPath":"/tmp/1734115261709_tiktok.mp3","timestamp":"2024-12-13T18:41:02.812Z"}
+{"audioPath":"/tmp/1734115261709_tiktok.mp3","level":"info","message":"Playing audio response","timestamp":"2024-12-13T18:41:02.814Z"}
+{"audioPath":"/tmp/1734115261709_tiktok.mp3","level":"info","message":"Started playing audio","timestamp":"2024-12-13T18:41:02.853Z"}
+{"isPremium":false,"isVoiceInput":false,"level":"info","message":"TTS generation started","provider":"tiktok","textLength":453,"timestamp":"2024-12-13T18:41:05.223Z"}
+{"isVoiceInput":false,"level":"info","message":"TikTok TTS started","textLength":453,"timestamp":"2024-12-13T18:41:05.224Z"}
+{"duration":774,"error":"TikTok API error: status_code 2","isVoiceInput":false,"level":"error","message":"TikTok TTS failed","stack":"Error: TikTok API error: status_code 2\n    at TTSService.generateTikTokTTS (/usr/src/app/src/services/ttsService.js:392:23)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async TTSService.generateTTS (/usr/src/app/src/services/ttsService.js:47:39)\n    at async MessageHandler.handleMessage (/usr/src/app/src/handlers/messageHandler.js:114:21)\n    at async Client.<anonymous> (/usr/src/app/src/index.js:94:5)","timestamp":"2024-12-13T18:41:05.999Z"}
+{"error":"TikTok API error: status_code 2","isVoiceInput":false,"level":"warn","message":"TikTok TTS failed, trying HuggingFace","timestamp":"2024-12-13T18:41:05.999Z"}
+{"isVoiceInput":false,"level":"info","message":"TikTok TTS started","textLength":453,"timestamp":"2024-12-13T18:41:06.000Z"}
+{"duration":420,"error":"TikTok API error: status_code 2","isVoiceInput":false,"level":"error","message":"TikTok TTS failed","stack":"Error: TikTok API error: status_code 2\n    at TTSService.generateTikTokTTS (/usr/src/app/src/services/ttsService.js:392:23)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async TTSService.generateTTS (/usr/src/app/src/services/ttsService.js:94:39)\n    at async MessageHandler.handleMessage (/usr/src/app/src/handlers/messageHandler.js:114:21)\n    at async Client.<anonymous> (/usr/src/app/src/index.js:94:5)","timestamp":"2024-12-13T18:41:06.420Z"}
+{"error":"TikTok API error: status_code 2","isVoiceInput":false,"level":"error","message":"All TTS providers failed","timestamp":"2024-12-13T18:41:06.420Z"}
+{"error":"All TTS providers failed","isPremium":false,"level":"error","message":"TTS generation failed","provider":"tiktok","textLength":453,"timestamp":"2024-12-13T18:41:06.421Z"}
+{"error":"All TTS providers failed","level":"error","message":"Error handling message","timestamp":"2024-12-13T18:41:06.421Z"}
+{"audioPath":"/tmp/1734115261709_tiktok.mp3","level":"info","message":"Finished playing audio","timestamp":"2024-12-13T18:41:07.735Z"}
+{"audioPath":"/tmp/1734115261709_tiktok.mp3","error":"ENOENT: no such file or directory, unlink '/tmp/1734115261709_tiktok.mp3'","level":"warn","message":"Failed to clean up audio file","timestamp":"2024-12-13T18:41:07.737Z"}
+{"allowedUsers":0,"guildId":"1203065884990644245","hasAdmin":false,"level":"info","message":"Server settings saved","settingsSize":169,"timestamp":"2024-12-13T18:41:33.537Z"}
+{"isPremium":false,"isVoiceChannel":true,"level":"info","message":"Processing message","prompt":"is facebook has free tts api?","timestamp":"2024-12-13T18:41:48.897Z","userId":"422749762060550154"}
+{"isPremium":false,"isVoiceInput":false,"level":"info","message":"TTS generation started","provider":"tiktok","textLength":62,"timestamp":"2024-12-13T18:41:48.899Z"}
+{"isVoiceInput":false,"level":"info","message":"TikTok TTS started","textLength":62,"timestamp":"2024-12-13T18:41:48.899Z"}
+{"duration":1085,"fileSize":76461,"isVoiceInput":false,"level":"info","message":"TikTok TTS completed","outputPath":"/tmp/1734115308901_tiktok.mp3","timestamp":"2024-12-13T18:41:49.984Z"}
+{"audioPath":"/tmp/1734115308901_tiktok.mp3","level":"info","message":"Playing audio response","timestamp":"2024-12-13T18:41:49.985Z"}
+{"audioPath":"/tmp/1734115308901_tiktok.mp3","level":"info","message":"Started playing audio","timestamp":"2024-12-13T18:41:49.997Z"}
+{"isPremium":false,"isVoiceInput":false,"level":"info","message":"TTS generation started","provider":"tiktok","textLength":167,"timestamp":"2024-12-13T18:41:51.402Z"}
+{"isVoiceInput":false,"level":"info","message":"TikTok TTS started","textLength":167,"timestamp":"2024-12-13T18:41:51.403Z"}
+{"duration":2194,"fileSize":172077,"isVoiceInput":false,"level":"info","message":"TikTok TTS completed","outputPath":"/tmp/1734115311403_tiktok.mp3","timestamp":"2024-12-13T18:41:53.597Z"}
+{"audioPath":"/tmp/1734115311403_tiktok.mp3","level":"info","message":"Playing audio response","timestamp":"2024-12-13T18:41:53.597Z"}
+{"audioPath":"/tmp/1734115311403_tiktok.mp3","level":"info","message":"Started playing audio","timestamp":"2024-12-13T18:41:53.607Z"}
+{"audioPath":"/tmp/1734115311403_tiktok.mp3","level":"info","message":"Finished playing audio","timestamp":"2024-12-13T18:42:04.457Z"}
+{"audioPath":"/tmp/1734115311403_tiktok.mp3","error":"ENOENT: no such file or directory, unlink '/tmp/1734115311403_tiktok.mp3'","level":"warn","message":"Failed to clean up audio file","timestamp":"2024-12-13T18:42:04.461Z"}
+{"envKeys":["OPENAI_API_KEY","ELEVENLABS_API_KEY","HUGGINGFACE_API_KEY","GROQ_API_KEY","ANTHROPIC_API_KEY","TIKTOK_SESSION_ID"],"hasElevenLabsKey":true,"hasHuggingFaceKey":true,"hasTiktokSession":true,"level":"info","message":"TTS Service initialized","timestamp":"2024-12-13T18:43:47.332Z"}
+{"level":"info","message":"Registering slash commands...","timestamp":"2024-12-13T18:43:47.354Z"}
+{"level":"info","message":"Web server listening on port 3000","timestamp":"2024-12-13T18:43:47.356Z"}
+{"level":"info","message":"Slash commands registered successfully","timestamp":"2024-12-13T18:43:47.715Z"}
+{"channelId":"1203065885435101268","event":"joining_channel","guildId":"1203065884990644245","level":"info","message":"Voice event: joining_channel","timestamp":"2024-12-13T18:43:57.475Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T18:43:57.829Z","userId":"422749762060550154"}
+{"isPremium":false,"isVoiceChannel":true,"level":"info","message":"Processing message","prompt":"how to use SpeechSynthesis via huggingface?","timestamp":"2024-12-13T18:44:17.300Z","userId":"422749762060550154"}
+{"isPremium":false,"isVoiceInput":false,"level":"info","message":"TTS generation started","provider":"tiktok","textLength":72,"timestamp":"2024-12-13T18:44:17.303Z"}
+{"isVoiceInput":false,"level":"info","message":"TikTok TTS started","textLength":72,"timestamp":"2024-12-13T18:44:17.305Z"}
+{"duration":1567,"fileSize":82221,"isVoiceInput":false,"level":"info","message":"TikTok TTS completed","outputPath":"/tmp/1734115457306_tiktok.mp3","timestamp":"2024-12-13T18:44:18.872Z"}
+{"audioPath":"/tmp/1734115457306_tiktok.mp3","level":"info","message":"Playing audio response","timestamp":"2024-12-13T18:44:18.873Z"}
+{"audioPath":"/tmp/1734115457306_tiktok.mp3","level":"info","message":"Started playing audio","timestamp":"2024-12-13T18:44:18.918Z"}
+{"isPremium":false,"isVoiceInput":false,"level":"info","message":"TTS generation started","provider":"tiktok","textLength":650,"timestamp":"2024-12-13T18:44:21.084Z"}
+{"isVoiceInput":false,"level":"info","message":"TikTok TTS started","textLength":650,"timestamp":"2024-12-13T18:44:21.085Z"}
+{"duration":860,"error":"TikTok API error: status_code 2","isVoiceInput":false,"level":"error","message":"TikTok TTS failed","stack":"Error: TikTok API error: status_code 2\n    at TTSService.generateTikTokTTS (/usr/src/app/src/services/ttsService.js:392:23)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async TTSService.generateTTS (/usr/src/app/src/services/ttsService.js:47:39)\n    at async MessageHandler.handleMessage (/usr/src/app/src/handlers/messageHandler.js:114:21)\n    at async Client.<anonymous> (/usr/src/app/src/index.js:94:5)","timestamp":"2024-12-13T18:44:21.946Z"}
+{"error":"TikTok API error: status_code 2","isVoiceInput":false,"level":"warn","message":"TikTok TTS failed, trying HuggingFace","timestamp":"2024-12-13T18:44:21.947Z"}
+{"isVoiceInput":false,"level":"info","message":"TikTok TTS started","textLength":650,"timestamp":"2024-12-13T18:44:21.948Z"}
+{"duration":436,"error":"TikTok API error: status_code 2","isVoiceInput":false,"level":"error","message":"TikTok TTS failed","stack":"Error: TikTok API error: status_code 2\n    at TTSService.generateTikTokTTS (/usr/src/app/src/services/ttsService.js:392:23)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async TTSService.generateTTS (/usr/src/app/src/services/ttsService.js:94:39)\n    at async MessageHandler.handleMessage (/usr/src/app/src/handlers/messageHandler.js:114:21)\n    at async Client.<anonymous> (/usr/src/app/src/index.js:94:5)","timestamp":"2024-12-13T18:44:22.385Z"}
+{"error":"TikTok API error: status_code 2","isVoiceInput":false,"level":"error","message":"All TTS providers failed","timestamp":"2024-12-13T18:44:22.385Z"}
+{"error":"All TTS providers failed","isPremium":false,"level":"error","message":"TTS generation failed","provider":"tiktok","textLength":650,"timestamp":"2024-12-13T18:44:22.387Z"}
+{"error":"All TTS providers failed","level":"error","message":"Error handling message","timestamp":"2024-12-13T18:44:22.388Z"}
+{"audioPath":"/tmp/1734115457306_tiktok.mp3","level":"info","message":"Finished playing audio","timestamp":"2024-12-13T18:44:24.146Z"}
+{"audioPath":"/tmp/1734115457306_tiktok.mp3","error":"ENOENT: no such file or directory, unlink '/tmp/1734115457306_tiktok.mp3'","level":"warn","message":"Failed to clean up audio file","timestamp":"2024-12-13T18:44:24.146Z"}
+{"allowedUsers":0,"guildId":"1203065884990644245","hasAdmin":false,"level":"info","message":"Server settings saved","settingsSize":169,"timestamp":"2024-12-13T18:45:13.862Z"}
+{"allowedUsers":0,"guildId":"1203065884990644245","hasAdmin":false,"level":"info","message":"Server settings saved","settingsSize":169,"timestamp":"2024-12-13T18:45:22.172Z"}
+{"envKeys":["OPENAI_API_KEY","ELEVENLABS_API_KEY","HUGGINGFACE_API_KEY","GROQ_API_KEY","ANTHROPIC_API_KEY","TIKTOK_SESSION_ID"],"hasElevenLabsKey":true,"hasHuggingFaceKey":true,"hasTiktokSession":true,"level":"info","message":"TTS Service initialized","timestamp":"2024-12-13T18:48:27.007Z"}
+{"level":"info","message":"Registering slash commands...","timestamp":"2024-12-13T18:48:27.030Z"}
+{"level":"info","message":"Web server listening on port 3000","timestamp":"2024-12-13T18:48:27.032Z"}
+{"level":"info","message":"Slash commands registered successfully","timestamp":"2024-12-13T18:48:27.510Z"}
+{"channelId":"1203065885435101268","event":"joining_channel","guildId":"1203065884990644245","level":"info","message":"Voice event: joining_channel","timestamp":"2024-12-13T18:48:30.169Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T18:48:30.511Z","userId":"422749762060550154"}
+{"allowedUsers":0,"guildId":"1203065884990644245","hasAdmin":false,"level":"info","message":"Server settings saved","settingsSize":201,"timestamp":"2024-12-13T18:48:41.301Z"}
+{"allowedUsers":0,"guildId":"1203065884990644245","hasAdmin":false,"level":"info","message":"Server settings saved","settingsSize":204,"timestamp":"2024-12-13T18:48:45.773Z"}
+{"isPremium":false,"isVoiceChannel":true,"level":"info","message":"Processing message","prompt":"hlelo?","timestamp":"2024-12-13T18:49:41.420Z","userId":"422749762060550154"}
+{"isPremium":false,"isVoiceInput":false,"level":"info","message":"TTS generation started","provider":"tiktok","textLength":62,"timestamp":"2024-12-13T18:49:41.425Z"}
+{"isVoiceInput":false,"level":"info","message":"TikTok TTS started","textLength":62,"timestamp":"2024-12-13T18:49:41.430Z"}
+{"duration":1104,"fileSize":76461,"isVoiceInput":false,"level":"info","message":"TikTok TTS completed","outputPath":"/tmp/1734115781432_tiktok.mp3","timestamp":"2024-12-13T18:49:42.535Z"}
+{"audioPath":"/tmp/1734115781432_tiktok.mp3","level":"info","message":"Playing audio response","timestamp":"2024-12-13T18:49:42.537Z"}
+{"audioPath":"/tmp/1734115781432_tiktok.mp3","level":"info","message":"Started playing audio","timestamp":"2024-12-13T18:49:42.565Z"}
+{"isPremium":false,"isVoiceInput":false,"level":"info","message":"TTS generation started","provider":"tiktok","textLength":34,"timestamp":"2024-12-13T18:49:43.935Z"}
+{"isVoiceInput":false,"level":"info","message":"TikTok TTS started","textLength":34,"timestamp":"2024-12-13T18:49:43.935Z"}
+{"duration":1250,"fileSize":46125,"isVoiceInput":false,"level":"info","message":"TikTok TTS completed","outputPath":"/tmp/1734115783935_tiktok.mp3","timestamp":"2024-12-13T18:49:45.186Z"}
+{"audioPath":"/tmp/1734115783935_tiktok.mp3","level":"info","message":"Playing audio response","timestamp":"2024-12-13T18:49:45.194Z"}
+{"audioPath":"/tmp/1734115783935_tiktok.mp3","level":"info","message":"Started playing audio","timestamp":"2024-12-13T18:49:45.204Z"}
+{"audioPath":"/tmp/1734115783935_tiktok.mp3","level":"info","message":"Finished playing audio","timestamp":"2024-12-13T18:49:45.335Z"}
+{"audioPath":"/tmp/1734115783935_tiktok.mp3","error":"ENOENT: no such file or directory, unlink '/tmp/1734115783935_tiktok.mp3'","level":"warn","message":"Failed to clean up audio file","timestamp":"2024-12-13T18:49:45.335Z"}
+{"isPremium":false,"isVoiceChannel":true,"level":"info","message":"Processing message","prompt":"its working wow","timestamp":"2024-12-13T18:49:58.825Z","userId":"422749762060550154"}
+{"isPremium":false,"isVoiceInput":false,"level":"info","message":"TTS generation started","provider":"tiktok","textLength":62,"timestamp":"2024-12-13T18:49:58.832Z"}
+{"isVoiceInput":false,"level":"info","message":"TikTok TTS started","textLength":62,"timestamp":"2024-12-13T18:49:58.833Z"}
+{"duration":1007,"fileSize":76461,"isVoiceInput":false,"level":"info","message":"TikTok TTS completed","outputPath":"/tmp/1734115798834_tiktok.mp3","timestamp":"2024-12-13T18:49:59.840Z"}
+{"audioPath":"/tmp/1734115798834_tiktok.mp3","level":"info","message":"Playing audio response","timestamp":"2024-12-13T18:49:59.841Z"}
+{"audioPath":"/tmp/1734115798834_tiktok.mp3","level":"info","message":"Started playing audio","timestamp":"2024-12-13T18:49:59.860Z"}
+{"isPremium":false,"isVoiceInput":false,"level":"info","message":"TTS generation started","provider":"tiktok","textLength":75,"timestamp":"2024-12-13T18:50:01.293Z"}
+{"isVoiceInput":false,"level":"info","message":"TikTok TTS started","textLength":75,"timestamp":"2024-12-13T18:50:01.293Z"}
+{"duration":928,"fileSize":74925,"isVoiceInput":false,"level":"info","message":"TikTok TTS completed","outputPath":"/tmp/1734115801293_tiktok.mp3","timestamp":"2024-12-13T18:50:02.222Z"}
+{"audioPath":"/tmp/1734115801293_tiktok.mp3","level":"info","message":"Playing audio response","timestamp":"2024-12-13T18:50:02.222Z"}
+{"audioPath":"/tmp/1734115801293_tiktok.mp3","level":"info","message":"Started playing audio","timestamp":"2024-12-13T18:50:02.231Z"}
+{"audioPath":"/tmp/1734115801293_tiktok.mp3","level":"info","message":"Finished playing audio","timestamp":"2024-12-13T18:50:02.359Z"}
+{"audioPath":"/tmp/1734115801293_tiktok.mp3","error":"ENOENT: no such file or directory, unlink '/tmp/1734115801293_tiktok.mp3'","level":"warn","message":"Failed to clean up audio file","timestamp":"2024-12-13T18:50:02.361Z"}
+{"envKeys":["OPENAI_API_KEY","ELEVENLABS_API_KEY","HUGGINGFACE_API_KEY","GROQ_API_KEY","ANTHROPIC_API_KEY","TIKTOK_SESSION_ID"],"hasElevenLabsKey":true,"hasHuggingFaceKey":true,"hasTiktokSession":true,"level":"info","message":"TTS Service initialized","timestamp":"2024-12-13T18:50:15.230Z"}
+{"level":"info","message":"Registering slash commands...","timestamp":"2024-12-13T18:50:15.257Z"}
+{"level":"info","message":"Web server listening on port 3000","timestamp":"2024-12-13T18:50:15.364Z"}
+{"level":"info","message":"Slash commands registered successfully","timestamp":"2024-12-13T18:50:15.743Z"}
+{"channelId":"1203065885435101268","event":"joining_channel","guildId":"1203065884990644245","level":"info","message":"Voice event: joining_channel","timestamp":"2024-12-13T18:50:19.102Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T18:50:19.497Z","userId":"422749762060550154"}
+{"allowedUsers":0,"guildId":"1203065884990644245","hasAdmin":false,"level":"info","message":"Server settings saved","settingsSize":204,"timestamp":"2024-12-13T18:50:25.127Z"}
+{"allowedUsers":0,"guildId":"1203065884990644245","hasAdmin":false,"level":"info","message":"Server settings saved","settingsSize":194,"timestamp":"2024-12-13T18:50:30.012Z"}
+{"allowedUsers":0,"guildId":"1203065884990644245","hasAdmin":false,"level":"info","message":"Server settings saved","settingsSize":194,"timestamp":"2024-12-13T18:50:40.218Z"}
+{"isPremium":false,"isVoiceChannel":true,"level":"info","message":"Processing message","prompt":"you look offline?","timestamp":"2024-12-13T18:50:58.115Z","userId":"422749762060550154"}
+{"isPremium":false,"isVoiceInput":false,"level":"info","message":"TTS generation started","provider":"tiktok","textLength":62,"timestamp":"2024-12-13T18:50:58.118Z"}
+{"isVoiceInput":false,"level":"info","message":"TikTok TTS started","textLength":62,"timestamp":"2024-12-13T18:50:58.121Z"}
+{"duration":1125,"fileSize":76461,"isVoiceInput":false,"level":"info","message":"TikTok TTS completed","outputPath":"/tmp/1734115858123_tiktok.mp3","timestamp":"2024-12-13T18:50:59.246Z"}
+{"audioPath":"/tmp/1734115858123_tiktok.mp3","level":"info","message":"Playing audio response","timestamp":"2024-12-13T18:50:59.247Z"}
+{"audioPath":"/tmp/1734115858123_tiktok.mp3","level":"info","message":"Started playing audio","timestamp":"2024-12-13T18:50:59.278Z"}
+{"isPremium":false,"isVoiceInput":false,"level":"info","message":"TTS generation started","provider":"tiktok","textLength":98,"timestamp":"2024-12-13T18:51:00.668Z"}
+{"isVoiceInput":false,"level":"info","message":"TikTok TTS started","textLength":98,"timestamp":"2024-12-13T18:51:00.669Z"}
+{"duration":1203,"fileSize":117165,"isVoiceInput":false,"level":"info","message":"TikTok TTS completed","outputPath":"/tmp/1734115860669_tiktok.mp3","timestamp":"2024-12-13T18:51:01.872Z"}
+{"audioPath":"/tmp/1734115860669_tiktok.mp3","level":"info","message":"Playing audio response","timestamp":"2024-12-13T18:51:01.873Z"}
+{"audioPath":"/tmp/1734115860669_tiktok.mp3","level":"info","message":"Started playing audio","timestamp":"2024-12-13T18:51:01.886Z"}
+{"audioPath":"/tmp/1734115860669_tiktok.mp3","level":"info","message":"Finished playing audio","timestamp":"2024-12-13T18:51:09.316Z"}
+{"audioPath":"/tmp/1734115860669_tiktok.mp3","error":"ENOENT: no such file or directory, unlink '/tmp/1734115860669_tiktok.mp3'","level":"warn","message":"Failed to clean up audio file","timestamp":"2024-12-13T18:51:09.318Z"}
+{"bufferSize":97920,"filepath":"/tmp/1734115880572.wav","guildId":"1203065884990644245","level":"info","message":"Creating WAV file","timestamp":"2024-12-13T18:51:20.572Z","userId":"422749762060550154"}
+{"error":"WAV file was not created","level":"error","message":"Error creating WAV file:","timestamp":"2024-12-13T18:51:20.579Z"}
+{"bufferSize":97920,"filepath":"/tmp/1734115881593.wav","guildId":"1203065884990644245","level":"info","message":"Creating WAV file","timestamp":"2024-12-13T18:51:21.593Z","userId":"422749762060550154"}
+{"event":"transcribe_start","guildId":"1203065884990644245","level":"info","message":"Voice event: transcribe_start","timestamp":"2024-12-13T18:51:21.599Z","userId":"422749762060550154"}
+{"event":"stream_end","guildId":"1203065884990644245","level":"info","message":"Voice event: stream_end","timestamp":"2024-12-13T18:51:22.415Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T18:51:22.516Z","userId":"422749762060550154"}
+{"event":"transcribe_success","guildId":"1203065884990644245","length":6,"level":"info","message":"Voice event: transcribe_success","timestamp":"2024-12-13T18:51:22.716Z","userId":"422749762060550154"}
+{"isPremium":false,"isVoiceInput":true,"level":"info","message":"TTS generation started","provider":"elevenlabs","textLength":160,"timestamp":"2024-12-13T18:51:23.559Z"}
+{"isVoiceInput":true,"level":"info","message":"TikTok TTS started","textLength":160,"timestamp":"2024-12-13T18:51:23.559Z"}
+{"event":"stream_end","guildId":"1203065884990644245","level":"info","message":"Voice event: stream_end","timestamp":"2024-12-13T18:51:23.676Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T18:51:23.779Z","userId":"422749762060550154"}
+{"duration":1186,"fileSize":165165,"isVoiceInput":true,"level":"info","message":"TikTok TTS completed","outputPath":"/tmp/1734115883560_tiktok.mp3","timestamp":"2024-12-13T18:51:24.745Z"}
+{"audioPath":"/tmp/1734115883560_tiktok.mp3","level":"info","message":"Playing audio response","timestamp":"2024-12-13T18:51:24.746Z"}
+{"audioPath":"/tmp/1734115883560_tiktok.mp3","level":"info","message":"Started playing audio","timestamp":"2024-12-13T18:51:24.755Z"}
+{"event":"stream_end","guildId":"1203065884990644245","level":"info","message":"Voice event: stream_end","timestamp":"2024-12-13T18:51:24.897Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T18:51:24.998Z","userId":"422749762060550154"}
+{"audioPath":"/tmp/1734115883560_tiktok.mp3","level":"info","message":"Finished playing audio","timestamp":"2024-12-13T18:51:35.194Z"}
+{"envKeys":["OPENAI_API_KEY","ELEVENLABS_API_KEY","HUGGINGFACE_API_KEY","GROQ_API_KEY","ANTHROPIC_API_KEY","TIKTOK_SESSION_ID"],"hasElevenLabsKey":true,"hasHuggingFaceKey":true,"hasTiktokSession":true,"level":"info","message":"TTS Service initialized","timestamp":"2024-12-13T18:58:28.848Z"}
+{"level":"info","message":"Registering slash commands...","timestamp":"2024-12-13T18:58:28.874Z"}
+{"level":"info","message":"Web server listening on port 3000","timestamp":"2024-12-13T18:58:28.876Z"}
+{"level":"info","message":"Slash commands registered successfully","timestamp":"2024-12-13T18:58:29.321Z"}
+{"channelId":"1203065885435101268","event":"joining_channel","guildId":"1203065884990644245","level":"info","message":"Voice event: joining_channel","timestamp":"2024-12-13T18:58:33.304Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T18:58:33.776Z","userId":"422749762060550154"}
+{"allowedUsers":0,"guildId":"1203065884990644245","hasAdmin":false,"level":"info","message":"Server settings saved","settingsSize":194,"timestamp":"2024-12-13T18:58:51.120Z"}
+{"allowedUsers":0,"guildId":"1203065884990644245","hasAdmin":false,"level":"info","message":"Server settings saved","settingsSize":194,"timestamp":"2024-12-13T18:58:58.206Z"}
+{"isPremium":false,"isVoiceChannel":true,"level":"info","message":"Processing message","prompt":"hello elevenlabs","timestamp":"2024-12-13T18:59:08.070Z","userId":"422749762060550154"}
+{"isPremium":false,"isVoiceInput":false,"level":"info","message":"TTS generation started","provider":"tiktok","textLength":62,"timestamp":"2024-12-13T18:59:08.072Z"}
+{"isVoiceInput":false,"level":"info","message":"TikTok TTS started","textLength":62,"timestamp":"2024-12-13T18:59:08.073Z"}
+{"duration":1132,"fileSize":76461,"isVoiceInput":false,"level":"info","message":"TikTok TTS completed","outputPath":"/tmp/1734116348075_tiktok.mp3","timestamp":"2024-12-13T18:59:09.206Z"}
+{"audioPath":"/tmp/1734116348075_tiktok.mp3","level":"info","message":"Playing audio response","timestamp":"2024-12-13T18:59:09.207Z"}
+{"audioPath":"/tmp/1734116348075_tiktok.mp3","level":"info","message":"Started playing audio","timestamp":"2024-12-13T18:59:09.239Z"}
+{"isPremium":false,"isVoiceInput":false,"level":"info","message":"TTS generation started","provider":"tiktok","textLength":34,"timestamp":"2024-12-13T18:59:10.673Z"}
+{"isVoiceInput":false,"level":"info","message":"TikTok TTS started","textLength":34,"timestamp":"2024-12-13T18:59:10.674Z"}
+{"duration":674,"fileSize":46125,"isVoiceInput":false,"level":"info","message":"TikTok TTS completed","outputPath":"/tmp/1734116350674_tiktok.mp3","timestamp":"2024-12-13T18:59:11.348Z"}
+{"audioPath":"/tmp/1734116350674_tiktok.mp3","level":"info","message":"Playing audio response","timestamp":"2024-12-13T18:59:11.350Z"}
+{"audioPath":"/tmp/1734116350674_tiktok.mp3","level":"info","message":"Started playing audio","timestamp":"2024-12-13T18:59:11.373Z"}
+{"audioPath":"/tmp/1734116350674_tiktok.mp3","level":"info","message":"Finished playing audio","timestamp":"2024-12-13T18:59:14.372Z"}
+{"audioPath":"/tmp/1734116350674_tiktok.mp3","error":"ENOENT: no such file or directory, unlink '/tmp/1734116350674_tiktok.mp3'","level":"warn","message":"Failed to clean up audio file","timestamp":"2024-12-13T18:59:14.373Z"}
+{"channelId":"1203065885435101268","event":"joining_channel","guildId":"1203065884990644245","level":"info","message":"Voice event: joining_channel","timestamp":"2024-12-13T19:07:36.456Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T19:07:37.305Z","userId":"422749762060550154"}
+{"channelId":"1203065885435101268","event":"joining_channel","guildId":"1203065884990644245","level":"info","message":"Voice event: joining_channel","timestamp":"2024-12-13T19:08:49.187Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T19:08:49.563Z","userId":"422749762060550154"}
+{"event":"stream_end","guildId":"1203065884990644245","level":"info","message":"Voice event: stream_end","timestamp":"2024-12-13T19:08:50.570Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T19:08:50.673Z","userId":"422749762060550154"}
+{"event":"stream_end","guildId":"1203065884990644245","level":"info","message":"Voice event: stream_end","timestamp":"2024-12-13T19:08:52.006Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T19:08:52.111Z","userId":"422749762060550154"}
+{"event":"stream_end","guildId":"1203065884990644245","level":"info","message":"Voice event: stream_end","timestamp":"2024-12-13T19:08:53.700Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T19:08:53.801Z","userId":"422749762060550154"}
+{"envKeys":["OPENAI_API_KEY","ELEVENLABS_API_KEY","HUGGINGFACE_API_KEY","GROQ_API_KEY","ANTHROPIC_API_KEY","TIKTOK_SESSION_ID"],"hasElevenLabsKey":true,"hasHuggingFaceKey":true,"hasTiktokSession":true,"level":"info","message":"TTS Service initialized","timestamp":"2024-12-13T19:08:55.761Z"}
+{"level":"info","message":"Registering slash commands...","timestamp":"2024-12-13T19:08:55.784Z"}
+{"level":"info","message":"Web server listening on port 3000","timestamp":"2024-12-13T19:08:55.786Z"}
+{"level":"info","message":"Slash commands registered successfully","timestamp":"2024-12-13T19:08:56.277Z"}
+{"channelId":"1203065885435101268","event":"joining_channel","guildId":"1203065884990644245","level":"info","message":"Voice event: joining_channel","timestamp":"2024-12-13T19:09:07.982Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T19:09:08.636Z","userId":"422749762060550154"}
+{"envKeys":["OPENAI_API_KEY","ELEVENLABS_API_KEY","HUGGINGFACE_API_KEY","GROQ_API_KEY","ANTHROPIC_API_KEY","TIKTOK_SESSION_ID"],"hasElevenLabsKey":true,"hasHuggingFaceKey":true,"hasTiktokSession":true,"level":"info","message":"TTS Service initialized","timestamp":"2024-12-13T19:30:07.736Z"}
+{"level":"info","message":"Registering slash commands...","timestamp":"2024-12-13T19:30:07.758Z"}
+{"level":"info","message":"Web server listening on port 3000","timestamp":"2024-12-13T19:30:07.760Z"}
+{"level":"info","message":"Slash commands registered successfully","timestamp":"2024-12-13T19:30:08.197Z"}
+{"channelId":"1203065885435101268","event":"joining_channel","guildId":"1203065884990644245","level":"info","message":"Voice event: joining_channel","timestamp":"2024-12-13T19:30:13.745Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T19:30:14.186Z","userId":"422749762060550154"}
+{"event":"stream_end","guildId":"1203065884990644245","level":"info","message":"Voice event: stream_end","timestamp":"2024-12-13T19:30:15.691Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T19:30:15.791Z","userId":"422749762060550154"}
+{"event":"stream_end","guildId":"1203065884990644245","level":"info","message":"Voice event: stream_end","timestamp":"2024-12-13T19:30:17.734Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T19:30:17.836Z","userId":"422749762060550154"}
+{"event":"stream_end","guildId":"1203065884990644245","level":"info","message":"Voice event: stream_end","timestamp":"2024-12-13T19:30:19.022Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T19:30:19.129Z","userId":"422749762060550154"}
+{"envKeys":["OPENAI_API_KEY","ELEVENLABS_API_KEY","HUGGINGFACE_API_KEY","GROQ_API_KEY","ANTHROPIC_API_KEY","TIKTOK_SESSION_ID"],"hasElevenLabsKey":true,"hasHuggingFaceKey":true,"hasTiktokSession":true,"level":"info","message":"TTS Service initialized","timestamp":"2024-12-13T19:35:19.111Z"}
+{"level":"info","message":"Registering slash commands...","timestamp":"2024-12-13T19:35:19.135Z"}
+{"level":"info","message":"Web server listening on port 3000","timestamp":"2024-12-13T19:35:19.138Z"}
+{"level":"info","message":"Slash commands registered successfully","timestamp":"2024-12-13T19:35:19.677Z"}
+{"channelId":"1203065885435101268","event":"joining_channel","guildId":"1203065884990644245","level":"info","message":"Voice event: joining_channel","timestamp":"2024-12-13T19:35:30.485Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T19:35:30.911Z","userId":"422749762060550154"}
+{"bufferSize":97920,"filepath":"/tmp/1734118532096.wav","guildId":"1203065884990644245","level":"info","message":"Creating WAV file","timestamp":"2024-12-13T19:35:32.096Z","userId":"422749762060550154"}
+{"event":"transcribe_start","guildId":"1203065884990644245","level":"info","message":"Voice event: transcribe_start","timestamp":"2024-12-13T19:35:32.104Z","userId":"422749762060550154"}
+{"event":"transcribe_success","guildId":"1203065884990644245","length":5,"level":"info","message":"Voice event: transcribe_success","timestamp":"2024-12-13T19:35:35.357Z","userId":"422749762060550154"}
+{"isPremium":false,"isVoiceInput":true,"level":"info","message":"TTS generation started","provider":"elevenlabs","textLength":217,"timestamp":"2024-12-13T19:35:36.239Z"}
+{"isVoiceInput":true,"level":"info","message":"TikTok TTS started","textLength":217,"timestamp":"2024-12-13T19:35:36.240Z"}
+{"duration":1555,"fileSize":228525,"isVoiceInput":true,"level":"info","message":"TikTok TTS completed","outputPath":"/tmp/1734118536240_tiktok.mp3","timestamp":"2024-12-13T19:35:37.795Z"}
+{"audioPath":"/tmp/1734118536240_tiktok.mp3","level":"info","message":"Playing audio response","timestamp":"2024-12-13T19:35:37.796Z"}
+{"audioPath":"/tmp/1734118536240_tiktok.mp3","error":"Failed to subscribe to audio player","level":"error","message":"Error setting up audio playback:","timestamp":"2024-12-13T19:35:37.817Z"}
+{"bufferSize":247680,"filepath":"/tmp/1734118538821.wav","guildId":"1203065884990644245","level":"info","message":"Creating WAV file","timestamp":"2024-12-13T19:35:38.821Z","userId":"422749762060550154"}
+{"error":"WAV file was not created","level":"error","message":"Error creating WAV file:","timestamp":"2024-12-13T19:35:38.824Z"}
+{"allowedUsers":0,"guildId":"1203065884990644245","hasAdmin":false,"level":"info","message":"Server settings saved","settingsSize":193,"timestamp":"2024-12-13T19:42:46.412Z"}
+{"isPremium":false,"isVoiceChannel":true,"level":"info","message":"Processing message","prompt":"hello?_","timestamp":"2024-12-13T19:42:59.762Z","userId":"422749762060550154"}
+{"channelId":"1203065885435101268","event":"joining_channel","guildId":"1203065884990644245","level":"info","message":"Voice event: joining_channel","timestamp":"2024-12-13T19:42:59.763Z","userId":"422749762060550154"}
+{"channelId":"1203065884990644250","event":"start_listening","guildId":"1203065884990644245","level":"info","message":"Voice event: start_listening","timestamp":"2024-12-13T19:43:00.135Z","userId":"422749762060550154"}
+{"isPremium":false,"isVoiceInput":false,"level":"info","message":"TTS generation started","provider":"tiktok","textLength":62,"timestamp":"2024-12-13T19:43:00.137Z"}
+{"isVoiceInput":false,"level":"info","message":"TikTok TTS started","textLength":62,"timestamp":"2024-12-13T19:43:00.138Z"}
+{"duration":1246,"fileSize":76461,"isVoiceInput":false,"level":"info","message":"TikTok TTS completed","outputPath":"/tmp/1734118980139_tiktok.mp3","timestamp":"2024-12-13T19:43:01.383Z"}
+{"audioPath":"/tmp/1734118980139_tiktok.mp3","level":"info","message":"Playing audio response","timestamp":"2024-12-13T19:43:01.384Z"}
+{"audioPath":"/tmp/1734118980139_tiktok.mp3","level":"info","message":"Started playing audio","timestamp":"2024-12-13T19:43:01.421Z"}
+{"isPremium":false,"isVoiceInput":false,"level":"info","message":"TTS generation started","provider":"tiktok","textLength":34,"timestamp":"2024-12-13T19:43:02.789Z"}
+{"isVoiceInput":false,"level":"info","message":"TikTok TTS started","textLength":34,"timestamp":"2024-12-13T19:43:02.789Z"}
+{"duration":718,"fileSize":46125,"isVoiceInput":false,"level":"info","message":"TikTok TTS completed","outputPath":"/tmp/1734118982789_tiktok.mp3","timestamp":"2024-12-13T19:43:03.507Z"}
+{"audioPath":"/tmp/1734118982789_tiktok.mp3","level":"info","message":"Playing audio response","timestamp":"2024-12-13T19:43:03.508Z"}
+{"audioPath":"/tmp/1734118982789_tiktok.mp3","level":"info","message":"Started playing audio","timestamp":"2024-12-13T19:43:03.519Z"}
+{"audioPath":"/tmp/1734118982789_tiktok.mp3","level":"info","message":"Finished playing audio","timestamp":"2024-12-13T19:43:03.642Z"}
+{"audioPath":"/tmp/1734118982789_tiktok.mp3","error":"ENOENT: no such file or directory, unlink '/tmp/1734118982789_tiktok.mp3'","level":"warn","message":"Failed to clean up audio file","timestamp":"2024-12-13T19:43:03.643Z"}

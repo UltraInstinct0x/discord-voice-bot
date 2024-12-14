@@ -13,8 +13,8 @@ class MessageHandler {
     let audioPath = null;
     
     try {
-      // Only respond to messages where bot is mentioned
-      if (!message.mentions.has(message.client.user)) return;
+      // Only respond to messages where bot is mentioned and not slash commands
+      if (!message.mentions.has(message.client.user) || message.content.startsWith('/')) return;
 
       // Get the actual message content without the mention
       const prompt = message.content.replace(/<@!?\d+>/g, '').trim();
@@ -23,7 +23,7 @@ class MessageHandler {
       // Log the message processing
       const userId = message.author?.id;
       const guildId = message.guild?.id;
-      const isPremium = false; // TODO: Implement premium check based on your needs
+      const isPremium = settings.tier === 'PREMIUM';
 
       logger.info("Processing message", {
         isVoiceChannel: !!message.member?.voice.channel,
@@ -31,6 +31,60 @@ class MessageHandler {
         userId,
         isPremium
       });
+
+      // Check if user is in a voice channel but bot isn't connected
+      if (message.member?.voice.channel && !getVoiceConnection(message.guild.id) && settings.autoJoin) {
+        const connection = await voiceHandler.joinVoiceChannel(
+          message.member.voice.channel,
+          message
+        );
+        if (connection) {
+          await message.reply({
+            embeds: [{
+              color: 0x0099ff,
+              title: "Voice Mode Activated! ",
+              description: "Auto-joined your voice channel! (You can disable this with `/settings autojoin off`)",
+              fields: [
+                {
+                  name: "Voice Commands",
+                  value: "Just start speaking and I'll respond!",
+                  inline: true
+                },
+                {
+                  name: "Text Commands",
+                  value: "Keep mentioning me in chat to talk!",
+                  inline: true
+                }
+              ],
+              footer: {
+                text: "Use !machine or /agentic to disconnect"
+              }
+            }]
+          });
+          await voiceHandler.listenAndRespond(connection, connection.receiver, message);
+        }
+      } else if (message.member?.voice.channel && !getVoiceConnection(message.guild.id) && !settings.autoJoin) {
+        // If user is in voice but autoJoin is off, suggest using commands
+        await message.reply({
+          embeds: [{
+            color: 0x0099ff,
+            title: "Want Voice Chat? ",
+            description: "I noticed you're in a voice channel! You can:",
+            fields: [
+              {
+                name: "Join Now",
+                value: "Use `!machine` or `/agentic` to make me join your voice channel",
+                inline: true
+              },
+              {
+                name: "Auto-Join",
+                value: "Enable auto-join with `/settings autojoin on` to make me join automatically",
+                inline: true
+              }
+            ]
+          }]
+        });
+      }
 
       // Check if user is in the same voice channel as the bot
       const connection = getVoiceConnection(message.guild.id);
@@ -43,7 +97,7 @@ class MessageHandler {
           await message.reply({
             embeds: [{
               color: 0xffcc00,
-              title: "⚠️ Audio Too Quiet",
+              title: " Audio Too Quiet",
               description: "I couldn't hear you clearly. Please speak a bit louder."
             }]
           });
@@ -53,7 +107,7 @@ class MessageHandler {
           await message.reply({
             embeds: [{
               color: 0xffcc00,
-              title: "⚠️ Audio Too Short",
+              title: " Audio Too Short",
               description: "The audio was too short to process. Please speak for a bit longer."
             }]
           });
@@ -63,7 +117,7 @@ class MessageHandler {
           await message.reply({
             embeds: [{
               color: 0xff0000,
-              title: "❌ Transcription Failed",
+              title: " Transcription Failed",
               description: "I couldn't understand what you said. Please try speaking more clearly."
             }]
           });
@@ -123,7 +177,7 @@ class MessageHandler {
       await message.reply({
         embeds: [{
           color: 0xff0000,
-          title: "❌ Error",
+          title: " Error",
           description: "Sorry, I encountered an error while processing your message."
         }]
       });
@@ -140,6 +194,36 @@ class MessageHandler {
 
   async handleMachineCommand(message, settings) {
     try {
+      // Check if bot is already in a voice channel
+      const existingConnection = getVoiceConnection(message.guild.id);
+      if (existingConnection) {
+        // If bot is in a voice channel, leave it
+        existingConnection.destroy();
+        await message.reply({
+          embeds: [{
+            color: 0x0099ff,
+            title: "Voice Mode Deactivated ",
+            description: "I've left the voice channel, but I'm still here to help!",
+            fields: [
+              {
+                name: "Text Chat",
+                value: "You can still mention me in chat anytime!",
+                inline: true
+              },
+              {
+                name: "Ongoing Tasks",
+                value: "Don't worry, I'll keep working on any ongoing tasks.",
+                inline: true
+              }
+            ],
+            footer: {
+              text: "Use !machine or /agentic to join voice again"
+            }
+          }]
+        });
+        return;
+      }
+
       // Check if user is in a voice channel
       if (!message.member?.voice.channel) {
         await message.reply("You need to be in a voice channel first!");
@@ -161,7 +245,7 @@ class MessageHandler {
       await message.reply({
         embeds: [{
           color: 0x0099ff,
-          title: "Voice Bot Connected! 🎙️",
+          title: "Voice Bot Connected! ",
           description: "I'm ready to chat with you in voice! Here's how to use me:",
           fields: [
             {
@@ -191,6 +275,36 @@ class MessageHandler {
 
   async handleAgenticCommand(message, settings) {
     try {
+      // Check if bot is already in a voice channel
+      const existingConnection = getVoiceConnection(message.guild.id);
+      if (existingConnection) {
+        // If bot is in a voice channel, leave it
+        existingConnection.destroy();
+        await message.reply({
+          embeds: [{
+            color: 0x0099ff,
+            title: "Agentic Mode Deactivated ",
+            description: "I've left the voice channel, but I'm still here to help!",
+            fields: [
+              {
+                name: "Text Chat",
+                value: "You can still mention me in chat anytime!",
+                inline: true
+              },
+              {
+                name: "Ongoing Tasks",
+                value: "Don't worry, I'll keep working on any ongoing tasks.",
+                inline: true
+              }
+            ],
+            footer: {
+              text: "Use !agentic or /agentic to activate voice mode again"
+            }
+          }]
+        });
+        return;
+      }
+
       // Check if user is in a voice channel
       if (!message.member?.voice.channel) {
         await message.reply("You need to be in a voice channel first!");
@@ -212,7 +326,7 @@ class MessageHandler {
       await message.reply({
         embeds: [{
           color: 0x0099ff,
-          title: "Agentic Mode Activated! 🤖",
+          title: "Agentic Mode Activated! ",
           description: "I'm now in agentic mode! I'll proactively engage in conversation and help you with tasks.",
           fields: [
             {

@@ -2,9 +2,11 @@
   "channelId": null,
   "adminId": null,
   "allowedUsers": [],
-  "lastActive": 1734094994329,
-  "ttsProvider": "huggingface_fastspeech",
+  "lastActive": 1734118966384,
+  "ttsProvider": "elevenlabs",
   "language": "en",
   "voiceCommand": false,
-  "autoJoin": false
+  "autoJoin": true,
+  "model": "MIXTRAL",
+  "tier": "PREMIUM"
 }

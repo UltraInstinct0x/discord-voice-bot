@@ -5,23 +5,8 @@ const { CONFIG } = require("../config/config");
 // Define slash commands
 const commands = [
   new SlashCommandBuilder()
-    .setName("agentic")
-    .setDescription("Toggle agentic mode (join/leave voice channel)"),
-  new SlashCommandBuilder()
-    .setName("model")
-    .setDescription("Set the AI model to use")
-    .addStringOption((option) =>
-      option
-        .setName("model")
-        .setDescription("Choose the AI model")
-        .setRequired(true)
-        .addChoices(
-          { name: "GPT-3.5", value: "GPT35" },
-          { name: "GPT-4", value: "GPT4" },
-          { name: "Claude Sonnet", value: "CLAUDE" },
-          { name: "Mixtral-8x7B", value: "MIXTRAL" },
-        ),
-    ),
+    .setName("settings")
+    .setDescription("Show current bot settings"),
   new SlashCommandBuilder()
     .setName("setprovider")
     .setDescription("Set the TTS provider")
@@ -31,35 +16,37 @@ const commands = [
         .setDescription("The TTS provider to use")
         .setRequired(true)
         .addChoices(
-          { name: 'TikTok', value: 'tiktok' },
-          { name: 'HuggingFace Facebook', value: 'huggingface_facebook' },
-          { name: 'HuggingFace FastSpeech2', value: 'huggingface_fastspeech' },
-          { name: 'HuggingFace Coqui', value: 'huggingface_coqui' },
-          { name: 'HuggingFace Indic', value: 'huggingface_indic' },
-          { name: 'ElevenLabs', value: 'elevenlabs' }
+          { name: "TikTok", value: "tiktok" },
+          { name: "HuggingFace Facebook", value: "huggingface_facebook" },
+          { name: "ElevenLabs", value: "elevenlabs" },
+          { name: "FastSpeech2", value: "huggingface_fastspeech" },
         ),
     ),
   new SlashCommandBuilder()
-    .setName("test")
-    .setDescription("Test the bot's functionality")
+    .setName("agentic")
+    .setDescription("Toggle agentic mode (join/leave voice channel)"),
+  new SlashCommandBuilder()
+    .setName("model")
+    .setDescription("Set the AI model")
     .addStringOption((option) =>
       option
-        .setName("feature")
-        .setDescription("Feature to test")
+        .setName("model")
+        .setDescription("The AI model to use")
         .setRequired(true)
         .addChoices(
-          { name: "Voice Recognition", value: "voice" },
-          { name: "Text Generation", value: "text" },
-          { name: "TTS", value: "tts" },
+          { name: "GPT-3.5", value: "GPT35" },
+          { name: "GPT-4", value: "GPT4" },
+          { name: "Claude Sonnet", value: "CLAUDE" },
+          { name: "Mixtral-8x7B", value: "MIXTRAL" },
         ),
     ),
   new SlashCommandBuilder()
     .setName("settier")
-    .setDescription("Set your tier")
+    .setDescription("Set your subscription tier")
     .addStringOption((option) =>
       option
         .setName("tier")
-        .setDescription("Choose your tier")
+        .setDescription("Your subscription tier")
         .setRequired(true)
         .addChoices(
           { name: "Free", value: "FREE" },
@@ -67,8 +54,17 @@ const commands = [
         ),
     ),
   new SlashCommandBuilder()
-    .setName("settings")
-    .setDescription("View your current settings"),
+    .setName("configure")
+    .setDescription("Configure bot settings"),
+  new SlashCommandBuilder()
+    .setName("setautojoin")
+    .setDescription("Configure auto-join behavior")
+    .addBooleanOption((option) =>
+      option
+        .setName("enabled")
+        .setDescription("Enable or disable auto-join")
+        .setRequired(true),
+    ),
 ];
 
 async function registerCommands() {
